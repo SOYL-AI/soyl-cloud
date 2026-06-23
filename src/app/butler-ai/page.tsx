@@ -102,7 +102,7 @@ const bentoFeatures = [
     desc: "One-tap emergency contacts and instant escalation to property management for guest safety.",
     icon: ShieldAlert,
     span: "md:col-span-1 md:row-span-2",
-    image: "/images/products_pics/SOS emergency contact save .png",
+    image: "/images/products_pics/sos_alert_mockup.png",
     imageAlt: "SOS Emergency Feature",
   },
   {
@@ -198,8 +198,8 @@ export default function ButlerAIPage() {
               {/* glow behind mockup */}
               <div className="absolute -inset-6 bg-gradient-to-b from-[var(--color-mint)] via-transparent to-transparent opacity-30 rounded-[3rem] blur-3xl -z-10" />
               <BrowserMockup
-                src="/images/products_pics/new_guest_view.png"
-                alt="Butler AI Guest View"
+                src="/images/products_pics/new_ops_console.png"
+                alt="Butler AI Staff Dashboard"
                 className="shadow-[0_30px_100px_-15px_rgba(0,0,0,0.15)]"
               />
             </motion.div>
