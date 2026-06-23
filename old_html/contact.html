@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Contact SOYL Cloud for support, business inquiries, or to book a demo of our hospitality software.">
+  <title>Contact Us | SOYL Cloud</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <style>
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-8); margin-top: var(--space-8); }
+    @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; } }
+    .form-group { margin-bottom: var(--space-4); }
+    .form-label { display: block; margin-bottom: var(--space-2); font-size: var(--text-sm); font-weight: 500; color: var(--color-text-secondary); }
+    .form-input { width: 100%; padding: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); font-family: inherit; font-size: var(--text-base); }
+    .form-input:focus { outline: none; border-color: var(--color-mint); box-shadow: 0 0 0 3px var(--color-mint-light); }
+    textarea.form-input { min-height: 120px; resize: vertical; }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/images/logo.png" alt="SOYL Cloud Logo" class="logo-img">
+        SOYL Cloud
+      </a>
+      <div class="nav-links" id="nav-links">
+        <a href="butler-ai.html" class="nav-link">Butler AI</a>
+        <a href="pms-lite.html" class="nav-link">PMS Lite</a>
+        <a href="soyl-dine.html" class="nav-link">SOYL Dine</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="contact.html" class="nav-link active">Contact</a>
+        <a href="book-demo.html" class="btn btn-primary btn-sm nav-cta">Book Demo</a>
+      </div>
+      <button class="nav-mobile-toggle" id="nav-toggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <section class="section" style="padding-top: 140px;">
+    <div class="container">
+      <div class="section-header reveal text-left">
+        <h1 style="font-size: var(--text-4xl); margin-bottom: var(--space-2);">Get in touch</h1>
+        <p>Our team is here to help you find the right solution for your property.</p>
+      </div>
+
+      <div class="contact-grid">
+        <!-- Contact Info -->
+        <div class="reveal-left">
+          <div class="card" style="margin-bottom: var(--space-6); background: var(--color-bg-secondary); border: none;">
+            <h4>Interested in our products?</h4>
+            <p style="margin-bottom: var(--space-4); color: var(--color-text-secondary);">The fastest way to see if SOYL Cloud is right for you is to schedule a personalized walkthrough with our product specialists.</p>
+            <a href="book-demo.html" class="btn btn-primary">Book a Demo</a>
+          </div>
+
+          <div style="margin-bottom: var(--space-6);">
+            <h5 style="margin-bottom: var(--space-2);">Sales Inquiries</h5>
+            <p style="color: var(--color-text-secondary);">sales@soylcloud.com</p>
+          </div>
+
+          <div style="margin-bottom: var(--space-6);">
+            <h5 style="margin-bottom: var(--space-2);">Customer Support</h5>
+            <p style="color: var(--color-text-secondary);">support@soylcloud.com</p>
+          </div>
+
+          <div>
+            <h5 style="margin-bottom: var(--space-2);">Headquarters</h5>
+            <p style="color: var(--color-text-secondary);">SOYL AI Private Limited<br>Technology Park<br>Global</p>
+          </div>
+        </div>
+
+        <!-- General Inquiry Form -->
+        <div class="reveal-right">
+          <div class="card">
+            <h4 style="margin-bottom: var(--space-6);">Send us a message</h4>
+            <form onsubmit="event.preventDefault(); alert('Message sent successfully!');">
+              <div class="form-group">
+                <label class="form-label" for="name">Full Name</label>
+                <input type="text" id="name" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="email">Work Email</label>
+                <input type="email" id="email" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="subject">Subject</label>
+                <select id="subject" class="form-input" required>
+                  <option value="" disabled selected>Select a topic</option>
+                  <option value="sales">Sales & Pricing</option>
+                  <option value="support">Technical Support</option>
+                  <option value="partnership">Partnerships</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="message">Message</label>
+                <textarea id="message" class="form-input" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Send Message</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <img src="assets/images/logo.png" alt="SOYL Cloud" class="logo-img">
+            SOYL Cloud
+          </a>
+          <p>Hospitality, Simplified. Practical technology for modern hotels and restaurants.</p>
+        </div>
+        <div class="footer-col">
+          <h6>Products</h6>
+          <ul>
+            <li><a href="butler-ai.html">Butler AI</a></li>
+            <li><a href="pms-lite.html">PMS Lite</a></li>
+            <li><a href="soyl-dine.html">SOYL Dine</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h6>Company</h6>
+          <ul>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="book-demo.html">Book Demo</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 SOYL Cloud. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
