@@ -90,7 +90,7 @@ function FeatureShowcase({
             initial={{ opacity: 0, x: reverse ? 40 : -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.6, ease: "easeOut" as const }}
             className="flex-1"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-xs font-bold uppercase tracking-wider text-blue-600 mb-6 shadow-sm">
@@ -119,7 +119,7 @@ function FeatureShowcase({
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" as const }}
             className="flex-[1.2] w-full"
           >
             <BrowserMockup src={imageSrc} alt={imageAlt} className="shadow-2xl shadow-blue-900/10" />
@@ -132,7 +132,7 @@ function FeatureShowcase({
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } },
 };
 
 const stagger = {
@@ -183,7 +183,7 @@ export default function PmsLite() {
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" as const }}
             className="relative"
           >
             <motion.div

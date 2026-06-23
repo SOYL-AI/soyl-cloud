@@ -8,7 +8,7 @@ import BrowserMockup from "@/components/BrowserMockup";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } }
 };
 
 const stagger = {
@@ -60,7 +60,7 @@ export default function Home() {
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" as const }}
             className="relative max-w-5xl mx-auto mt-12"
           >
             <div className="absolute -inset-4 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none h-32 bottom-0 top-auto" />

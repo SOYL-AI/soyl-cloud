@@ -28,7 +28,7 @@ const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 28 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-60px" },
-  transition: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.65, delay, ease: "easeOut" as const },
 });
 
 const stagger = {
@@ -37,7 +37,7 @@ const stagger = {
 };
 const staggerItem = {
   hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
 };
 
 /* ─── Phone Mockup Component ──────────────────────────── */
@@ -188,7 +188,7 @@ export default function ButlerAIPage() {
           <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.9, delay: 0.25, ease: "easeOut" as const }}
             className="relative max-w-5xl mx-auto"
           >
             <motion.div
