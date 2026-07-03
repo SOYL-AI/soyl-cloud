@@ -126,7 +126,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-[var(--color-soyl-charcoal)] mb-1">Email</p>
-                      <a href="mailto:hello@soyl.cloud" className="text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-mint-dark)] transition-colors">hello@soyl.cloud</a>
+                      <a href="mailto:ryan.gomez@soyl.cloud" className="text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-mint-dark)] transition-colors">ryan.gomez@soyl.cloud</a>
                     </div>
                   </div>
                   
@@ -136,7 +136,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-[var(--color-soyl-charcoal)] mb-1">Phone</p>
-                      <a href="tel:+918040900000" className="text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-mint-dark)] transition-colors">+91 80 4090 0000</a>
+                      <a href="tel:+917022509965" className="text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-mint-dark)] transition-colors">+91 7022509965</a>
                     </div>
                   </div>
                   
@@ -147,9 +147,8 @@ export default function ContactPage() {
                     <div>
                       <p className="text-sm font-semibold text-[var(--color-soyl-charcoal)] mb-1">Office</p>
                       <p className="text-[var(--color-soyl-gray-600)] leading-relaxed">
-                        Koramangala 4th Block,<br />
                         Bengaluru, Karnataka<br />
-                        India 560034
+                        560043
                       </p>
                     </div>
                   </div>

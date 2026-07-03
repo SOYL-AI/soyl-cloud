@@ -41,7 +41,7 @@ export default function TermsOfService() {
 
             <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mt-8 mb-4">5. Contact Information</h2>
             <p className="mb-4">
-              Questions about the Terms of Service should be sent to us at hello@soylai.com.
+              Questions about the Terms of Service should be sent to us at ryan.gomez@soyl.cloud.
             </p>
           </div>
         </div>

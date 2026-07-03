@@ -48,7 +48,7 @@ export default function PrivacyPolicy() {
             <p className="mb-4">
               If you have any questions about this privacy policy or our privacy practices, please contact us at:
               <br />
-              Email: hello@soylai.com
+              Email: ryan.gomez@soyl.cloud
             </p>
           </div>
         </div>

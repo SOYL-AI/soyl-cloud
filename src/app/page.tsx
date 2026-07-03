@@ -186,7 +186,7 @@ export default function Home() {
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.7 }}
           >
-            <BrowserMockup src="/images/screenshots/Screenshot 2026-05-10 183417.png" alt="PMS Lite Dashboard" glow />
+            <BrowserMockup src="/images/pms_dashboard_main.png" alt="PMS Lite Dashboard" glow />
           </motion.div>
 
           <div className="mt-16 text-center">

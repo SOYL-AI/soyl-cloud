@@ -1,8 +1,9 @@
 export const COMPANY = {
   name: "SOYL Cloud",
   domain: "soyl.cloud",
-  address: "Bengaluru, India",
-  email: "hello@soylai.com",
+  address: "Bengaluru Karnataka 560043",
+  email: "ryan.gomez@soyl.cloud",
+  phone: "+91 7022509965",
 };
 
 export const NAVIGATION = [

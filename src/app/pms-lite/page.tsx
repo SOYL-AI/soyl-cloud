@@ -148,7 +148,7 @@ export default function PmsLitePage() {
               animate={{ y: [0, -12, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
             >
-              <BrowserMockup src="/images/screenshots/Screenshot 2026-05-10 183417.png" alt="SOYL AI PMS Dashboard" className="shadow-2xl shadow-blue-900/20" glow={true} float={false} />
+              <BrowserMockup src="/images/pms_dashboard_main.png" alt="SOYL AI PMS Dashboard" className="shadow-2xl shadow-blue-900/20" glow={true} float={false} />
             </motion.div>
           </motion.div>
         </Container>
@@ -168,7 +168,7 @@ export default function PmsLitePage() {
             "Detailed guest profiles and booking history",
             "Advanced search and filtering capabilities",
           ]}
-          imageSrc="/images/screenshots/Screenshot 2026-05-10 183446.png"
+          imageSrc="/images/pms_dashboard_bookings.png"
           imageAlt="PMS Lite Bookings Page"
         />
 
@@ -182,7 +182,7 @@ export default function PmsLitePage() {
             "Real-time housekeeping status updates",
             "Room type and pricing management",
           ]}
-          imageSrc="/images/screenshots/Screenshot 2026-05-10 183509.png"
+          imageSrc="/images/pms_dashboard_rooms.png"
           imageAlt="PMS Lite Rooms Management"
           reverse
         />
@@ -197,7 +197,7 @@ export default function PmsLitePage() {
             "Detailed revenue and profit margins",
             "One-click export to PDF or CSV",
           ]}
-          imageSrc="/images/screenshots/Screenshot 2026-05-10 183625.png"
+          imageSrc="/images/pms_dashboard_reports.png"
           imageAlt="PMS Lite Reports Page"
         />
       </div>
