@@ -28,18 +28,18 @@ export function AnimatedCounter({
 }: AnimatedCounterProps) {
   const countRef = useRef<HTMLSpanElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!countRef.current || !containerRef.current || hasAnimated) return;
+    if (!countRef.current || !containerRef.current || hasAnimated.current) return;
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: containerRef.current,
         start: "top 85%",
         onEnter: () => {
-          if (!hasAnimated) {
-            setHasAnimated(true);
+          if (!hasAnimated.current) {
+            hasAnimated.current = true;
             const proxy = { val: 0 };
             gsap.to(proxy, {
               val: value,
@@ -57,7 +57,7 @@ export function AnimatedCounter({
     }, containerRef);
 
     return () => ctx.revert();
-  }, [value, duration, hasAnimated]);
+  }, [value, duration]);
 
   return (
     <div
