@@ -40,16 +40,14 @@ export function AnimatedCounter({
         onEnter: () => {
           if (!hasAnimated) {
             setHasAnimated(true);
-            gsap.to(countRef.current, {
-              innerHTML: value,
+            const proxy = { val: 0 };
+            gsap.to(proxy, {
+              val: value,
               duration,
               ease: "power2.out",
-              snap: { innerHTML: 1 },
-              onUpdate: function () {
+              onUpdate: () => {
                 if (countRef.current) {
-                  // Format with commas if needed
-                  const currentVal = Math.round(Number(this.targets()[0].innerHTML));
-                  countRef.current.innerHTML = currentVal.toLocaleString();
+                  countRef.current.innerHTML = Math.round(proxy.val).toLocaleString();
                 }
               },
             });
