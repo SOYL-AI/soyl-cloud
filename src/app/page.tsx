@@ -1,384 +1,297 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Play, Check, MessageSquare, BedDouble, Utensils, Phone, ShieldCheck, BarChart3, Zap, Globe, Clock, LayoutDashboard } from "lucide-react";
-import BrowserMockup from "@/components/BrowserMockup";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" as const } }
-};
-
-const stagger = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.08 } }
-};
+import { ArrowRight, Play, Check, ShieldCheck, Hotel, Bed, UtensilsCrossed } from "lucide-react";
+import { Container } from "@/components/ui/Container";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { BrowserMockup } from "@/components/mockups/BrowserMockup";
+import { PhoneMockup } from "@/components/mockups/PhoneMockup";
+import { MetricsStrip } from "@/components/sections/MetricsStrip";
+import { FinalCTA } from "@/components/sections/FinalCTA";
+import { StickyCTA } from "@/components/sections/StickyCTA";
+import { fadeUp, staggerContainer } from "@/lib/animations";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
+    <>
+      <StickyCTA />
+      
+      {/* 1. HERO SECTION */}
+      <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden bg-white">
+        <div className="absolute inset-0 bg-[var(--background-image-gradient-hero)] -z-10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[600px] bg-[var(--background-image-gradient-glow)] -z-10" />
 
-      {/* ═══════════════════════════════════════════════ */}
-      {/* HERO — Centered, Mews-style with product below */}
-      {/* ═══════════════════════════════════════════════ */}
-      <section className="relative pt-28 pb-0 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#f0f7f6] via-white to-white" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-[var(--color-mint)] opacity-[0.08] rounded-full blur-[120px]" />
-        </div>
+        <Container>
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            className="flex flex-col items-center text-center max-w-4xl mx-auto"
+          >
+            <motion.div variants={fadeUp} className="mb-8">
+              <Badge variant="outline" dot>LIVE: AI-Powered Hospitality Platform</Badge>
+            </motion.div>
 
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <motion.div initial="hidden" animate="show" variants={stagger}>
-            {/* Headline */}
-            <motion.h1 variants={fadeUp} className="text-5xl md:text-7xl lg:text-[5.5rem] font-bold tracking-tight text-[var(--color-charcoal)] leading-[1.05] mb-6">
-              The Ecosystem for<br />
-              <span className="bg-gradient-to-r from-[var(--color-mint-dark)] to-[#6BA8A2] bg-clip-text text-transparent">Modern Hospitality.</span>
+            <motion.h1 
+              variants={fadeUp}
+              className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[var(--color-soyl-charcoal)] leading-[1.05] mb-8"
+            >
+              Resolve guest requests in under <span className="text-[var(--color-soyl-mint-dark)]">30 seconds.</span>
             </motion.h1>
 
-            {/* Subheading */}
-            <motion.p variants={fadeUp} className="text-lg md:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed">
-              Unify your property's operations on a single, intelligent platform. Automate daily tasks, elevate guest experiences, and drive more revenue.
+            <motion.p 
+              variants={fadeUp}
+              className="text-xl md:text-2xl text-[var(--color-soyl-gray-600)] mb-12 max-w-3xl leading-relaxed font-medium"
+            >
+              Your AI concierge handles room service, housekeeping, and guest communication — so your staff can focus on what matters. No app download. Works from day one.
             </motion.p>
 
-            {/* CTAs */}
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center mb-20">
-              <Link href="/book-demo" className="bg-[var(--color-charcoal)] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-black transition-all inline-flex items-center justify-center gap-2 group shadow-lg shadow-gray-900/10">
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <Button size="lg" variant="primary" href="/book-demo" className="w-full sm:w-auto group">
                 Book a Demo
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link href="#products" className="bg-white text-[var(--color-charcoal)] border border-gray-200 px-8 py-4 rounded-full font-semibold text-lg hover:border-gray-300 hover:shadow-md transition-all inline-flex items-center justify-center gap-2">
-                <Play size={18} className="text-[var(--color-mint-dark)]" />
+                <ArrowRight size={20} className="ml-2 transition-transform group-hover:translate-x-1" />
+              </Button>
+              <Button size="lg" variant="outline" href="#products" className="w-full sm:w-auto">
+                <Play size={18} className="mr-2 text-[var(--color-soyl-mint-dark)]" />
                 Watch Product Tour
-              </Link>
+              </Button>
             </motion.div>
           </motion.div>
 
-          {/* Hero Image Showcase */}
+          {/* Hero Mockups Showcase */}
           <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" as const }}
-            className="relative max-w-5xl mx-auto mt-12"
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            transition={{ delay: 0.4 }}
+            className="mt-20 md:mt-32 relative max-w-[1200px] mx-auto"
           >
-            <div className="absolute -inset-4 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none h-32 bottom-0 top-auto" />
-            <div className="rounded-[2.5rem] overflow-hidden border border-gray-200/50 shadow-2xl shadow-gray-400/30 bg-white p-2">
-              <div className="rounded-[2rem] overflow-hidden relative aspect-[16/9] w-full">
-                <Image 
+            <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-20 h-40 bottom-0 top-auto pointer-events-none" />
+            
+            <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 relative">
+              <div className="w-full md:w-3/5 relative z-10">
+                <BrowserMockup 
                   src="/images/soyl_hero_main.png" 
-                  alt="SOYL AI Hospitality Platform" 
-                  fill
-                  className="object-cover"
-                  priority
+                  alt="PMS Lite Dashboard"
+                  glow
                 />
               </div>
+              <div className="w-[280px] md:w-[320px] md:absolute md:-right-4 lg:right-10 md:bottom-[-40px] z-20">
+                <PhoneMockup 
+                  src="/images/products_pics/Guest view initial landing .png"
+                  alt="Butler AI Guest View"
+                  float
+                />
+              </div>
+
+              {/* Floating annotations */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1, duration: 0.5 }}
+                className="absolute left-[10%] top-[20%] z-30 bg-white border border-[var(--color-soyl-gray-200)] shadow-xl rounded-2xl p-4 hidden lg:block"
+              >
+                <div className="flex gap-3 items-center">
+                  <div className="w-8 h-8 rounded-full bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)]">
+                    <Check size={16} strokeWidth={3} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-[var(--color-soyl-charcoal)]">Request Routed</p>
+                    <p className="text-xs text-[var(--color-soyl-gray-600)]">Sent to Housekeeping</p>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
-        </div>
+        </Container>
       </section>
 
-      {/* ═══════════════════════════════════════════════ */}
-      {/* SOCIAL PROOF — Logo bar + stats                */}
-      {/* ═══════════════════════════════════════════════ */}
-      <section className="py-20 bg-white border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12"
-          >
-            {[
-              { value: "100+", label: "Properties Onboarded" },
-              { value: "50K+", label: "Guest Interactions" },
-              { value: "99.9%", label: "Uptime SLA" },
-              { value: "<2min", label: "Avg. Response Time" },
-            ].map((stat, i) => (
-              <motion.div key={i} variants={fadeUp} className="text-center">
-                <div className="text-4xl md:text-5xl font-bold text-[var(--color-charcoal)] mb-2">{stat.value}</div>
-                <div className="text-sm text-gray-500 font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+      {/* 2. METRICS STRIP */}
+      <MetricsStrip />
 
-      {/* ═══════════════════════════════════════════════ */}
-      {/* PROBLEM SECTION — Why SOYL AI                  */}
-      {/* ═══════════════════════════════════════════════ */}
-      <section className="py-24 bg-[var(--color-light-grey)]">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="text-center max-w-3xl mx-auto mb-16">
-            <motion.p variants={fadeUp} className="text-sm font-semibold text-[var(--color-mint-dark)] uppercase tracking-widest mb-4">The Problem</motion.p>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight text-[var(--color-charcoal)] mb-6">
-              Your Staff Deserves Better Than Legacy Software
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-xl text-gray-500">
-              Disconnected tools, manual workflows, and zero visibility into guest needs. Sound familiar?
-            </motion.p>
-          </motion.div>
+      {/* 3. PRODUCT STORY / BUTLER AI */}
+      <section id="products" className="py-24 md:py-32 bg-white">
+        <Container>
+          <SectionHeader
+            badge="Butler AI"
+            title="The AI concierge your guests actually use."
+            description="No app download. No training. No friction. Guests scan, speak or type, and Butler AI handles everything in 50+ languages."
+          />
 
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { icon: Zap, title: "Instant, Not Manual", desc: "Guest requests route automatically to the right team. No more walkie-talkies and paper logs." },
-              { icon: Globe, title: "One Platform, Everything", desc: "Stop juggling 5 different tools. PMS, concierge, dining, and calls — all unified." },
-              { icon: Clock, title: "Setup in Hours, Not Months", desc: "Go live in under 24 hours. No complex integrations, no IT team required." },
-            ].map((item, i) => (
-              <motion.div key={i} variants={fadeUp} className="bg-white rounded-2xl p-8 border border-gray-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                <div className="w-12 h-12 bg-[var(--color-mint-light)] rounded-xl flex items-center justify-center mb-6 text-[var(--color-mint-dark)]">
-                  <item.icon size={24} strokeWidth={1.5} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div className="order-2 md:order-1">
+              <PhoneMockup src="/images/products_pics/COncierge chat asking something guest mode .png" />
+            </div>
+            
+            <div className="order-1 md:order-2">
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                className="flex flex-col gap-10"
+              >
+                <div>
+                  <h3 className="text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-4">Instant responses, zero delays.</h3>
+                  <p className="text-lg text-[var(--color-soyl-gray-600)] leading-relaxed">
+                    Stop letting front desk bottlenecks ruin guest experiences. Butler AI answers questions instantly and routes service requests directly to the right department.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-[var(--color-charcoal)]">{item.title}</h3>
-                <p className="text-gray-500 leading-relaxed">{item.desc}</p>
+                
+                <ul className="flex flex-col gap-6">
+                  {[
+                    { title: "Multilingual", desc: "Instantly translates and replies in over 50 languages." },
+                    { title: "Voice & Text", desc: "Guests can send a voice note or type — just like chatting with a friend." },
+                    { title: "Smart Routing", desc: "Food goes to the kitchen, towels to housekeeping. Automatically." }
+                  ].map((item, i) => (
+                    <motion.li key={i} variants={fadeUp} className="flex gap-4">
+                      <div className="w-10 h-10 rounded-full bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)] shrink-0">
+                        <Check size={20} />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-[var(--color-soyl-charcoal)] mb-1">{item.title}</h4>
+                        <p className="text-[var(--color-soyl-gray-600)]">{item.desc}</p>
+                      </div>
+                    </motion.li>
+                  ))}
+                </ul>
+
+                <motion.div variants={fadeUp}>
+                  <Button variant="outline" href="/butler-ai">
+                    Explore Butler AI
+                  </Button>
+                </motion.div>
               </motion.div>
-            ))}
-          </motion.div>
-        </div>
+            </div>
+          </div>
+        </Container>
       </section>
 
-      {/* ═══════════════════════════════════════════════ */}
-      {/* PRODUCTS SHOWCASE — Mews-style bento           */}
-      {/* ═══════════════════════════════════════════════ */}
-      <section id="products" className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} variants={stagger} className="text-center max-w-3xl mx-auto mb-20">
-            <motion.p variants={fadeUp} className="text-sm font-semibold text-[var(--color-mint-dark)] uppercase tracking-widest mb-4">Products</motion.p>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight text-[var(--color-charcoal)] mb-6">
-              The Complete Hospitality Suite
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-xl text-gray-500">
-              Three products, one platform. Everything connects seamlessly.
-            </motion.p>
-          </motion.div>
+      {/* 4. PMS LITE SECTION */}
+      <section className="py-24 md:py-32 bg-[var(--color-soyl-gray-50)] border-y border-[var(--color-soyl-gray-200)]">
+        <Container>
+          <SectionHeader
+            badge="PMS Lite"
+            title="Your property, one dashboard."
+            description="Manage bookings, rooms, billing, and staff operations from a single, clean interface designed for speed."
+          />
 
-          {/* ─── Butler AI — Large Feature Card ─── */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6 }}
-            className="mb-8"
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7 }}
           >
-            <div className="bg-gradient-to-br from-[#f7fbfa] to-[#eef5f4] rounded-[2rem] p-8 md:p-14 border border-gray-100 overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[var(--color-mint)] text-xs font-bold uppercase tracking-wider text-[var(--color-mint-dark)] mb-6">
-                    <MessageSquare size={14} /> Butler AI
-                  </div>
-                  <h3 className="text-3xl md:text-4xl font-bold text-[var(--color-charcoal)] mb-4 leading-tight">
-                    Your 24/7 AI Concierge That Guests Love
-                  </h3>
-                  <p className="text-lg text-gray-500 mb-6 leading-relaxed">
-                    Guests scan a QR code and instantly access room service, housekeeping, local recommendations, and more — through chat or voice. No app download required.
-                  </p>
-                  <ul className="flex flex-col gap-3 mb-8">
-                    {["Voice & chat requests", "Automated task routing to staff", "Multilingual support", "Built-in upselling engine"].map((item, i) => (
-                      <li key={i} className="flex items-center gap-3 text-gray-600">
-                        <Check size={18} className="text-[var(--color-mint-dark)] shrink-0" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link href="/butler-ai" className="inline-flex items-center gap-2 bg-[var(--color-charcoal)] text-white px-6 py-3 rounded-full font-semibold hover:bg-black transition-all group">
-                    Explore Butler AI
-                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </div>
-
-                {/* Product visual: Phone mockup with guest view */}
-                <div className="relative flex justify-center">
-                  <div className="relative w-[280px] md:w-[320px]">
-                    {/* Phone frame */}
-                    <div className="bg-[var(--color-charcoal)] rounded-[2.5rem] p-3 shadow-2xl shadow-gray-400/30">
-                      {/* Notch */}
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-7 bg-[var(--color-charcoal)] rounded-b-2xl z-20" />
-                      {/* Screen */}
-                      <div className="rounded-[2rem] overflow-hidden bg-white">
-                        <Image
-                          src="/images/products_pics/Guest view initial landing .png"
-                          alt="Butler AI Guest View"
-                          width={320}
-                          height={640}
-                          className="w-full h-auto object-cover"
-                        />
-                      </div>
-                    </div>
-                    {/* Floating chat bubble */}
-                    <motion.div
-                      initial={{ opacity: 0, x: 40, y: 20 }}
-                      whileInView={{ opacity: 1, x: 0, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.5, duration: 0.5 }}
-                      className="absolute -right-16 top-1/3 bg-white rounded-2xl rounded-br-sm p-4 shadow-xl border border-gray-100 max-w-[200px] hidden md:block"
-                    >
-                      <p className="text-sm text-gray-700 font-medium">"Send extra towels please"</p>
-                      <p className="text-xs text-gray-400 mt-1">Guest, Room 104</p>
-                    </motion.div>
-                    {/* Floating response bubble */}
-                    <motion.div
-                      initial={{ opacity: 0, x: -40, y: 20 }}
-                      whileInView={{ opacity: 1, x: 0, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.8, duration: 0.5 }}
-                      className="absolute -left-20 top-1/2 bg-[var(--color-mint-light)] rounded-2xl rounded-bl-sm p-4 shadow-xl border border-[var(--color-mint)] max-w-[220px] hidden md:block"
-                    >
-                      <p className="text-sm text-gray-700 font-medium">✓ Routed to Housekeeping</p>
-                      <p className="text-xs text-gray-500 mt-1">Auto-assigned · 3s ago</p>
-                    </motion.div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <BrowserMockup src="/images/screenshots/Screenshot 2026-05-10 183417.png" alt="PMS Lite Dashboard" glow />
           </motion.div>
 
-          {/* ─── PMS Lite + SOYL Dine — Side by side ─── */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* PMS Lite */}
+          <div className="mt-16 text-center">
+            <Button variant="outline" href="/pms-lite">
+              Explore PMS Lite
+            </Button>
+          </div>
+        </Container>
+      </section>
+
+      {/* 5. ROI / PROOF SECTION */}
+      <section className="py-24 md:py-32 bg-white">
+        <Container>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="bg-white rounded-[2rem] p-8 md:p-10 border border-gray-100 hover:shadow-xl transition-shadow duration-300 flex flex-col"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs font-bold uppercase tracking-wider text-[var(--color-charcoal)] mb-6 self-start">
-                <LayoutDashboard size={14} /> PMS Lite
-              </div>
-              <h3 className="text-2xl md:text-3xl font-bold text-[var(--color-charcoal)] mb-3">
-                Your Property, One Dashboard
-              </h3>
-              <p className="text-gray-500 mb-6 leading-relaxed">
-                Manage bookings, rooms, billing, and reports from a single, clean interface.
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] mb-6">
+                The ROI is immediate.
+              </h2>
+              <p className="text-xl text-[var(--color-soyl-gray-600)] mb-10 leading-relaxed">
+                By eliminating walkie-talkies, paper logs, and front desk bottlenecks, hotels see returns in their first month.
               </p>
-              <Link href="/pms-lite" className="inline-flex items-center gap-2 text-[var(--color-charcoal)] font-semibold hover:gap-3 transition-all mb-8">
-                Explore PMS Lite <ArrowRight size={18} />
-              </Link>
-              <div className="mt-auto">
-                <BrowserMockup src="/images/screenshots/Screenshot 2026-05-10 183417.png" alt="PMS Lite Dashboard" />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="p-6 bg-[var(--color-soyl-gray-50)] rounded-2xl border border-[var(--color-soyl-gray-200)]">
+                  <div className="text-4xl font-extrabold text-[var(--color-soyl-charcoal)] mb-2">₹2.4L</div>
+                  <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">Saved per month in staff time</p>
+                </div>
+                <div className="p-6 bg-[var(--color-soyl-gray-50)] rounded-2xl border border-[var(--color-soyl-gray-200)]">
+                  <div className="text-4xl font-extrabold text-[var(--color-soyl-charcoal)] mb-2">3×</div>
+                  <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">More online reviews generated</p>
+                </div>
               </div>
             </motion.div>
 
-            {/* SOYL Dine */}
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="bg-white rounded-[2rem] p-8 md:p-10 border border-gray-100 hover:shadow-xl transition-shadow duration-300 flex flex-col"
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-[var(--color-soyl-charcoal)] rounded-[2rem] p-10 md:p-14 text-white shadow-2xl relative overflow-hidden"
             >
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-50 border border-gray-200 text-xs font-bold uppercase tracking-wider text-[var(--color-charcoal)] mb-6 self-start">
-                <Utensils size={14} /> Restaurant Suite
-              </div>
-              <h3 className="text-2xl md:text-3xl font-bold text-[var(--color-charcoal)] mb-3">
-                Modern Dining, Digitized
-              </h3>
-              <p className="text-gray-500 mb-6 leading-relaxed">
-                QR ordering, kitchen display systems, inventory tracking, and analytics — all in one place.
-              </p>
-              <Link href="/soyl-dine" className="inline-flex items-center gap-2 text-[var(--color-charcoal)] font-semibold hover:gap-3 transition-all mb-8">
-                Explore SOYL Dine <ArrowRight size={18} />
-              </Link>
-              <div className="mt-auto">
-                <BrowserMockup src="/images/restaurant_digital.png" alt="SOYL Dine" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-soyl-mint)] rounded-full blur-[80px] opacity-20 translate-x-1/2 -translate-y-1/2" />
+              
+              <div className="relative z-10">
+                <div className="flex gap-1 mb-8">
+                  {[1,2,3,4,5].map(i => (
+                    <svg key={i} className="w-6 h-6 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <blockquote className="text-2xl md:text-3xl font-medium leading-tight mb-8">
+                  "Since switching to SOYL Cloud, our guest satisfaction scores jumped from 8.2 to 9.6. The front desk is finally calm."
+                </blockquote>
+                <div>
+                  <div className="font-bold text-lg">General Manager</div>
+                  <div className="text-[var(--color-soyl-gray-400)]">Boutique Hotel Trial User</div>
+                </div>
               </div>
             </motion.div>
           </div>
-        </div>
+        </Container>
       </section>
 
-      {/* ═══════════════════════════════════════════════ */}
-      {/* HOW IT WORKS — Horizontal flow                 */}
-      {/* ═══════════════════════════════════════════════ */}
-      <section className="py-24 bg-[var(--color-light-grey)] overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger} className="text-center max-w-3xl mx-auto mb-16">
-            <motion.p variants={fadeUp} className="text-sm font-semibold text-[var(--color-mint-dark)] uppercase tracking-widest mb-4">How It Works</motion.p>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight text-[var(--color-charcoal)] mb-6">
-              Live in Under 24 Hours
-            </motion.h2>
-          </motion.div>
+      {/* 6. TARGET AUDIENCE */}
+      <section className="py-24 bg-[var(--color-soyl-gray-50)] border-t border-[var(--color-soyl-gray-200)]">
+        <Container>
+          <SectionHeader
+            badge="Built For"
+            title="Every kind of hospitality business."
+          />
 
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger} className="grid grid-cols-1 md:grid-cols-4 gap-6 relative">
-            {/* Connecting line */}
-            <div className="hidden md:block absolute top-14 left-[12.5%] right-[12.5%] h-px bg-gradient-to-r from-gray-200 via-[var(--color-mint)] to-gray-200 z-0" />
-
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
-              { step: "01", title: "Sign Up", desc: "Create your property account in under 5 minutes." },
-              { step: "02", title: "Configure", desc: "Set up rooms, menus, and staff roles with guided setup." },
-              { step: "03", title: "Deploy QR Codes", desc: "Print and place QR codes in guest rooms and dining areas." },
-              { step: "04", title: "Go Live", desc: "Start receiving guest requests and managing operations instantly." },
+              { icon: Hotel, title: "Boutique Hotels", desc: "Elevate guest experience with AI concierge." },
+              { icon: Bed, title: "Resorts & Villas", desc: "Multi-property management with centralized control." },
+              { icon: ShieldCheck, title: "Hotel Chains", desc: "Enterprise dashboards with cross-property analytics." },
+              { icon: UtensilsCrossed, title: "Restaurants", desc: "QR ordering and kitchen workflows." }
             ].map((item, i) => (
-              <motion.div key={i} variants={fadeUp} className="relative z-10 text-center">
-                <div className="w-12 h-12 bg-white border-2 border-[var(--color-mint)] text-[var(--color-mint-dark)] rounded-full flex items-center justify-center font-bold text-sm mx-auto mb-6 shadow-sm">
-                  {item.step}
-                </div>
-                <h4 className="text-lg font-bold text-[var(--color-charcoal)] mb-2">{item.title}</h4>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════ */}
-      {/* BUILT FOR — Target Audience                    */}
-      {/* ═══════════════════════════════════════════════ */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger} className="text-center max-w-3xl mx-auto mb-16">
-            <motion.p variants={fadeUp} className="text-sm font-semibold text-[var(--color-mint-dark)] uppercase tracking-widest mb-4">Built For</motion.p>
-            <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-bold tracking-tight text-[var(--color-charcoal)]">
-              Every Kind of Hospitality Business
-            </motion.h2>
-          </motion.div>
-
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: BedDouble, title: "Boutique Hotels", desc: "Elevate guest experience with AI concierge and streamlined ops." },
-              { icon: Utensils, title: "Restaurants", desc: "QR ordering, kitchen workflows, and real-time inventory." },
-              { icon: ShieldCheck, title: "Resorts & Villas", desc: "Multi-property management with centralized control." },
-              { icon: BarChart3, title: "Hotel Chains", desc: "Enterprise dashboards with cross-property analytics." },
-            ].map((item, i) => (
-              <motion.div key={i} variants={fadeUp} className="group bg-gray-50 rounded-2xl p-8 border border-gray-100 hover:bg-[var(--color-mint-light)] hover:border-[var(--color-mint)] transition-all duration-300 cursor-default">
-                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mb-6 text-[var(--color-dark-grey)] group-hover:text-[var(--color-mint-dark)] transition-colors border border-gray-100 shadow-sm">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="bg-white p-8 rounded-2xl border border-[var(--color-soyl-gray-200)] shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="w-12 h-12 bg-[var(--color-soyl-gray-100)] rounded-xl flex items-center justify-center text-[var(--color-soyl-charcoal)] mb-6">
                   <item.icon size={24} strokeWidth={1.5} />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-[var(--color-charcoal)]">{item.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                <h3 className="text-xl font-bold text-[var(--color-soyl-charcoal)] mb-3">{item.title}</h3>
+                <p className="text-[var(--color-soyl-gray-600)]">{item.desc}</p>
               </motion.div>
             ))}
-          </motion.div>
-        </div>
+          </div>
+        </Container>
       </section>
 
-      {/* ═══════════════════════════════════════════════ */}
-      {/* FINAL CTA                                      */}
-      {/* ═══════════════════════════════════════════════ */}
-      <section className="py-32 bg-[var(--color-charcoal)] text-white text-center relative overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-[var(--color-mint-dark)] opacity-10 rounded-full blur-[100px]" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[var(--color-mint)] opacity-5 rounded-full blur-[100px]" />
-        </div>
-        <div className="max-w-4xl mx-auto px-6 relative z-10">
-          <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={stagger}>
-            <motion.h2 variants={fadeUp} className="text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-              Ready to modernize your property?
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-              Join forward-thinking hoteliers and restaurateurs who chose SOYL AI to power their operations.
-            </motion.p>
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/book-demo" className="bg-white text-[var(--color-charcoal)] px-8 py-4 rounded-full font-bold text-lg hover:bg-[var(--color-mint-light)] transition-all inline-flex items-center gap-2 group">
-                Book Your Free Demo
-                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link href="/contact" className="border border-gray-600 text-gray-300 px-8 py-4 rounded-full font-semibold text-lg hover:border-gray-400 hover:text-white transition-all inline-flex items-center justify-center">
-                Contact Sales
-              </Link>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-    </div>
+      {/* 7. FINAL CTA */}
+      <FinalCTA />
+    </>
   );
 }

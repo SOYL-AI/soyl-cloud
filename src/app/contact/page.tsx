@@ -1,90 +1,174 @@
 "use client";
 
+import { Container } from "@/components/ui/Container";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Phone } from "lucide-react";
 
-export default function Contact() {
+export default function ContactPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate submission for MVP
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setSubmitted(true);
+    }, 1000);
+  };
+
   return (
-    <div className="flex flex-col pt-32 pb-24 bg-white">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
-        <motion.div 
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="text-5xl font-bold tracking-tight text-[var(--color-charcoal)] mb-6">Get in Touch</h1>
-          <p className="text-xl text-gray-600 leading-relaxed mb-12">
-            Whether you're looking to upgrade your property's tech stack or have questions about our products, our team is ready to help.
+    <main className="flex min-h-screen flex-col pt-24 pb-16 bg-[var(--color-soyl-white)]">
+      <Container size="lg">
+        {/* HERO */}
+        <section className="pt-16 pb-12 text-center max-w-3xl mx-auto">
+          <Badge variant="primary" className="mb-6 mx-auto inline-flex">Contact Us</Badge>
+          <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] mb-6">
+            Get in touch
+          </h1>
+          <p className="text-lg text-[var(--color-soyl-gray-600)] leading-relaxed">
+            Have questions about SOYL Cloud? Want to explore an enterprise deployment? Our team is ready to help you transform your property.
           </p>
+        </section>
 
-          <div className="flex flex-col gap-8">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[var(--color-mint-light)] text-[var(--color-mint-dark)] rounded-2xl flex items-center justify-center shrink-0">
-                <Mail size={24} />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-[var(--color-charcoal)] mb-1">Email</h3>
-                <p className="text-gray-600">hello@soyl-ai.com</p>
-                <p className="text-gray-600">support@soyl-ai.com</p>
-              </div>
+        <section className="py-12 max-w-5xl mx-auto">
+          <div className="bg-white rounded-[32px] border border-[var(--color-soyl-gray-200)] shadow-sm overflow-hidden flex flex-col md:flex-row">
+            
+            {/* Form Side */}
+            <div className="flex-1 p-8 md:p-12">
+              <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mb-8">Send us a message</h2>
+              
+              {submitted ? (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }} 
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-[var(--color-soyl-mint-light)] rounded-2xl p-8 text-center"
+                >
+                  <div className="w-16 h-16 bg-[var(--color-soyl-mint)] text-white rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Send size={24} />
+                  </div>
+                  <h3 className="text-xl font-bold text-[var(--color-soyl-charcoal)] mb-2">Message sent!</h3>
+                  <p className="text-[var(--color-soyl-gray-600)]">
+                    Thanks for reaching out. A member of our team will get back to you within 24 hours.
+                  </p>
+                  <Button variant="outline" className="mt-6" onClick={() => setSubmitted(false)}>
+                    Send another message
+                  </Button>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="name" className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">Full Name</label>
+                      <input 
+                        type="text" 
+                        id="name" 
+                        required
+                        className="h-12 px-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label htmlFor="email" className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">Work Email</label>
+                      <input 
+                        type="email" 
+                        id="email" 
+                        required
+                        className="h-12 px-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all"
+                        placeholder="john@hotel.com"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="company" className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">Hotel / Company Name</label>
+                    <input 
+                      type="text" 
+                      id="company" 
+                      required
+                      className="h-12 px-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all"
+                      placeholder="The Grand Resort"
+                    />
+                  </div>
+                  
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="message" className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">Message</label>
+                    <textarea 
+                      id="message" 
+                      required
+                      rows={5}
+                      className="p-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all resize-none"
+                      placeholder="How can we help you?"
+                    />
+                  </div>
+                  
+                  <Button type="submit" size="lg" loading={isSubmitting} className="w-full md:w-auto self-start">
+                    Send Message
+                  </Button>
+                </form>
+              )}
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[var(--color-mint-light)] text-[var(--color-mint-dark)] rounded-2xl flex items-center justify-center shrink-0">
-                <MapPin size={24} />
-              </div>
+            
+            {/* Sidebar */}
+            <div className="md:w-80 bg-[var(--color-soyl-gray-50)] border-l border-[var(--color-soyl-gray-200)] p-8 md:p-12 flex flex-col justify-between">
               <div>
-                <h3 className="text-xl font-semibold text-[var(--color-charcoal)] mb-1">Office</h3>
-                <p className="text-gray-600">
-                  SOYL AI Private Limited<br />
-                  Tech Park Hub, Block C<br />
-                  Bangalore, India
+                <h3 className="text-xl font-bold text-[var(--color-soyl-charcoal)] mb-8">Contact Information</h3>
+                
+                <div className="flex flex-col gap-8">
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white border border-[var(--color-soyl-gray-200)] flex items-center justify-center shrink-0">
+                      <Mail size={18} className="text-[var(--color-soyl-mint-dark)]" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--color-soyl-charcoal)] mb-1">Email</p>
+                      <a href="mailto:hello@soyl.cloud" className="text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-mint-dark)] transition-colors">hello@soyl.cloud</a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white border border-[var(--color-soyl-gray-200)] flex items-center justify-center shrink-0">
+                      <Phone size={18} className="text-[var(--color-soyl-mint-dark)]" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--color-soyl-charcoal)] mb-1">Phone</p>
+                      <a href="tel:+918040900000" className="text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-mint-dark)] transition-colors">+91 80 4090 0000</a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white border border-[var(--color-soyl-gray-200)] flex items-center justify-center shrink-0">
+                      <MapPin size={18} className="text-[var(--color-soyl-mint-dark)]" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-[var(--color-soyl-charcoal)] mb-1">Office</p>
+                      <p className="text-[var(--color-soyl-gray-600)] leading-relaxed">
+                        Koramangala 4th Block,<br />
+                        Bengaluru, Karnataka<br />
+                        India 560034
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-12 pt-8 border-t border-[var(--color-soyl-gray-200)]">
+                <p className="text-sm text-[var(--color-soyl-gray-500)] mb-4">
+                  Prefer a live demo instead of a message?
                 </p>
+                <Button variant="outline" size="md" href="/book-demo" className="w-full">
+                  Book a Demo
+                </Button>
               </div>
             </div>
-
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-[var(--color-mint-light)] text-[var(--color-mint-dark)] rounded-2xl flex items-center justify-center shrink-0">
-                <Phone size={24} />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-[var(--color-charcoal)] mb-1">Phone</h3>
-                <p className="text-gray-600">+91 800 555 0199</p>
-              </div>
-            </div>
+            
           </div>
-        </motion.div>
-
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-[var(--color-light-grey)] rounded-3xl p-10 shadow-sm border border-gray-100"
-        >
-          <h3 className="text-2xl font-bold text-[var(--color-charcoal)] mb-6">Send us a message</h3>
-          <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-gray-700">Name</label>
-                <input type="text" className="px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-mint)] transition-all bg-white" placeholder="John Doe" />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-gray-700">Email</label>
-                <input type="email" className="px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-mint)] transition-all bg-white" placeholder="john@hotel.com" />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold text-gray-700">Message</label>
-              <textarea rows={5} className="px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[var(--color-mint)] transition-all bg-white resize-none" placeholder="How can we help you?"></textarea>
-            </div>
-
-            <button className="mt-2 bg-[var(--color-charcoal)] text-white px-8 py-4 rounded-xl font-medium text-lg hover:bg-black transition-all w-full">
-              Send Message
-            </button>
-          </form>
-        </motion.div>
-      </div>
-    </div>
+        </section>
+      </Container>
+    </main>
   );
 }

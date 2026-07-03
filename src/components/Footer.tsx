@@ -1,69 +1,89 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Container } from "./ui/Container";
+import { COMPANY, NAVIGATION, LEGAL, SOCIAL } from "@/lib/constants";
 
 export default function Footer() {
   return (
-    <footer className="bg-[var(--color-charcoal)] text-gray-400 pt-20 pb-8 mt-auto">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Main Footer Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
+    <footer className="bg-[var(--color-soyl-charcoal)] text-[var(--color-soyl-gray-400)] pt-20 pb-8 mt-auto border-t border-[var(--color-soyl-gray-900)]">
+      <Container>
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-10 lg:gap-16 mb-16">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-2">
-            <Link href="/" className="flex items-center gap-2.5 mb-6">
-              <Image src="/images/logo.png" alt="SOYL AI Logo" width={32} height={32} className="w-8 h-8 object-contain brightness-200" />
-              <span className="font-bold text-lg text-white">SOYL AI</span>
+          <div className="col-span-2">
+            <Link href="/" className="flex items-center gap-2.5 mb-6 opacity-90 hover:opacity-100 transition-opacity">
+              <Image src="/images/logo.png" alt={`${COMPANY.name} Logo`} width={32} height={32} className="w-8 h-8 object-contain brightness-200" />
+              <span className="font-bold text-lg text-white">{COMPANY.name}</span>
             </Link>
-            <p className="text-sm leading-relaxed mb-6 max-w-xs">
-              The all-in-one hospitality platform. Automate operations, delight guests, and grow revenue.
+            <p className="text-sm leading-relaxed mb-6 max-w-sm">
+              The all-in-one hospitality platform. Automate operations, delight guests, and grow revenue with AI-powered concierges and management tools.
             </p>
-            <p className="text-xs text-gray-500">
-              A product by SOYL AI Private Limited
+            <p className="text-xs text-[var(--color-soyl-gray-600)]">
+              Built in {COMPANY.address}
             </p>
           </div>
           
-          {/* Products */}
+          {/* Links */}
           <div>
-            <h4 className="font-semibold text-white text-sm mb-5">Products</h4>
+            <h4 className="font-semibold text-white text-sm mb-5">Product</h4>
             <ul className="flex flex-col gap-3">
-              <li><Link href="/butler-ai" className="text-sm hover:text-white transition-colors">Butler AI</Link></li>
-              <li><Link href="/pms-lite" className="text-sm hover:text-white transition-colors">PMS Lite</Link></li>
-              <li><Link href="/soyl-dine" className="text-sm hover:text-white transition-colors">SOYL Dine</Link></li>
+              {NAVIGATION.slice(0, 3).map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-sm hover:text-white transition-colors flex items-center justify-between group">
+                    {item.name}
+                    {item.name === "SOYL Dine" && (
+                      <span className="text-[9px] uppercase tracking-wider bg-[var(--color-soyl-gray-900)] text-[var(--color-soyl-gray-400)] px-1.5 py-0.5 rounded-sm opacity-50 group-hover:opacity-100 transition-opacity">Soon</span>
+                    )}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           
-          {/* Company */}
           <div>
             <h4 className="font-semibold text-white text-sm mb-5">Company</h4>
             <ul className="flex flex-col gap-3">
-              <li><Link href="/about" className="text-sm hover:text-white transition-colors">About Us</Link></li>
-              <li><Link href="/pricing" className="text-sm hover:text-white transition-colors">Pricing</Link></li>
-              <li><Link href="/contact" className="text-sm hover:text-white transition-colors">Contact</Link></li>
-              <li><Link href="/book-demo" className="text-sm hover:text-white transition-colors">Book Demo</Link></li>
+              {NAVIGATION.slice(3).map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-sm hover:text-white transition-colors">{item.name}</Link>
+                </li>
+              ))}
+              <li><Link href="/contact" className="text-sm hover:text-white transition-colors">Contact Us</Link></li>
+              <li><Link href="/book-demo" className="text-sm text-[var(--color-soyl-mint)] hover:text-white transition-colors font-medium">Book a Demo</Link></li>
             </ul>
           </div>
 
-          {/* Legal */}
           <div>
             <h4 className="font-semibold text-white text-sm mb-5">Legal</h4>
             <ul className="flex flex-col gap-3">
-              <li><Link href="/privacy" className="text-sm hover:text-white transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/terms" className="text-sm hover:text-white transition-colors">Terms of Service</Link></li>
+              {LEGAL.map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-sm hover:text-white transition-colors">{item.name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-gray-700/50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-gray-500">
+        {/* Bottom */}
+        <div className="border-t border-[var(--color-soyl-gray-900)] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-[var(--color-soyl-gray-600)]">
             © {new Date().getFullYear()} SOYL AI Private Limited. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <Link href="https://twitter.com" className="text-gray-500 hover:text-white text-xs transition-colors">Twitter</Link>
-            <Link href="https://linkedin.com" className="text-gray-500 hover:text-white text-xs transition-colors">LinkedIn</Link>
-            <Link href="https://instagram.com" className="text-gray-500 hover:text-white text-xs transition-colors">Instagram</Link>
+            {SOCIAL.map((item) => (
+              <a 
+                key={item.name} 
+                href={item.href} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-[var(--color-soyl-gray-500)] hover:text-white text-xs transition-colors"
+              >
+                {item.name}
+              </a>
+            ))}
           </div>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 }
