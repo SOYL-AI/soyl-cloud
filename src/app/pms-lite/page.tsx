@@ -240,6 +240,38 @@ export default function PmsLitePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════ */}
+      {/* OTA INTEGRATIONS SECTION                       */}
+      {/* ═══════════════════════════════════════════════ */}
+      <section className="py-20 bg-white border-y border-gray-100 overflow-hidden">
+        <Container>
+          <div className="text-center mb-12">
+            <h3 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mb-4">Integrates with 100+ Channels & OTAs</h3>
+            <p className="text-[var(--color-soyl-gray-600)] max-w-2xl mx-auto">Seamlessly sync inventory, rates, and bookings across all major online travel agencies with our optional Channel Manager add-on.</p>
+          </div>
+          
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-10 opacity-60 hover:opacity-100 transition-opacity duration-500">
+            {/* Booking.com */}
+            <div className="text-[28px] font-bold text-[#003580]">Booking.com</div>
+            {/* Expedia */}
+            <div className="text-[28px] font-bold text-[#00005e]">Expedia</div>
+            {/* Airbnb */}
+            <div className="text-[28px] font-bold text-[#FF5A5F] tracking-tighter">airbnb</div>
+            {/* Agoda */}
+            <div className="text-[28px] font-bold text-[#5392F9]">agoda<span className="text-gray-400 text-sm ml-1 align-top">●</span></div>
+            {/* MakeMyTrip */}
+            <div className="text-[28px] font-black tracking-tight text-[#D32F2F]">make<span className="text-[#1976D2]">my</span>trip</div>
+            {/* Goibibo */}
+            <div className="text-[28px] font-bold tracking-tight text-[#FF6D38]">goibibo</div>
+            {/* TripAdvisor */}
+            <div className="text-[28px] font-bold text-[#00AF87] flex items-center gap-2">
+              <span className="w-8 h-8 rounded-full bg-[#00AF87] flex items-center justify-center text-white text-sm">O</span>
+              Tripadvisor
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ═══════════════════════════════════════════════ */}
       {/* METRICS / SOCIAL PROOF                         */}
       {/* ═══════════════════════════════════════════════ */}
       <section className="py-20 bg-white border-y border-gray-100">
