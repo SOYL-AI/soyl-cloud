@@ -192,7 +192,7 @@ export default function PricingPage() {
                   <h4 className="font-semibold text-xs mb-3 uppercase tracking-wider text-gray-400">Optional Add-on</h4>
                   <div className="flex justify-between items-center bg-white/5 p-4 rounded-xl">
                     <span className="text-sm font-medium">Channel Manager</span>
-                    <span className="text-sm font-bold text-[var(--color-soyl-mint)]">+₹2,999/mo</span>
+                    <span className="text-sm font-bold text-[var(--color-soyl-mint)]">₹3,999/mo onwards</span>
                   </div>
                 </div>
                 
