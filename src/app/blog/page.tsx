@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -59,8 +60,14 @@ export default function BlogHubPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post) => (
             <Link key={post.slug} href={`/blog/${post.slug}`} className="group block h-full">
-              <article className="h-full bg-white rounded-2xl border border-[var(--color-soyl-gray-200)] shadow-sm hover:shadow-xl hover:border-[var(--color-soyl-mint)]/50 transition-all duration-300 p-6 flex flex-col">
-                <div className="flex items-center gap-4 text-xs font-medium text-[var(--color-soyl-gray-500)] mb-4">
+              <article className="h-full bg-white rounded-2xl border border-[var(--color-soyl-gray-200)] shadow-sm hover:shadow-xl hover:border-[var(--color-soyl-mint)]/50 transition-all duration-300 flex flex-col overflow-hidden">
+                <div className="relative w-full h-48 bg-[var(--color-soyl-gray-100)] border-b border-[var(--color-soyl-gray-200)] overflow-hidden">
+                  {post.heroImage && (
+                    <Image src={post.heroImage} alt={post.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                  )}
+                </div>
+                <div className="p-6 flex flex-col flex-1">
+                  <div className="flex items-center gap-4 text-xs font-medium text-[var(--color-soyl-gray-500)] mb-4">
                   <div className="flex items-center gap-1">
                     <CalendarDays className="w-3.5 h-3.5" />
                     <time dateTime={post.publishedDate}>
@@ -84,6 +91,7 @@ export default function BlogHubPage() {
                 <div className="flex items-center text-sm font-semibold text-[var(--color-soyl-charcoal)] group-hover:text-[var(--color-soyl-mint-dark)] transition-colors mt-auto pt-4 border-t border-[var(--color-soyl-gray-100)]">
                   Read Article
                   <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-1 transition-transform" />
+                </div>
                 </div>
               </article>
             </Link>

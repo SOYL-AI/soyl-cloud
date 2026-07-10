@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { Breadcrumb } from "@/components/compare/Breadcrumb";
@@ -114,6 +115,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   {post.description}
                 </p>
               </header>
+
+              {post.heroImage && (
+                <div className="relative w-full h-[300px] md:h-[500px] rounded-3xl overflow-hidden mb-12 shadow-xl border border-[var(--color-soyl-gray-200)]">
+                  <Image src={post.heroImage} alt={post.title} fill className="object-cover" priority />
+                </div>
+              )}
 
               <div className="prose prose-lg prose-gray max-w-none">
                 {post.sections.map((section, idx) => (
