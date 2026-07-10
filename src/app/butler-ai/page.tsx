@@ -150,7 +150,7 @@ export default function ButlerAIPage() {
             <div className="relative w-full flex justify-center items-end">
               <div className="w-[85%] md:w-[75%] hidden md:block">
                 <BrowserMockup
-                  src="/images/products_pics/new_ops_console.png"
+                  src="/images/products_pics/Butler AI new OPs console .png"
                   alt="Butler AI Staff Dashboard"
                   glow={true}
                   float={true}
@@ -158,7 +158,7 @@ export default function ButlerAIPage() {
               </div>
               <div className="md:absolute right-[5%] bottom-[-10%] w-[280px] md:w-[320px] z-20">
                 <PhoneMockup
-                  src="/images/products_pics/COncierge chat asking something guest mode .png"
+                  src="/images/products_pics/Butelr new image .png"
                   alt="Guest View"
                   float={true}
                 />
@@ -216,7 +216,7 @@ export default function ButlerAIPage() {
                   </p>
                 </div>
                 <PhoneMockup
-                  src="/images/products_pics/COncierge chat asking something guest mode .png"
+                  src="/images/products_pics/Butelr new image .png"
                   alt="Butler AI Guest Chat Interface"
                   float={true}
                 />
@@ -250,7 +250,7 @@ export default function ButlerAIPage() {
                   </p>
                 </div>
                 <BrowserMockup
-                  src="/images/products_pics/new_ops_console.png"
+                  src="/images/products_pics/Butler AI new OPs console .png"
                   alt="Butler AI Staff Dashboard"
                   float={true}
                 />
