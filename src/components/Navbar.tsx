@@ -66,9 +66,31 @@ export default function Navbar() {
             </div>
           </div>
 
+          {/* Resources dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-charcoal)] rounded-lg hover:bg-gray-50 transition-all">
+              Resources <ChevronDown size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />
+            </button>
+            <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute top-full left-0 pt-2 w-56">
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-3 flex flex-col gap-1">
+                <Link href="/blog" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
+                  <div className="font-semibold text-sm text-gray-900">Blog</div>
+                </Link>
+                <Link href="/compare" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
+                  <div className="font-semibold text-sm text-gray-900">Compare Butler AI</div>
+                </Link>
+                <Link href="/about" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
+                  <div className="font-semibold text-sm text-gray-900">About</div>
+                </Link>
+                <Link href="/contact" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
+                  <div className="font-semibold text-sm text-gray-900">Contact</div>
+                </Link>
+              </div>
+            </div>
+          </div>
+
           <Link href="/pricing" className="px-4 py-2 text-sm font-medium text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-charcoal)] rounded-lg hover:bg-gray-50 transition-all">Pricing</Link>
-          <Link href="/about" className="px-4 py-2 text-sm font-medium text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-charcoal)] rounded-lg hover:bg-gray-50 transition-all">About</Link>
-          <Link href="/contact" className="px-4 py-2 text-sm font-medium text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-charcoal)] rounded-lg hover:bg-gray-50 transition-all">Contact</Link>
+
         </div>
 
         {/* Desktop CTA */}
@@ -102,7 +124,9 @@ export default function Navbar() {
                 <span className="text-[10px] uppercase tracking-wide bg-gray-200 text-gray-600 px-2 py-1 rounded-sm">Coming Soon</span>
               </Link>
               <hr className="my-3 border-gray-100" />
-              <Link href="/pricing" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Pricing</Link>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Resources</p>
+              <Link href="/blog" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Blog</Link>
+              <Link href="/compare" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Compare Butler AI</Link>
               <Link href="/about" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>About</Link>
               <Link href="/contact" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Contact</Link>
               <div className="mt-4">

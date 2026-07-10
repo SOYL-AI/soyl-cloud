@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "./ui/Container";
-import { COMPANY, NAVIGATION, LEGAL, SOCIAL } from "@/lib/constants";
+import { COMPANY, NAVIGATION, LEGAL, SOCIAL, RESOURCES } from "@/lib/constants";
 
 export default function Footer() {
   return (
@@ -56,6 +56,17 @@ export default function Footer() {
             <h4 className="font-semibold text-white text-sm mb-5">Legal</h4>
             <ul className="flex flex-col gap-3">
               {LEGAL.map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-sm hover:text-white transition-colors">{item.name}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-white text-sm mb-5">Resources</h4>
+            <ul className="flex flex-col gap-3">
+              {RESOURCES.map((item) => (
                 <li key={item.name}>
                   <Link href={item.href} className="text-sm hover:text-white transition-colors">{item.name}</Link>
                 </li>

@@ -22,3 +22,8 @@ export const LEGAL = [
 export const SOCIAL = [
   { name: "LinkedIn", href: "https://www.linkedin.com/company/soyl-ai/posts/?feedView=all" },
 ];
+
+export const RESOURCES = [
+  { name: "Blog", href: "/blog" },
+  { name: "Compare Butler AI", href: "/compare" },
+];
