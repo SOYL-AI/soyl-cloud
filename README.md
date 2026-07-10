@@ -60,7 +60,7 @@ Dive deeper into Next.js:
 | 🎓 [Interactive Tutorial](https://nextjs.org/learn) | Hands-on Next.js learning experience |
 | 🐙 [GitHub Repository](https://github.com/vercel/next.js) | Contribute and explore the Next.js source |
 
-Your feedback and contributions are always welcome! ❤️
+
 
 ---
 
