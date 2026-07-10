@@ -42,7 +42,7 @@ const bentoFeatures = [
     desc: "Every request becomes a trackable task automatically routed to the right department.",
     icon: Route,
     span: "md:col-span-1 md:row-span-2",
-    image: "/images/products_pics/Showing created tasks .png",
+    image: "/images/products_pics/ops-console-tasks-page-darkmode.png",
     imageAlt: "Butler AI Task Routing",
   },
   {
@@ -62,7 +62,7 @@ const bentoFeatures = [
     desc: "One-tap emergency contacts and instant escalation to property management for guest safety.",
     icon: ShieldAlert,
     span: "md:col-span-1 md:row-span-2",
-    image: "/images/products_pics/sos_alert_mockup.png",
+    image: "/images/products_pics/Dark mode new .png",
     imageAlt: "SOS Emergency Feature",
   },
   {
@@ -70,7 +70,7 @@ const bentoFeatures = [
     desc: "Schedule automated wake-up calls, pre-arrival confirmations, and stay check-ins with natural AI voices.",
     icon: Phone,
     span: "md:col-span-2 md:row-span-1",
-    image: "/images/products_pics/Calls scheduler light mode .png",
+    image: "/images/products_pics/New image Butler Rooms .png",
     imageAlt: "AI Voice Calls Scheduler",
     wide: true,
   },
@@ -158,7 +158,7 @@ export default function ButlerAIPage() {
               </div>
               <div className="md:absolute right-[5%] bottom-[-10%] w-[280px] md:w-[320px] z-20">
                 <PhoneMockup
-                  src="/images/products_pics/Butelr new image .png"
+                  src="/images/products_pics/Butler New 1.png"
                   alt="Guest View"
                   float={true}
                 />
