@@ -1,6 +1,6 @@
 # 🚀 SOYL Cloud
 
-> A modern Next.js application built with cutting-edge technology
+> A modern Next.js application built with cutting-edge 
 
 [![Next.js](https://img.shields.io/badge/Next.js-black?style=flat-square&logo=next.js)](https://nextjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-green?style=flat-square&logo=node.js)](https://nodejs.org)
