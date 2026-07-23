@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Play, Check } from "lucide-react";
+import { ArrowRight, Play, Check, ShieldCheck, Hotel, Bed, UtensilsCrossed } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -12,17 +12,17 @@ import { MetricsStrip } from "@/components/sections/MetricsStrip";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { StickyCTA } from "@/components/sections/StickyCTA";
 import { fadeUp, staggerContainer } from "@/lib/animations";
-import { SummaryBlock, DefinitionList, FactTable } from "@/components/seo/AEOBlocks";
 import { ProductSchema } from "@/components/seo/SchemaInjector";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <>
-      <ProductSchema 
-        name="Butler AI"
-        description="AI Hotel Concierge Platform providing automated guest communication, room service routing, and request resolution."
-        image="/images/products_pics/Guest view initial landing .png"
-        brand="SOYL Cloud"
+      <ProductSchema
+        name="SOYL Cloud"
+        description="AI-powered hospitalty platform featuring Butler AI concierge and PMS Lite property management system."
+        category="BusinessSoftware"
       />
       <StickyCTA />
       
@@ -39,7 +39,7 @@ export default function Home() {
             className="flex flex-col items-center text-center max-w-4xl mx-auto"
           >
             <motion.div variants={fadeUp} className="mb-8">
-              <Badge variant="outline" dot>AI Hotel Concierge Platform</Badge>
+              <Badge variant="outline" dot>LIVE: AI-Powered Hospitality Platform</Badge>
             </motion.div>
 
             <motion.h1 
@@ -53,7 +53,7 @@ export default function Home() {
               variants={fadeUp}
               className="text-xl md:text-2xl text-[var(--color-soyl-gray-600)] mb-12 max-w-3xl leading-relaxed font-medium"
             >
-              Butler AI routes room service, housekeeping, and guest communications automatically. No application download required. Integrates immediately.
+              Your AI concierge handles room service, housekeeping, and guest communication — so your staff can focus on what matters. No app download. Works from day one.
             </motion.p>
 
             <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -93,115 +93,210 @@ export default function Home() {
                   float
                 />
               </div>
+
+              {/* Floating annotations */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1, duration: 0.5 }}
+                className="absolute left-[10%] top-[20%] z-30 bg-white border border-[var(--color-soyl-gray-200)] shadow-xl rounded-2xl p-4 hidden lg:block"
+              >
+                <div className="flex gap-3 items-center">
+                  <div className="w-8 h-8 rounded-full bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)]">
+                    <Check size={16} strokeWidth={3} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-[var(--color-soyl-charcoal)]">Request Routed</p>
+                    <p className="text-xs text-[var(--color-soyl-gray-600)]">Sent to Housekeeping</p>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         </Container>
       </section>
 
-      {/* 2. SUMMARY SECTION (AEO) */}
-      <section className="py-12 bg-[var(--color-soyl-gray-50)] border-y border-[var(--color-soyl-gray-200)]">
-        <Container>
-          <SummaryBlock
-            whatItIs="SOYL Cloud is a Hotel Automation Software and AI Hotel Concierge Platform."
-            whoItsFor="Hotel operators, general managers, and hospitality staff seeking to digitize guest requests and property management operations."
-            howItWorks="Guests access an AI chatbot via QR code to submit requests. The platform processes requests via NLP and routes them to specific staff dashboards (e.g., Housekeeping, Kitchen) for resolution."
-            whyItMatters="Reduces front desk call volume, decreases request fulfillment time by automating routing, and eliminates the need for walkie-talkies or paper logs."
-          />
-        </Container>
-      </section>
-
-      {/* 3. METRICS STRIP */}
+      {/* 2. METRICS STRIP */}
       <MetricsStrip />
 
-      {/* 4. PRODUCT CAPABILITIES & BUTLER AI */}
+      {/* 3. PRODUCT STORY / BUTLER AI */}
       <section id="products" className="py-24 md:py-32 bg-white">
         <Container>
           <SectionHeader
-            badge="Butler AI & PMS Lite"
-            title="Hotel Automation Software Core Specifications"
-            description="Technical details of the AI Hotel Concierge Platform and management dashboard."
+            badge="Butler AI"
+            title="The AI concierge your guests actually use."
+            description="No app download. No training. No friction. Guests scan, speak or type, and Butler AI handles everything in 50+ languages."
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 mt-12">
-            <div>
-              <h3 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mb-6">Guest vs Staff Capabilities</h3>
-              <FactTable 
-                title="Capability Matrix"
-                headers={["Feature", "Guest Interface", "Staff Interface"]}
-                rows={[
-                  ["Access Method", "QR Code Scan (Browser)", "Web Dashboard"],
-                  ["Interaction Type", "Voice & Text Chat (NLP)", "Kanban/List View Tickets"],
-                  ["Language Support", "50+ Languages (Auto-translate)", "Primary Hotel Language"],
-                  ["Request Routing", "Automated (AI-classified)", "Manual Assignment/Resolution"],
-                  ["Installation", "No app download required", "Cloud-based SaaS"]
-                ]}
-              />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
+            <div className="order-2 md:order-1">
+              <PhoneMockup src="/images/products_pics/COncierge chat asking something guest mode .png" />
             </div>
             
-            <div className="flex flex-col justify-center">
-              <h3 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mb-6">System Features</h3>
-              <DefinitionList 
-                items={[
-                  {
-                    term: "Multilingual Processing",
-                    definition: "The AI concierge detects user language automatically and translates guest messages into the staff's native language, handling over 50 languages."
-                  },
-                  {
-                    term: "Omnichannel Input",
-                    definition: "Supports both voice-to-text and direct text input from the guest interface without requiring third-party app installations."
-                  },
-                  {
-                    term: "Smart Ticket Routing",
-                    definition: "Analyzes intent from guest input and assigns tasks directly to corresponding departments (e.g., Food orders to Kitchen, Towels to Housekeeping)."
-                  }
-                ]}
-              />
+            <div className="order-1 md:order-2">
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                className="flex flex-col gap-10"
+              >
+                <div>
+                  <h3 className="text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-4">Instant responses, zero delays.</h3>
+                  <p className="text-lg text-[var(--color-soyl-gray-600)] leading-relaxed">
+                    Stop letting front desk bottlenecks ruin guest experiences. Butler AI answers questions instantly and routes service requests directly to the right department.
+                  </p>
+                </div>
+                
+                <ul className="flex flex-col gap-6">
+                  {[
+                    { title: "Multilingual", desc: "Instantly translates and replies in over 50 languages." },
+                    { title: "Voice & Text", desc: "Guests can send a voice note or type — just like chatting with a friend." },
+                    { title: "Smart Routing", desc: "Food goes to the kitchen, towels to housekeeping. Automatically." }
+                  ].map((item, i) => (
+                    <motion.li key={i} variants={fadeUp} className="flex gap-4">
+                      <div className="w-10 h-10 rounded-full bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)] shrink-0">
+                        <Check size={20} />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-[var(--color-soyl-charcoal)] mb-1">{item.title}</h4>
+                        <p className="text-[var(--color-soyl-gray-600)]">{item.desc}</p>
+                      </div>
+                    </motion.li>
+                  ))}
+                </ul>
+
+                <motion.div variants={fadeUp}>
+                  <Button variant="outline" href="/products/butler-ai">
+                    Explore Butler AI
+                  </Button>
+                </motion.div>
+              </motion.div>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* 5. ROI / DATA SECTION */}
+      {/* 4. PMS LITE SECTION */}
       <section className="py-24 md:py-32 bg-[var(--color-soyl-gray-50)] border-y border-[var(--color-soyl-gray-200)]">
         <Container>
+          <SectionHeader
+            badge="PMS Lite"
+            title="Your property, one dashboard."
+            description="Manage bookings, rooms, billing, and staff operations from a single, clean interface designed for speed."
+          />
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.7 }}
+          >
+            <BrowserMockup src="/images/pms_dashboard_main.png" alt="PMS Lite Dashboard" glow />
+          </motion.div>
+
+          <div className="mt-16 text-center">
+            <Button variant="outline" href="/products/pms-lite">
+              Explore PMS Lite
+            </Button>
+          </div>
+        </Container>
+      </section>
+
+      {/* 5. ROI / PROOF SECTION */}
+      <section className="py-24 md:py-32 bg-white">
+        <Container>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] mb-6">
-                Operational Impact Data
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] mb-6">
+                The ROI is immediate.
               </h2>
-              <p className="text-lg text-[var(--color-soyl-gray-600)] mb-10">
-                Implementation of Hotel Automation Software yields measurable reductions in task fulfillment times and resource allocation.
+              <p className="text-xl text-[var(--color-soyl-gray-600)] mb-10 leading-relaxed">
+                By eliminating walkie-talkies, paper logs, and front desk bottlenecks, hotels see returns in their first month.
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="p-6 bg-white rounded-2xl border border-[var(--color-soyl-gray-200)]">
-                  <div className="text-3xl font-extrabold text-[var(--color-soyl-charcoal)] mb-2">₹2.4L</div>
-                  <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">Average monthly operational cost reduction</p>
+                <div className="p-6 bg-[var(--color-soyl-gray-50)] rounded-2xl border border-[var(--color-soyl-gray-200)]">
+                  <div className="text-4xl font-extrabold text-[var(--color-soyl-charcoal)] mb-2">₹2.4L</div>
+                  <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">Saved per month in staff time</p>
                 </div>
-                <div className="p-6 bg-white rounded-2xl border border-[var(--color-soyl-gray-200)]">
-                  <div className="text-3xl font-extrabold text-[var(--color-soyl-charcoal)] mb-2">3×</div>
-                  <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">Increase in verified online reviews</p>
+                <div className="p-6 bg-[var(--color-soyl-gray-50)] rounded-2xl border border-[var(--color-soyl-gray-200)]">
+                  <div className="text-4xl font-extrabold text-[var(--color-soyl-charcoal)] mb-2">3×</div>
+                  <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">More online reviews generated</p>
                 </div>
               </div>
-            </div>
-            
-            <div>
-              <FactTable 
-                title="Supported Property Types"
-                headers={["Category", "Primary Use Case"]}
-                rows={[
-                  ["Boutique Hotels", "AI Hotel Concierge Platform for high-touch guest service."],
-                  ["Resorts & Villas", "Centralized multi-property task management."],
-                  ["Hotel Chains", "Cross-property analytics and standardized operations."],
-                  ["Restaurants", "QR-based ordering and kitchen ticket routing."]
-                ]}
-              />
-            </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-[var(--color-soyl-charcoal)] rounded-[2rem] p-10 md:p-14 text-white shadow-2xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-soyl-mint)] rounded-full blur-[80px] opacity-20 translate-x-1/2 -translate-y-1/2" />
+              
+              <div className="relative z-10">
+                <div className="flex gap-1 mb-8">
+                  {[1,2,3,4,5].map(i => (
+                    <svg key={i} className="w-6 h-6 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                  ))}
+                </div>
+                <blockquote className="text-2xl md:text-3xl font-medium leading-tight mb-8">
+                  "Since switching to SOYL Cloud, our guest satisfaction scores jumped from 8.2 to 9.6. The front desk is finally calm."
+                </blockquote>
+                <div>
+                  <div className="font-bold text-lg">General Manager</div>
+                  <div className="text-[var(--color-soyl-gray-400)]">Boutique Hotel Trial User</div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </Container>
       </section>
 
-      {/* 6. FINAL CTA */}
+      {/* 6. TARGET AUDIENCE */}
+      <section className="py-24 bg-[var(--color-soyl-gray-50)] border-t border-[var(--color-soyl-gray-200)]">
+        <Container>
+          <SectionHeader
+            badge="Built For"
+            title="Every kind of hospitality business."
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: Hotel, title: "Boutique Hotels", desc: "Elevate guest experience with AI concierge." },
+              { icon: Bed, title: "Resorts & Villas", desc: "Multi-property management with centralized control." },
+              { icon: ShieldCheck, title: "Hotel Chains", desc: "Enterprise dashboards with cross-property analytics." },
+              { icon: UtensilsCrossed, title: "Restaurants", desc: "QR ordering and kitchen workflows." }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="bg-white p-8 rounded-2xl border border-[var(--color-soyl-gray-200)] shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="w-12 h-12 bg-[var(--color-soyl-gray-100)] rounded-xl flex items-center justify-center text-[var(--color-soyl-charcoal)] mb-6">
+                  <item.icon size={24} strokeWidth={1.5} />
+                </div>
+                <h3 className="text-xl font-bold text-[var(--color-soyl-charcoal)] mb-3">{item.title}</h3>
+                <p className="text-[var(--color-soyl-gray-600)]">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* 7. FINAL CTA */}
       <FinalCTA />
     </>
   );
