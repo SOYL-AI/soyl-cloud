@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, ChevronDown, MessageSquare, LayoutDashboard, Utensils } from "lucide-react";
+import { Menu, X, ChevronDown, MessageSquare, LayoutDashboard, Utensils, UtensilsCrossed, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/Button";
@@ -35,27 +35,27 @@ export default function Navbar() {
             </button>
             <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute top-full left-0 pt-2 w-72">
               <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-3 flex flex-col gap-1">
-                <Link href="/butler-ai" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="w-10 h-10 bg-[var(--color-soyl-mint-light)] rounded-lg flex items-center justify-center text-[var(--color-soyl-mint-dark)] shrink-0 mt-0.5">
-                    <MessageSquare size={20} />
+                <Link href="/products/butler-ai" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
+                  <div className="w-10 h-10 rounded-lg bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)] shrink-0">
+                    <Sparkles className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="font-semibold text-sm text-gray-900">Butler AI</div>
                     <div className="text-xs text-gray-500">AI concierge for guest requests</div>
                   </div>
                 </Link>
-                <Link href="/pms-lite" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 shrink-0 mt-0.5">
-                    <LayoutDashboard size={20} />
+                <Link href="/products/pms-lite" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
+                  <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-[var(--color-soyl-charcoal)] shrink-0">
+                    <LayoutDashboard className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="font-semibold text-sm text-gray-900">PMS Lite</div>
                     <div className="text-xs text-gray-500">Property management & operations</div>
                   </div>
                 </Link>
-                <Link href="/soyl-dine" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 shrink-0 mt-0.5">
-                    <Utensils size={20} />
+                <Link href="/products/soyl-dine" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
+                  <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
+                    <UtensilsCrossed className="w-5 h-5" />
                   </div>
                   <div>
                     <div className="font-semibold text-sm text-gray-900">SOYL Dine <span className="ml-2 text-[10px] uppercase tracking-wide bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-sm">Coming Soon</span></div>
@@ -116,13 +116,14 @@ export default function Navbar() {
             className="md:hidden bg-white border-b border-gray-100 overflow-hidden shadow-lg absolute top-full left-0 w-full"
           >
             <div className="p-6 flex flex-col gap-2">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Products</p>
-              <Link href="/butler-ai" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Butler AI</Link>
-              <Link href="/pms-lite" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>PMS Lite</Link>
-              <Link href="/soyl-dine" className="text-lg font-medium text-gray-500 py-2 flex items-center justify-between" onClick={() => setIsOpen(false)}>
-                SOYL Dine
-                <span className="text-[10px] uppercase tracking-wide bg-gray-200 text-gray-600 px-2 py-1 rounded-sm">Coming Soon</span>
-              </Link>
+              <div className="flex flex-col gap-1 pl-4 border-l-2 border-gray-100">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Products</p>
+                <Link href="/products/butler-ai" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Butler AI</Link>
+                <Link href="/products/pms-lite" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>PMS Lite</Link>
+                <Link href="/products/soyl-dine" className="text-lg font-medium text-gray-500 py-2 flex items-center justify-between" onClick={() => setIsOpen(false)}>
+                  SOYL Dine <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full font-bold">SOON</span>
+                </Link>
+              </div>
               <hr className="my-3 border-gray-100" />
               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Resources</p>
               <Link href="/blog" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Blog</Link>

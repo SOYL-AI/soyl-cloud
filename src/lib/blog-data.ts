@@ -49,7 +49,7 @@ export const blogPosts: BlogPost[] = [
       }
     ],
     relatedComparisons: ["hijiffy", "canary", "duve"],
-    relatedProducts: [{ name: "Butler AI", href: "/butler-ai" }]
+    relatedProducts: [{ name: "Butler AI", href: "/products/butler-ai" }]
   },
   {
     slug: "voice-ai-vs-chatbots-hotels",
@@ -82,7 +82,7 @@ export const blogPosts: BlogPost[] = [
       }
     ],
     relatedComparisons: ["hijiffy", "quicktext"],
-    relatedProducts: [{ name: "Butler AI", href: "/butler-ai" }]
+    relatedProducts: [{ name: "Butler AI", href: "/products/butler-ai" }]
   },
   {
     slug: "future-of-hotel-guest-communication",
@@ -114,7 +114,7 @@ export const blogPosts: BlogPost[] = [
       }
     ],
     relatedComparisons: ["crave-interactive", "monscierge", "guestu"],
-    relatedProducts: [{ name: "Butler AI", href: "/butler-ai" }, { name: "PMS Lite", href: "/pms-lite" }]
+    relatedProducts: [{ name: "Butler AI", href: "/products/butler-ai" }, { name: "PMS Lite", href: "/products/pms-lite" }]
   },
   {
     slug: "top-hospitality-ai-platforms-2026",
@@ -146,7 +146,7 @@ export const blogPosts: BlogPost[] = [
       }
     ],
     relatedComparisons: ["canary", "duve", "asksuite"],
-    relatedProducts: [{ name: "Butler AI", href: "/butler-ai" }]
+    relatedProducts: [{ name: "Butler AI", href: "/products/butler-ai" }]
   },
   {
     slug: "hotel-ai-buying-guide",
@@ -179,7 +179,7 @@ export const blogPosts: BlogPost[] = [
       }
     ],
     relatedComparisons: ["hijiffy", "canary"],
-    relatedProducts: [{ name: "Pricing", href: "/pricing" }, { name: "Butler AI", href: "/butler-ai" }]
+    relatedProducts: [{ name: "Pricing", href: "/pricing" }, { name: "Butler AI", href: "/products/butler-ai" }]
   }
 ];
 

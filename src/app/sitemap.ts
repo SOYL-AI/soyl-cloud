@@ -7,20 +7,31 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = `https://${COMPANY.domain}`;
 
   // Static routes
+  // Core pages
   const routes = [
     "",
     "/about",
-    "/butler-ai",
-    "/pms-lite",
+    "/products/butler-ai",
+    "/products/pms-lite",
+    "/products/soyl-dine",
     "/pricing",
     "/contact",
     "/compare",
     "/blog",
+    "/book-demo",
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,
-    priority: route === "" ? 1 : 0.8,
+    priority: route === "" ? 1 : route === "/book-demo" ? 0.9 : 0.8,
+  }));
+
+  // Legal and Trust pages (lower priority, less frequent changes)
+  const legalRoutes = ["/privacy", "/terms", "/security", "/company"].map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly" as const,
+    priority: 0.3,
   }));
 
   // Dynamic Competitor Comparison Routes
@@ -39,5 +50,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...routes, ...competitorRoutes, ...blogRoutes];
+  return [...routes, ...legalRoutes, ...competitorRoutes, ...blogRoutes];
 }

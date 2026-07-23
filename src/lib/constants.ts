@@ -7,9 +7,9 @@ export const COMPANY = {
 };
 
 export const NAVIGATION = [
-  { name: "Butler AI", href: "/butler-ai" },
-  { name: "PMS Lite", href: "/pms-lite" },
-  { name: "SOYL Dine", href: "/soyl-dine" },
+  { name: "Butler AI", href: "/products/butler-ai" },
+  { name: "PMS Lite", href: "/products/pms-lite" },
+  { name: "SOYL Dine", href: "/products/soyl-dine" },
   { name: "Pricing", href: "/pricing" },
   { name: "About", href: "/about" },
 ];
