@@ -11,8 +11,9 @@ export default function FAQPage() {
       <FAQSchema faqs={allFaqs} />
       
       <Container>
-        <SectionHeader 
-          title="Frequently Asked Questions" 
+        <SectionHeader
+          as="h1"
+          title="Frequently Asked Questions"
           description="Everything you need to know about SOYL Cloud, Butler AI, and our PMS Lite hospitality platform."
         />
         

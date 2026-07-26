@@ -14,7 +14,7 @@ export default function CompanyPage() {
         url="/company"
       />
       <Container>
-        <SectionHeader title="About SOYL AI" align="left" />
+        <SectionHeader as="h1" title="About SOYL AI" align="left" />
         
         <SummaryBlock
           entityName="SOYL AI"
