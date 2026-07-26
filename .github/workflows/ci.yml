@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  pull_request:
+    branches: ["**"]
+  push:
+    branches: [main]
+
+# A second push to a PR cancels the run still in flight for it.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Blocking. This is the gate that protects the live site: if the app no
+  # longer builds or a unit test fails, the PR is not mergeable.
+  build:
+    name: Build and test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+  # Non-blocking by design (M0). `typescript.ignoreBuildErrors` is still on in
+  # next.config.ts, so type errors currently ship; this job measures how many
+  # there are without blocking anyone. DECISIONS.md §5: M0 reports, M1 fixes
+  # and enforces. Delete `continue-on-error` from both steps in M1.
+  report:
+    name: Typecheck and lint (report only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # tsconfig.json includes `.next/types/**/*.ts`, which only exists once
+      # the app has been built. Without this the route-type validator is
+      # invisible to tsc and the count is wrong.
+      - name: Build (to generate route types)
+        run: npm run build
+
+      - name: Typecheck
+        id: typecheck
+        continue-on-error: true
+        run: |
+          set +e
+          npx tsc --noEmit > typecheck.log 2>&1
+          status=$?
+          count=$(grep -c "error TS" typecheck.log || true)
+          {
+            echo "## Typecheck"
+            echo ""
+            echo "**${count} type error(s).**"
+            echo ""
+            echo '```'
+            cat typecheck.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "count=${count}" >> "$GITHUB_OUTPUT"
+          echo "::notice title=Typecheck::${count} type error(s) — non-blocking until M1"
+          exit $status
+
+      - name: Lint
+        continue-on-error: true
+        run: |
+          set +e
+          npx eslint --format stylish > lint.log 2>&1
+          status=$?
+          summary=$(grep -E "^.[0-9]+ problems?" lint.log | tail -1)
+          {
+            echo "## Lint"
+            echo ""
+            echo "**${summary:-no problems reported}**"
+            echo ""
+            echo '```'
+            cat lint.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::notice title=Lint::${summary:-no problems reported} — non-blocking until M1"
+          exit $status
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-and-lint
+          path: |
+            typecheck.log
+            lint.log
+          if-no-files-found: ignore
