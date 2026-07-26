@@ -1,7 +1,7 @@
 # ADR-001 — How Phase 0 is structured into this repository
 
-- **Status:** Proposed — awaiting founder approval
-- **Date:** 2026-07-26
+- **Status:** **Accepted** — approved in [DECISIONS.md](../../DECISIONS.md) §1, conditional on the migration trigger below
+- **Date:** 2026-07-26 (proposed) · 2026-07-27 (accepted)
 - **Deciders:** Founding engineer (proposing), Founder (approving)
 - **Supersedes:** `Update.md` §5 "Monorepo — pnpm + Turborepo"
 - **Related:** [REPO-AUDIT.md](REPO-AUDIT.md), [PHASE-0-PLAN.md](PHASE-0-PLAN.md), [RISKS.md](RISKS.md)
@@ -115,16 +115,22 @@ Move the site to `apps/web`, add `services/*` and `packages/contracts`, migrate 
 - `services/` Python directories sit in Vercel's clone context. Needs a `.vercelignore` so build context stays small. Trivial, but must not be forgotten.
 - **We will probably do the `apps/web` move eventually.** This decision accepts paying a small cost twice rather than a large risk once.
 
-### The trigger for revisiting — when Option B becomes correct
+### The migration trigger — binding
 
-Move to `apps/web` with pnpm + Turborepo when **any one** of these becomes true:
+> **Migrate to a monorepo (`apps/web`, pnpm + Turborepo) when a second JavaScript application is added, or at the start of M4, whichever comes first.**
 
-1. A **second JavaScript application** is needed (a separate admin app, a docs site, a customer-facing SPA) — at that point workspaces genuinely need `apps/*`.
-2. **CI runtime exceeds ~10 minutes** and Turborepo's remote caching would materially help.
-3. A **second JS package** beyond `contracts` appears (a shared UI kit).
-4. Phase 1 begins and the handbook's structure becomes binding for reasons outside Phase 0.
+This is the condition the founder attached to accepting this ADR ([DECISIONS.md](../../DECISIONS.md) §1), and it is the operative clause. A deferred change with no date becomes a permanent one; the date is M4.
 
-None of these is true today. All of them are checkable, so this does not become a decision we forget to revisit.
+Two things follow from it:
+
+- **M4 planning starts with the migration PR.** It is the first item in that milestone, not something squeezed in beside retrieval work. By then M1 has given us CI, tests and analytics — the safety net whose absence is the entire reason for deferring.
+- **Adding a second JS app before M4 pulls the migration forward to that moment.** Do not add one and route around the trigger.
+
+The following are *early warnings* that the trigger is close, not additional triggers:
+
+1. **CI runtime exceeds ~10 minutes** and Turborepo's remote caching would materially help.
+2. A **second JS package** beyond `contracts` appears (a shared UI kit).
+3. Phase 1 begins and the handbook's structure becomes binding for reasons outside Phase 0.
 
 **Precondition on any future move:** CI green, Lighthouse budgets enforced, and the migration executed as a **single PR that changes only layout** — never bundled with a feature.
 
