@@ -1,10 +1,10 @@
 import { MetadataRoute } from "next";
 import { competitors } from "@/lib/competitors";
 import { blogPosts } from "@/lib/blog-data";
-import { COMPANY } from "@/lib/constants";
+import { SITE_URL } from "@/lib/constants";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = `https://${COMPANY.domain}`;
+  const baseUrl = SITE_URL;
 
   // Static routes
   // Core pages
@@ -19,7 +19,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/compare",
     "/blog",
     "/book-demo",
+    "/faq",
   ].map((route) => ({
+    // `route` is "" for the home page, giving the bare origin — which is what
+    // Next resolves the home page's canonical to. `scripts/canonical.test.mts`
+    // asserts the two agree.
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,

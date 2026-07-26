@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { COMPANY } from "@/lib/constants";
+import { COMPANY, SITE_URL } from "@/lib/constants";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(`https://${COMPANY.domain}`),
+  metadataBase: new URL(SITE_URL),
   title: {
     template: "%s | SOYL Cloud",
     default: "SOYL Cloud | AI Concierge for Modern Hotels",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "SOYL Cloud | AI Concierge for Modern Hotels",
     description: "Resolve guest requests in under 30 seconds. AI-powered concierge, property management, and operations — unified on one platform.",
-    url: `https://${COMPANY.domain}`,
+    url: SITE_URL,
     siteName: "SOYL Cloud",
     locale: "en_US",
     type: "website",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     images: ["/images/og-image.png"],
   },
   alternates: {
-    canonical: `https://${COMPANY.domain}`,
+    canonical: SITE_URL,
   },
 };
 
@@ -61,8 +61,8 @@ export default function RootLayout({
                 "@type": "Organization",
                 name: "SOYL AI",
                 alternateName: "SOYL Cloud",
-                url: `https://${COMPANY.domain}`,
-                logo: `https://${COMPANY.domain}/images/logo.png`,
+                url: SITE_URL,
+                logo: `${SITE_URL}/images/logo.png`,
                 description: "SOYL AI is a hospitality technology company building AI concierges, property management systems, and operational automation for hotels, resorts, and restaurants.",
                 foundingDate: "2024",
                 knowsAbout: [
@@ -91,10 +91,10 @@ export default function RootLayout({
                 "@context": "https://schema.org",
                 "@type": "WebSite",
                 name: "SOYL Cloud",
-                url: `https://${COMPANY.domain}`,
+                url: SITE_URL,
                 potentialAction: {
                   "@type": "SearchAction",
-                  target: `https://${COMPANY.domain}/blog?q={search_term_string}`,
+                  target: `${SITE_URL}/blog?q={search_term_string}`,
                   "query-input": "required name=search_term_string",
                 },
               },

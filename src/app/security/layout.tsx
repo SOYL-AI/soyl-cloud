@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { COMPANY } from "@/lib/constants";
+import { SITE_URL } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Security & Compliance — SOYL Cloud",
   description: "Learn how SOYL Cloud protects guest data and hotel operations. Enterprise-grade security, GDPR compliance, and end-to-end encryption.",
+  openGraph: {
+    url: `${SITE_URL}/security`,
+  },
   alternates: {
-    canonical: `https://${COMPANY.domain}/security`,
+    canonical: `${SITE_URL}/security`,
   },
 };
 

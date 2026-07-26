@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SITE_URL } from '@/lib/constants';
 
 export const metadata: Metadata = {
   title: 'Frequently Asked Questions — SOYL Cloud',
@@ -6,12 +7,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Frequently Asked Questions — SOYL Cloud',
     description: 'Find answers to common questions about SOYL Cloud\'s AI hospitality platform, Butler AI, PMS Lite, pricing, implementation, and security.',
-    url: 'https://soyl.cloud/faq',
+    url: `${SITE_URL}/faq`,
     siteName: 'SOYL Cloud',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://soyl.cloud/faq',
+    canonical: `${SITE_URL}/faq`,
   },
 };
 

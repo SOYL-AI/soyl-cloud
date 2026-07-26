@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { DefinitionList, FactTable } from "@/components/seo/AEOBlocks";
+import { SITE_URL } from "@/lib/constants";
 
 const definitionList = [
   { term: "Mission", definition: "To deploy reliable voice AI infrastructure for hospitality properties, reducing front-desk workload and providing instant guest assistance." },
@@ -18,8 +19,8 @@ const organizationSchema = {
   "@type": "Organization",
   "name": "SOYL AI",
   "legalName": "SOYL pvt Limited",
-  "url": "https://soyl-cloud.com",
-  "logo": "https://soyl-cloud.com/logo.png",
+  "url": SITE_URL,
+  "logo": `${SITE_URL}/images/logo.png`,
   "foundingDate": "2026-02",
   "address": {
     "@type": "PostalAddress",
