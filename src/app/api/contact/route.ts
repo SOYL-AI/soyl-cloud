@@ -2,6 +2,7 @@ import { COMPANY, SITE_URL } from "@/lib/constants";
 import { formatLeadEmail, parseContactSubmission } from "@/lib/contact";
 import { EmailNotConfiguredError, readEmailConfig, sendEmail } from "@/lib/email";
 import { clientKey, createRateLimiter } from "@/lib/rate-limit";
+import { persistLead, readLeadApiConfig } from "@/lib/leads";
 
 /**
  * The contact form's destination.
@@ -30,6 +31,36 @@ const NO_STORE = { "Cache-Control": "no-store, no-transform" } as const;
 
 function json(body: unknown, status: number, headers: Record<string, string> = {}) {
   return Response.json(body, { status, headers: { ...NO_STORE, ...headers } });
+}
+
+/**
+ * Writes the lead to the API. Swallows everything.
+ *
+ * The email has already been accepted by the time this runs, so there is no
+ * failure here that should change what the visitor sees. A failure is logged
+ * with a reason so a persistently unreachable API is visible in the logs
+ * rather than silently discarding the `leads` table.
+ */
+async function recordLead(lead: {
+  name: string;
+  email: string;
+  company: string;
+  message: string;
+}): Promise<void> {
+  const config = readLeadApiConfig();
+
+  if (!config) {
+    console.warn("[contact] lead not persisted: API_BASE_URL or LEAD_INGEST_TOKEN unset");
+    return;
+  }
+
+  const result = await persistLead({ ...lead, source_url: `${SITE_URL}/contact` }, config);
+
+  if (result.persisted) {
+    console.info(`[contact] lead persisted id=${result.id || "unknown"}`);
+  } else {
+    console.error(`[contact] lead not persisted: ${result.reason}`);
+  }
 }
 
 export async function POST(request: Request) {
@@ -118,6 +149,12 @@ export async function POST(request: Request) {
       502,
     );
   }
+
+  // Only reached once the provider has accepted the message. Outside the try
+  // above on purpose: nothing about persisting a record may turn a delivered
+  // email into a 502 (M1 acceptance criterion 6). `recordLead` swallows its
+  // own failures, and this line keeps it that way even if that changes.
+  await recordLead(parsed.value);
 
   return json({ ok: true }, 200);
 }

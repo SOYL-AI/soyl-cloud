@@ -1,3 +1,5 @@
+import type { EnvLike } from "./env";
+
 /**
  * Transactional email, behind one function.
  *
@@ -50,7 +52,7 @@ export type EmailConfig = {
  * so a missing variable surfaces as a handled 502 on one route instead of a
  * boot failure that takes the whole marketing site down.
  */
-export function readEmailConfig(env: NodeJS.ProcessEnv = process.env): EmailConfig {
+export function readEmailConfig(env: EnvLike = process.env): EmailConfig {
   const apiKey = env.RESEND_API_KEY?.trim();
   const from = env.CONTACT_FROM_EMAIL?.trim();
   const to = env.CONTACT_TO_EMAIL?.trim();

@@ -34,6 +34,7 @@ yarn-error.log*
 .env*
 # ...but the documented, value-less template is tracked on purpose.
 !.env.example
+!.env.migrations.example
 
 # vercel
 .vercel
@@ -41,3 +42,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Python service
+services/api/.venv/
+services/api/.env
+services/api/.env.migrations
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/

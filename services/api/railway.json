@@ -1,0 +1,16 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
+  },
+  "deploy": {
+    "// startCommand": "Deliberately absent. Railway reads railway.json from the BUILD CONTEXT ROOT, which ADR-001 makes the repository root, not this directory — so a startCommand here is silently ignored. Migrations and the server therefore live in the Dockerfile CMD, where every platform sees them.",
+    "healthcheckPath": "/live",
+    "// healthcheckPath": "/live, not /health. Railway restarts a container that fails its healthcheck, so pointing it at a check that includes Postgres turns a database blip into a restart loop. /health is for humans and dashboards.",
+    "healthcheckTimeout": 30,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 3,
+    "numReplicas": 1
+  }
+}

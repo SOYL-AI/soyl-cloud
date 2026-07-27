@@ -1,0 +1,7 @@
+# ADR-001 consequence: the Python services sit in Vercel's clone context and
+# would otherwise be uploaded on every deploy. Nothing here is part of the
+# web build.
+services/
+docker/
+docker-compose.yml
+Makefile

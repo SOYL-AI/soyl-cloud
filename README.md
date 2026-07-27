@@ -14,6 +14,25 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ---
 
+## 🧭 Working on this repo
+
+The Quick Start below covers the marketing site alone. Since M1 the repo also
+holds a Python API and a local database stack.
+
+| I want to… | Read |
+|---|---|
+| Get the whole stack running | **[docs/phase-0/SETUP.md](docs/phase-0/SETUP.md)** — or just `make setup` |
+| Know the rules and precedence | [AGENTS.md](AGENTS.md), then [DECISIONS.md](DECISIONS.md) |
+| Understand a past judgement call | [docs/phase-0/DECISION-LOG.md](docs/phase-0/DECISION-LOG.md) |
+| See where the current state came from | [docs/phase-0/](docs/phase-0/) |
+
+```bash
+make setup   # deps, stack, migrations, and the isolation suite to prove it works
+make help    # everything else
+```
+
+---
+
 ## 🚀 Quick Start
 
 ### Prerequisites
