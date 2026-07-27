@@ -59,6 +59,14 @@ class Settings(BaseSettings):
     resend_api_key: str | None = None
     email_from: str | None = None
 
+    # Object storage. MinIO locally, R2 or equivalent in production. Reached
+    # only through soyl/infrastructure/storage/ (UPDATE.md §5).
+    storage_endpoint_url: HttpUrl | None = None
+    storage_region: str = "us-east-1"
+    storage_bucket: str = "soyl-documents"
+    storage_access_key: str = ""
+    storage_secret_key: str = ""
+
     # How long claims stay cached in Redis before being reloaded. Revocation
     # does not wait for this — bumping a user's version counter invalidates
     # them immediately (handbook §23.1).
@@ -103,6 +111,12 @@ class Settings(BaseSettings):
 
         if self.web_base_url.scheme != "https":
             raise ValueError(f"{self.environment} web_base_url must be https")
+
+        if not (self.storage_access_key and self.storage_secret_key):
+            raise ValueError(
+                f"{self.environment} requires SOYL_STORAGE_ACCESS_KEY and "
+                "SOYL_STORAGE_SECRET_KEY — documents cannot be stored without them"
+            )
 
         if not (self.resend_api_key and self.email_from):
             raise ValueError(

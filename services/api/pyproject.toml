@@ -22,6 +22,10 @@ dependencies = [
     # Google's token and userinfo endpoints. Already present as a test
     # dependency; promoted because the OAuth callback needs it at runtime.
     "httpx>=0.28,<1.0",
+    # S3-compatible object storage. MinIO locally, R2 or equivalent in
+    # production. Confined to soyl/infrastructure/storage/ so the Azure Blob
+    # switch stays one file (UPDATE.md §5).
+    "aioboto3>=15.5,<16.0",
 ]
 
 [dependency-groups]

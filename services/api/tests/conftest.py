@@ -20,7 +20,7 @@ from collections.abc import AsyncIterator
 from dataclasses import dataclass
 
 import pytest
-from pydantic import PostgresDsn, RedisDsn
+from pydantic import HttpUrl, PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from sqlalchemy.sql import text
@@ -41,6 +41,10 @@ class ApiTestSettings(BaseSettings):
     # port); in CI it is 6379. A test that hardcodes either one passes in one
     # place and fails in the other.
     redis_url: RedisDsn
+    storage_endpoint_url: HttpUrl
+    storage_bucket: str = "soyl-documents"
+    storage_access_key: str
+    storage_secret_key: str
     # The provider check creates and drops roles, so it needs the instance's
     # admin credential. Required, not optional: acceptance criterion 3 says the
     # check runs green locally, and a skipped check proves nothing.
