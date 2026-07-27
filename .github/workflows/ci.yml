@@ -12,10 +12,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Blocking. This is the gate that protects the live site: if the app no
-  # longer builds or a unit test fails, the PR is not mergeable.
-  build:
-    name: Build and test
+  # ── Web ───────────────────────────────────────────────────────────────────
+  web:
+    name: Web — build, test, typecheck, lint
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -35,58 +34,21 @@ jobs:
       - name: Test
         run: npm test
 
-  # Non-blocking by design (M0). `typescript.ignoreBuildErrors` is still on in
-  # next.config.ts, so type errors currently ship; this job measures how many
-  # there are without blocking anyone. DECISIONS.md §5: M0 reports, M1 fixes
-  # and enforces. Delete `continue-on-error` from both steps in M1.
-  report:
-    name: Typecheck and lint (report only)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install
-        run: npm ci
-
-      # tsconfig.json includes `.next/types/**/*.ts`, which only exists once
-      # the app has been built. Without this the route-type validator is
-      # invisible to tsc and the count is wrong.
-      - name: Build (to generate route types)
-        run: npm run build
-
+      # Blocking as of M1. `typescript.ignoreBuildErrors` is gone from
+      # next.config.ts and the error count is zero — DECISIONS.md §5's sequence
+      # is complete. If this fails, fix the type; do not re-add the flag.
       - name: Typecheck
-        id: typecheck
-        continue-on-error: true
-        run: |
-          set +e
-          npx tsc --noEmit > typecheck.log 2>&1
-          status=$?
-          count=$(grep -c "error TS" typecheck.log || true)
-          {
-            echo "## Typecheck"
-            echo ""
-            echo "**${count} type error(s).**"
-            echo ""
-            echo '```'
-            cat typecheck.log
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-          echo "count=${count}" >> "$GITHUB_OUTPUT"
-          echo "::notice title=Typecheck::${count} type error(s) — non-blocking until M1"
-          exit $status
+        run: npm run typecheck
 
+      # Still reporting only: 15 errors and 18 warnings of pre-existing lint
+      # debt, none of it introduced by M0 or M1. Blocking this today would fail
+      # every PR for reasons unrelated to the PR. Scheduled for M5 alongside the
+      # accessibility work, which is where most of it lives.
       - name: Lint
         continue-on-error: true
         run: |
           set +e
           npx eslint --format stylish > lint.log 2>&1
-          status=$?
           summary=$(grep -E "^.[0-9]+ problems?" lint.log | tail -1)
           {
             echo "## Lint"
@@ -97,15 +59,147 @@ jobs:
             cat lint.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::notice title=Lint::${summary:-no problems reported} — non-blocking until M1"
-          exit $status
+          echo "::notice title=Lint::${summary:-no problems reported} — non-blocking until M5"
+          exit 0
 
-      - name: Upload logs
-        if: always()
-        uses: actions/upload-artifact@v4
+  # ── API ───────────────────────────────────────────────────────────────────
+  api:
+    name: API — migrations, tenant isolation, tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      # A real Postgres with pgvector, not SQLite. We depend on RLS, JSONB,
+      # citext and vector types; none of them have a stand-in (UPDATE.md §13).
+      postgres:
+        image: pgvector/pgvector@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: soyl
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d soyl"
+          --health-interval 3s
+          --health-timeout 5s
+          --health-retries 20
+
+      redis:
+        image: redis@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 3s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      # Service containers cannot run the entrypoint init scripts, so the roles
+      # are created by the step below from the same SQL the local stack uses.
+      SOYL_ENVIRONMENT: local
+      SOYL_DATABASE_URL: postgresql+asyncpg://soyl_app:soyl_app_local@localhost:5432/soyl
+      SOYL_MIGRATION_DATABASE_URL: postgresql+asyncpg://soyl_migrator:soyl_migrator_local@localhost:5432/soyl
+      SOYL_ADMIN_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/soyl
+      SOYL_REDIS_URL: redis://localhost:6379/0
+      SOYL_LEAD_INGEST_TOKEN: ci-lead-ingest-token-not-a-secret-value
+
+    defaults:
+      run:
+        working-directory: services/api
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
         with:
-          name: typecheck-and-lint
-          path: |
-            typecheck.log
-            lint.log
-          if-no-files-found: ignore
+          enable-cache: true
+
+      - name: Install
+        run: uv sync --locked
+
+      # Exactly the files docker/postgres runs locally. If these two drift, the
+      # suite passes locally and fails here, or worse, the reverse.
+      - name: Create extensions and roles
+        working-directory: .
+        run: |
+          export PGPASSWORD=postgres
+          psql -h localhost -U postgres -d soyl -v ON_ERROR_STOP=1 -f docker/postgres/00-extensions.sql
+          psql -h localhost -U postgres -d soyl -v ON_ERROR_STOP=1 -f docker/postgres/01-roles.sql
+
+      - name: Migrate
+        run: uv run alembic upgrade head
+
+      # BLOCKING, and deliberately not `continue-on-error`, not conditional,
+      # and not marked skippable. UPDATE.md §6.2: a tenant isolation suite that
+      # can be skipped is not a control. If the database is unreachable this
+      # errors rather than skipping.
+      - name: Tenant isolation suite
+        run: uv run pytest tests/integration/test_tenant_isolation.py -q --strict-markers
+
+      - name: All tests
+        run: uv run pytest -q
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Types
+        run: uv run mypy soyl
+
+      # The layering in docs/architecture/04-backend.md §21 is only real if
+      # something checks it. Also the seam that keeps provider SDKs out of the
+      # domain (UPDATE.md §6.9) once M4 adds one.
+      - name: Architecture
+        run: uv run lint-imports
+
+  # ── Migration reversibility ───────────────────────────────────────────────
+  # UPDATE.md §13: "every migration reversible". A downgrade that has never
+  # been run is a downgrade that does not work, and that is discovered during
+  # an incident.
+  migrations:
+    name: Migrations are reversible
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      postgres:
+        image: pgvector/pgvector@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: soyl
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d soyl"
+          --health-interval 3s
+          --health-timeout 5s
+          --health-retries 20
+
+    env:
+      SOYL_MIGRATION_DATABASE_URL: postgresql+asyncpg://soyl_migrator:soyl_migrator_local@localhost:5432/soyl
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install
+        working-directory: services/api
+        run: uv sync --locked
+
+      - name: Create extensions and roles
+        run: |
+          export PGPASSWORD=postgres
+          psql -h localhost -U postgres -d soyl -v ON_ERROR_STOP=1 -f docker/postgres/00-extensions.sql
+          psql -h localhost -U postgres -d soyl -v ON_ERROR_STOP=1 -f docker/postgres/01-roles.sql
+
+      - name: up, down, up
+        working-directory: services/api
+        run: |
+          uv run alembic upgrade head
+          uv run alembic downgrade base
+          uv run alembic upgrade head

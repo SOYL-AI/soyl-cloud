@@ -39,12 +39,17 @@ export default function PrivacyPolicy() {
               <li>Where we need to comply with a legal obligation.</li>
             </ul>
 
-            <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mt-8 mb-4">4. Data Security</h2>
+            <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mt-8 mb-4">4. Analytics</h2>
+            <p className="mb-4">
+              We use <a href="https://plausible.io/privacy-focused-web-analytics" className="underline hover:text-[var(--color-soyl-mint-dark)]" rel="noopener noreferrer" target="_blank">Plausible Analytics</a> to understand how this website is used. Plausible sets no cookies, does not track you across websites, and collects no personal data — page views and referrers are recorded in aggregate and cannot be traced back to an individual visitor. That is why you have not been asked to accept cookies.
+            </p>
+
+            <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mt-8 mb-4">5. Data Security</h2>
             <p className="mb-4">
               We have put in place appropriate security measures to prevent your personal data from being accidentally lost, used or accessed in an unauthorised way, altered or disclosed. In addition, we limit access to your personal data to those employees, agents, contractors and other third parties who have a business need to know.
             </p>
 
-            <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mt-8 mb-4">5. Contact Us</h2>
+            <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mt-8 mb-4">6. Contact Us</h2>
             <p className="mb-4">
               If you have any questions about this privacy policy or our privacy practices, please contact us at:
               <br />
