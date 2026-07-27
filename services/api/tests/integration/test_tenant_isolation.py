@@ -48,6 +48,14 @@ SPECIAL_POLICY_TABLES: dict[str, str] = {
     "core.tenant": "id",
 }
 
+# Schemas the guard ignores. A **denylist**, deliberately, and the second
+# version of this: an allowlist of ('core', 'public', 'audit') silently
+# excluded every table in `rag` the moment migration 004 created that schema —
+# which is the exact failure the guard exists to catch, committed by the guard
+# itself. Adding a schema must not be something you have to remember to tell
+# this file about.
+IGNORED_SCHEMAS = ("pg_catalog", "information_schema", "pg_toast")
+
 
 # ── 1. Every repository method, under the wrong tenant ───────────────────────
 
@@ -311,7 +319,7 @@ async def test_every_tenant_scoped_table_has_rls_enabled_and_forced(
                     JOIN pg_namespace n ON n.oid = c.relnamespace
                     WHERE c.relkind IN ('r', 'p')
                       AND NOT c.relispartition
-                      AND n.nspname IN ('core', 'public', 'audit')
+                      AND n.nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast')
                     ORDER BY 1
                     """
                 )
@@ -363,7 +371,7 @@ async def test_every_protected_table_actually_has_a_policy(
                     JOIN pg_namespace n ON n.oid = c.relnamespace
                     LEFT JOIN pg_policy p ON p.polrelid = c.oid
                     WHERE c.relkind IN ('r', 'p')
-                      AND n.nspname IN ('core', 'public', 'audit')
+                      AND n.nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast')
                       AND c.relrowsecurity
                       AND NOT c.relispartition
                     GROUP BY 1
@@ -393,7 +401,7 @@ async def test_the_declared_exceptions_still_exist(migrator_engine: AsyncEngine)
                         "SELECT n.nspname || '.' || c.relname AS qualified_name "
                         "FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace "
                         "WHERE c.relkind IN ('r', 'p') AND NOT c.relispartition "
-                        "AND n.nspname IN ('core', 'public', 'audit')"
+                        "AND n.nspname NOT IN ('pg_catalog', 'information_schema', 'pg_toast')"
                     )
                 )
             ).all()
