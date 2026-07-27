@@ -51,6 +51,7 @@ export default function BlogHubPage() {
 
       <Container className="mb-20">
         <SectionHeader
+          as="h1"
           badge="Blog"
           title="SOYL Cloud Blog"
           description="Insights, guides, and trends on artificial intelligence, guest experience, and hotel operations."

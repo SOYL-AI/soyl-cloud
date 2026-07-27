@@ -13,7 +13,7 @@ export default function SecurityPage() {
         url="/security"
       />
       <Container>
-        <SectionHeader title="Security & Compliance" align="left" />
+        <SectionHeader as="h1" title="Security & Compliance" align="left" />
         
         <SummaryBlock
           entityName="SOYL Cloud Security Architecture"

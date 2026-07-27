@@ -48,6 +48,7 @@ export default function CompareHubPage() {
 
       <Container className="mb-20">
         <SectionHeader
+          as="h1"
           badge="Comparisons"
           title="Butler AI Comparisons"
           description="Compare Butler AI with the world's leading hospitality AI platforms and discover which solution best fits your hotel."

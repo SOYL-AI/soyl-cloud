@@ -1,9 +1,37 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/Container";
+import { track } from "@/lib/analytics";
+
+/**
+ * Calendly posts its progress to the parent window. Without listening for it
+ * the booking funnel is invisible: the iframe is a third-party origin, so a
+ * scheduled demo produces no pageview and no click we can see.
+ *
+ * Event names are Calendly's own (`calendly.event_type_viewed`,
+ * `calendly.date_and_time_selected`, `calendly.event_scheduled`).
+ */
+function useCalendlyTracking() {
+  useEffect(() => {
+    function onMessage(event: MessageEvent) {
+      if (!event.origin.includes("calendly.com")) return;
+
+      const name = (event.data as { event?: unknown } | null)?.event;
+      if (typeof name !== "string" || !name.startsWith("calendly.")) return;
+
+      track("Calendly Interaction", { stage: name.replace("calendly.", "") });
+    }
+
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+}
 
 export default function BookDemo() {
+  useCalendlyTracking();
+
   return (
     <div className="flex flex-col min-h-screen pt-32 pb-24 bg-[var(--color-soyl-gray-50)]">
       <Container>

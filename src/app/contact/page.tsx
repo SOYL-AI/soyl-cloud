@@ -3,23 +3,72 @@
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Send, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { COMPANY } from "@/lib/constants";
+import { HONEYPOT_FIELD, type ContactFieldError } from "@/lib/contact";
+import { track } from "@/lib/analytics";
+
+type SubmitError = {
+  message: string;
+  fallbackEmail: string;
+  fields: ContactFieldError[];
+};
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<SubmitError | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate submission for MVP
-    setTimeout(() => {
+    setError(null);
+
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const payload = await response.json().catch(() => ({}));
+
+      // Success is only ever what the server says it is. This form used to
+      // show "Message sent!" after a setTimeout and send nothing at all.
+      if (response.ok && payload?.ok === true) {
+        form.reset();
+        setSubmitted(true);
+        track("Contact Submitted");
+        return;
+      }
+
+      // Recorded so a spike in failures is visible in the dashboard rather
+      // than only in the server logs.
+      track("Contact Failed", { reason: payload?.error ?? `http_${response.status}` });
+      setError({
+        message:
+          payload?.message ??
+          (payload?.error === "invalid"
+            ? "Please check the highlighted fields."
+            : "We could not send your message just now."),
+        fallbackEmail: payload?.fallbackEmail ?? COMPANY.email,
+        fields: Array.isArray(payload?.errors) ? payload.errors : [],
+      });
+    } catch {
+      track("Contact Failed", { reason: "network" });
+      setError({
+        message: "We could not reach our server. Please check your connection and try again.",
+        fallbackEmail: COMPANY.email,
+        fields: [],
+      });
+    } finally {
       setIsSubmitting(false);
-      setSubmitted(true);
-    }, 1000);
+    }
   };
 
   return (
@@ -62,51 +111,102 @@ export default function ContactPage() {
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+                  {error && (
+                    <div
+                      role="alert"
+                      className="flex gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900"
+                    >
+                      <AlertCircle size={20} className="shrink-0 mt-0.5" aria-hidden="true" />
+                      <div>
+                        <p className="font-semibold">{error.message}</p>
+                        {error.fields.length > 0 && (
+                          <ul className="mt-2 list-disc pl-5">
+                            {error.fields.map((fieldError) => (
+                              <li key={fieldError.field}>{fieldError.message}</li>
+                            ))}
+                          </ul>
+                        )}
+                        <p className="mt-2">
+                          You can also email us directly at{" "}
+                          <a href={`mailto:${error.fallbackEmail}`} className="font-semibold underline">
+                            {error.fallbackEmail}
+                          </a>
+                          .
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col gap-2">
                       <label htmlFor="name" className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">Full Name</label>
-                      <input 
-                        type="text" 
-                        id="name" 
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
                         required
+                        autoComplete="name"
+                        maxLength={120}
                         className="h-12 px-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all"
                         placeholder="John Doe"
                       />
                     </div>
                     <div className="flex flex-col gap-2">
                       <label htmlFor="email" className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">Work Email</label>
-                      <input 
-                        type="email" 
-                        id="email" 
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
                         required
+                        autoComplete="email"
+                        maxLength={200}
                         className="h-12 px-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all"
                         placeholder="john@hotel.com"
                       />
                     </div>
                   </div>
-                  
+
                   <div className="flex flex-col gap-2">
                     <label htmlFor="company" className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">Hotel / Company Name</label>
-                    <input 
-                      type="text" 
-                      id="company" 
+                    <input
+                      type="text"
+                      id="company"
+                      name="company"
                       required
+                      autoComplete="organization"
+                      maxLength={160}
                       className="h-12 px-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all"
                       placeholder="The Grand Resort"
                     />
                   </div>
-                  
+
                   <div className="flex flex-col gap-2">
                     <label htmlFor="message" className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">Message</label>
-                    <textarea 
-                      id="message" 
+                    <textarea
+                      id="message"
+                      name="message"
                       required
+                      minLength={10}
+                      maxLength={5000}
                       rows={5}
                       className="p-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all resize-none"
                       placeholder="How can we help you?"
                     />
                   </div>
-                  
+
+                  {/* Honeypot. Hidden from people and from screen readers; bots
+                      fill it in and the server silently drops the submission. */}
+                  <div className="hidden" aria-hidden="true">
+                    <label htmlFor={HONEYPOT_FIELD}>Do not fill this in</label>
+                    <input
+                      type="text"
+                      id={HONEYPOT_FIELD}
+                      name={HONEYPOT_FIELD}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
+
                   <Button type="submit" size="lg" loading={isSubmitting} className="w-full md:w-auto self-start">
                     Send Message
                   </Button>

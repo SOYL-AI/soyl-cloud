@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SITE_URL } from "@/lib/constants";
 
 interface BreadcrumbItem {
   label: string;
@@ -22,7 +23,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
       "@type": "ListItem",
       position: index + 1,
       name: item.label,
-      item: item.href ? `https://soyl.cloud${item.href}` : undefined,
+      item: item.href ? `${SITE_URL}${item.href}` : undefined,
     })),
   };
 
