@@ -20,7 +20,7 @@ from collections.abc import AsyncIterator
 from dataclasses import dataclass
 
 import pytest
-from pydantic import PostgresDsn
+from pydantic import PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from sqlalchemy.sql import text
@@ -37,6 +37,10 @@ class ApiTestSettings(BaseSettings):
 
     database_url: PostgresDsn
     migration_database_url: PostgresDsn
+    # Read, not assumed. Locally this is 6380 (the stack avoids the default
+    # port); in CI it is 6379. A test that hardcodes either one passes in one
+    # place and fails in the other.
+    redis_url: RedisDsn
     # The provider check creates and drops roles, so it needs the instance's
     # admin credential. Required, not optional: acceptance criterion 3 says the
     # check runs green locally, and a skipped check proves nothing.

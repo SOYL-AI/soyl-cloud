@@ -24,7 +24,7 @@ def _settings(test_settings: ApiTestSettings, **overrides: object) -> Settings:
     values: dict[str, object] = {
         "environment": "local",
         "database_url": str(test_settings.database_url),
-        "redis_url": "redis://localhost:6380/0",
+        "redis_url": str(test_settings.redis_url),
         "lead_ingest_token": "a" * 32,
     }
     values.update(overrides)

@@ -51,7 +51,7 @@ async def client(settings: ApiTestSettings, wipe: None) -> AsyncIterator[AsyncCl
         Settings(  # type: ignore[arg-type]
             environment="local",
             database_url=str(settings.database_url),
-            redis_url="redis://localhost:6380/0",
+            redis_url=str(settings.redis_url),
             lead_ingest_token="a" * 32,
             web_base_url="http://localhost:3000",
         )
