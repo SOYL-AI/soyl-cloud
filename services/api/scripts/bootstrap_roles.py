@@ -21,6 +21,7 @@ from pathlib import Path
 
 import asyncpg
 
+
 def _sql_dir() -> Path:
     """Find docker/postgres from a checkout or from inside the image.
 

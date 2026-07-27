@@ -17,6 +17,9 @@ PROD = {
     "database_url": "postgresql+asyncpg://soyl_app:pw@db.example.com:5432/soyl",
     "redis_url": "redis://cache.example.com:6379/0",
     "lead_ingest_token": "x" * 32,
+    "web_base_url": "https://www.soyl.cloud",
+    "resend_api_key": "re_not_a_real_key",
+    "email_from": "SOYL <notifications@soyl.cloud>",
 }
 
 
@@ -86,5 +89,38 @@ def test_local_may_connect_as_the_migrator() -> None:
     settings = build(
         environment="local",
         database_url="postgresql+asyncpg://soyl_migrator:pw@localhost:5433/soyl",
+    )
+    assert settings.environment == "local"
+
+
+def test_production_refuses_a_localhost_web_base_url() -> None:
+    """A verification link pointing at localhost is a signup funnel that ends."""
+    with pytest.raises(ValidationError, match="localhost"):
+        build(web_base_url="http://localhost:3000")
+
+
+def test_production_refuses_a_plaintext_web_base_url() -> None:
+    with pytest.raises(ValidationError, match="https"):
+        build(web_base_url="http://www.soyl.cloud")
+
+
+@pytest.mark.parametrize("missing", ["resend_api_key", "email_from"])
+def test_production_refuses_to_start_without_email(missing: str) -> None:
+    """Signup cannot verify an address without a sender.
+
+    Booting anyway means every new account is stuck unverified and nobody
+    finds out until a customer says so.
+    """
+    with pytest.raises(ValidationError, match="RESEND|EMAIL_FROM"):
+        build(**{missing: None})
+
+
+def test_local_needs_neither_email_nor_https() -> None:
+    settings = build(
+        environment="local",
+        database_url="postgresql+asyncpg://soyl_app:pw@localhost:5433/soyl",
+        web_base_url="http://localhost:3000",
+        resend_api_key=None,
+        email_from=None,
     )
     assert settings.environment == "local"

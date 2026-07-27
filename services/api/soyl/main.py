@@ -15,6 +15,7 @@ from fastapi import FastAPI
 from redis.asyncio import Redis
 
 from soyl.infrastructure.db.session import create_engine, create_session_factory
+from soyl.infrastructure.email import EmailSender
 from soyl.interface.http.errors import register_exception_handlers
 from soyl.interface.http.v1.router import router as v1_router
 from soyl.settings import Settings, get_settings
@@ -28,6 +29,11 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.engine = engine
     app.state.session_factory = create_session_factory(engine)
     app.state.redis = Redis.from_url(str(settings.redis_url), decode_responses=True)
+    # Stateless, so one instance is fine. Unconfigured is a valid state: local
+    # development logs the verification link instead of sending it.
+    app.state.email_sender = EmailSender(
+        api_key=settings.resend_api_key, from_address=settings.email_from
+    )
 
     try:
         yield
