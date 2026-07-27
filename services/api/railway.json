@@ -1,0 +1,17 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
+  },
+  "deploy": {
+    "// startCommand": "Migrations run before the server, in the same release. A container that starts against an unmigrated database serves 500s that look like application bugs.",
+    "startCommand": "uv run alembic upgrade head && uvicorn soyl.main:create_app --factory --host 0.0.0.0 --port ${PORT:-8000}",
+    "healthcheckPath": "/live",
+    "// healthcheckPath": "/live, not /health. Railway restarts a container that fails its healthcheck, so pointing it at a check that includes Postgres turns a database blip into a restart loop. /health is for humans and dashboards.",
+    "healthcheckTimeout": 30,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 3,
+    "numReplicas": 1
+  }
+}
