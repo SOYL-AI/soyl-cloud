@@ -13,6 +13,8 @@ import { redirect } from "next/navigation";
 
 export type ServerSession = {
   userId: string;
+  /** NextAuth puts this on the JWT from the authorize() result. */
+  email: string | null;
   sessionToken: string;
   activeTenantId: string | null;
   isEmailVerified: boolean;
@@ -43,6 +45,7 @@ export async function readSession(): Promise<ServerSession | null> {
 
   return {
     userId: token.userId,
+    email: typeof token.email === "string" ? token.email : null,
     sessionToken: token.sessionToken,
     activeTenantId: token.activeTenantId ?? null,
     isEmailVerified: token.isEmailVerified ?? false,
