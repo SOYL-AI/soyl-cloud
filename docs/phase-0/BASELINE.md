@@ -47,7 +47,9 @@ Lighthouse cannot measure INP in a lab run; INP needs field data. **TBT is the l
 
 ## Live production, for reference
 
-Measured against `https://www.soyl.cloud/` on the same day. This is the **pre-M0 code on Vercel's CDN** — M0 is not deployed at the time of writing.
+Measured against `https://www.soyl.cloud/` on the same day, **before M0 reached production**. This is the pre-M0 code on Vercel's CDN.
+
+> Since these were taken, pushing `phase-0/m0` deployed it — that Vercel project promotes any pushed branch to the production domain, not just `main`. Re-measure production before M5 starts; do not treat the 71 below as current.
 
 | | Perf | A11y | Best prac. | SEO | LCP | CLS | TBT |
 |---|---|---|---|---|---|---|---|
