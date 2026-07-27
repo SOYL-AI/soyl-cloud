@@ -123,6 +123,7 @@ test("every auth route is noindex", () => {
     "/verify-email",
     "/reset-password",
     "/forgot-password",
+    "/onboarding",
   ];
 
   const offenders: string[] = [];
