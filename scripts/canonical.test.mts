@@ -19,10 +19,25 @@ function tag(html: string, pattern: RegExp): string | undefined {
   return html.match(pattern)?.[1];
 }
 
-test("every route declares a canonical pointing at itself", () => {
+/**
+ * A page carrying `noindex` is deliberately outside the canonical rule.
+ *
+ * A canonical says "this is the URL to index"; noindex says "do not index
+ * this". Declaring both is a contradictory signal, and the auth surface —
+ * /login, /signup, /verify-email and friends — genuinely should not be
+ * indexed: some of those URLs carry single-use tokens in the query string.
+ */
+function isNoIndex(html: string): boolean {
+  const robots = tag(html, /<meta name="robots" content="([^"]+)"/);
+  return Boolean(robots?.includes("noindex"));
+}
+
+test("every indexable route declares a canonical pointing at itself", () => {
   const offenders: string[] = [];
 
   for (const page of built) {
+    if (isNoIndex(page.html)) continue;
+
     const canonical = tag(page.html, /<link rel="canonical" href="([^"]+)"/);
     if (!canonical) {
       offenders.push(`${page.route} — no canonical`);
@@ -95,4 +110,32 @@ test("every canonical is present in the sitemap", () => {
 
 test("robots.txt points at the sitemap on the canonical host", () => {
   assert.match(robotsTxt(), new RegExp(`^Sitemap: ${SITE_URL}/sitemap\\.xml$`, "m"));
+});
+
+
+// The other half of the exemption above. Without this, dropping a canonical
+// from any page would silently exempt it from the rule rather than failing —
+// the exemption has to be something a page opts into loudly.
+test("every auth route is noindex", () => {
+  const authRoutes = [
+    "/login",
+    "/signup",
+    "/verify-email",
+    "/reset-password",
+    "/forgot-password",
+  ];
+
+  const offenders: string[] = [];
+  for (const route of authRoutes) {
+    const page = built.find((candidate) => candidate.route === route);
+    if (!page) {
+      offenders.push(`${route} — route not built`);
+      continue;
+    }
+    if (!isNoIndex(page.html)) {
+      offenders.push(`${route} — is indexable and should not be`);
+    }
+  }
+
+  assert.deepEqual(offenders, [], `indexable auth routes: ${offenders.join(", ")}`);
 });

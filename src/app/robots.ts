@@ -6,7 +6,10 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/admin/"],
+      // The authenticated area and every auth surface. Nothing here is
+      // useful in a search result and some of it carries tokens in query
+      // strings.
+      disallow: ["/api/", "/admin/", "/app", "/login", "/signup", "/verify-email", "/reset-password", "/forgot-password"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
