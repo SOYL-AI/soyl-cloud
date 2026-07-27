@@ -24,7 +24,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@soyl/contracts": ["./packages/contracts/src/index.ts"]
     }
   },
   "include": [
