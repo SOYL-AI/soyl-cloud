@@ -34,3 +34,8 @@ Format: `date · milestone · decision — reason`
 - 2026-07-27 · M1 · **Railway's healthcheck points at `/live`, not `/health`** — Railway restarts a container that fails its healthcheck, so checking Postgres there converts a database blip into a restart loop.
 - 2026-07-27 · M1 · **Lint stays non-blocking while typecheck becomes blocking** — the 15 lint errors are pre-existing and mostly accessibility-related, which is M5's work. Typecheck was at 1 and is now 0, so blocking it costs nothing today and prevents the debt returning.
 
+## M3
+
+- 2026-07-28 · M3 · **Building M3 before the legal review, with an explicit boundary** — `DECISIONS.md` §6 makes the lawyer a hard gate on M3. The founder has chosen to proceed and audit later. The gate is read as binding on *a hotel uploading its documents*, not on the pipeline existing: M3 is built and tested against our own documents, and **no pilot hotel uploads anything until the DPA is signed**. That line is the whole of the deviation; if it moves, the deviation becomes the thing §6 actually forbids.
+- 2026-07-28 · M3 · **Two DPDP-relevant designs are being brought forward rather than retrofitted** — real erasure (documents, chunks and embeddings, not just `deleted_at`) and PII minimisation before inference (`UPDATE.md` §6.8). Both are cheap now and expensive after a corpus exists, and both are what a processor DPA will be audited against.
+
