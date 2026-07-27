@@ -1,0 +1,20 @@
+# Build context is the repo root (see services/api/Dockerfile). Without this,
+# every API build uploads node_modules, .next and 28 MB of marketing images.
+node_modules/
+.next/
+out/
+.git/
+.github/
+public/
+docs/
+src/
+packages/
+scratchpad/
+services/api/.venv/
+services/api/.env
+services/api/.env.migrations
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+**/.mypy_cache/
+services/api/tests/

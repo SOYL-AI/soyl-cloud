@@ -31,11 +31,20 @@ GRANT USAGE ON SCHEMA public TO soyl_migrator, soyl_app;
 -- create one without a policy on it.
 GRANT CREATE ON SCHEMA public TO soyl_migrator;
 
--- Connecting is not enough to read anything; every grant is explicit and
--- lives in the migration that creates the table.
-GRANT CONNECT ON DATABASE soyl TO soyl_migrator, soyl_app;
-
--- Migration 001 creates the `core` schema, which needs CREATE on the database.
--- soyl_app is pointedly not granted this: a role that can create a schema can
--- create a table in it without a policy.
-GRANT CREATE ON DATABASE soyl TO soyl_migrator;
+-- Database-level grants, against whatever the database is called. Locally that
+-- is `soyl`; on Railway it is `railway`, and a managed provider rarely lets you
+-- choose. Hardcoding the name made this file local-only, which defeated the
+-- point of running the same SQL everywhere.
+DO $$
+BEGIN
+    -- Connecting is not enough to read anything; every table grant is explicit
+    -- and lives in the migration that creates the table.
+    EXECUTE format(
+        'GRANT CONNECT ON DATABASE %I TO soyl_migrator, soyl_app', current_database()
+    );
+    -- Migration 001 creates the `core` schema, which needs CREATE on the
+    -- database. soyl_app is pointedly not granted this: a role that can create
+    -- a schema can create a table in it without a policy.
+    EXECUTE format('GRANT CREATE ON DATABASE %I TO soyl_migrator', current_database());
+END
+$$;
