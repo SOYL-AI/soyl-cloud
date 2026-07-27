@@ -1,0 +1,101 @@
+# Local development stack. Not a production topology — production is Railway
+# (ADR-001), and nothing here is reused there.
+#
+# Images are pinned by digest, not by tag. A tag is a moving pointer: `pg16`
+# today and `pg16` in three months are different Postgres builds, and "it works
+# on my machine" traces back to exactly that more often than to anything else.
+# To move a pin deliberately: docker pull <image>:<tag> && docker inspect
+# --format='{{index .RepoDigests 0}}' <image>:<tag>
+#
+# Pinned 2026-07-27: Postgres 16.14, Redis 7.4.10.
+
+name: soyl
+
+services:
+  postgres:
+    # pgvector/pgvector:pg16 — Postgres 16 with the vector extension already
+    # built in. Not needed until M3, but installing it now means the extension
+    # question is answered before it is urgent.
+    image: pgvector/pgvector@sha256:1d533553fefe4f12e5d80c7b80622ba0c382abb5758856f52983d8789179f0fb
+    environment:
+      # The superuser exists only to run the init scripts and to be the escape
+      # hatch. Nothing in the application ever connects as it.
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: soyl
+      # Deterministic collation, so ORDER BY is the same on every machine and
+      # in CI. Without this the sort order of a seeded fixture depends on the
+      # host's locale.
+      LANG: C
+      POSTGRES_INITDB_ARGS: "--locale=C --encoding=UTF8"
+    ports:
+      # 5433 on the host, not 5432. A developer machine with any Postgres
+      # installed already owns 5432, and on Windows the published port binds
+      # without error while connections still reach the native service — which
+      # presents as "password authentication failed for user soyl_migrator"
+      # and costs an hour. Override with SOYL_POSTGRES_PORT if 5433 is taken.
+      - "${SOYL_POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      # Runs once, on an empty data directory, as the superuser. If you change
+      # these you must `docker compose down -v` for them to run again.
+      - ./docker/postgres:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      # -U postgres so the check does not depend on a role the init scripts
+      # may not have created yet.
+      test: ["CMD-SHELL", "pg_isready -U postgres -d soyl"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  redis:
+    image: redis@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2
+    # Persistence off: everything in Redis is a queue or a cache, and a local
+    # stack that survives a restart with stale jobs in it is a debugging trap.
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports:
+      # Same reasoning as Postgres above.
+      - "${SOYL_REDIS_PORT:-6380}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  minio:
+    image: minio/minio@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: soyl-local
+      MINIO_ROOT_PASSWORD: soyl-local-secret
+    ports:
+      - "${SOYL_MINIO_PORT:-9000}:9000"
+      - "${SOYL_MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  # Creates the bucket and exits. `depends_on: service_completed_successfully`
+  # elsewhere would gate on this; nothing needs it until M3, so it simply runs.
+  minio-init:
+    image: minio/minio@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 soyl-local soyl-local-secret &&
+      mc mb --ignore-existing local/soyl-documents &&
+      echo 'bucket ready'
+      "
+    restart: "no"
+
+volumes:
+  postgres-data:
+  minio-data:

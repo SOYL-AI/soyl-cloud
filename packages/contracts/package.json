@@ -1,0 +1,13 @@
+{
+  "name": "@soyl/contracts",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Types shared across the web/API boundary. Hand-written TypeScript, verified against the API's generated JSON Schema by a contract test so the two cannot drift silently.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ]
+}

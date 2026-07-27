@@ -2,6 +2,10 @@
   "name": "soyl-cloud",
   "version": "0.1.0",
   "private": true,
+  "//": "The web app lives at the repo root and stays there (ADR-001). Workspaces exist for shared JS packages only; services/api is Python and is not a workspace member.",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
