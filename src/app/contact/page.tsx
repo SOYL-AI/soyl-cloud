@@ -8,6 +8,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { COMPANY } from "@/lib/constants";
 import { HONEYPOT_FIELD, type ContactFieldError } from "@/lib/contact";
+import { track } from "@/lib/analytics";
 
 type SubmitError = {
   message: string;
@@ -42,9 +43,13 @@ export default function ContactPage() {
       if (response.ok && payload?.ok === true) {
         form.reset();
         setSubmitted(true);
+        track("Contact Submitted");
         return;
       }
 
+      // Recorded so a spike in failures is visible in the dashboard rather
+      // than only in the server logs.
+      track("Contact Failed", { reason: payload?.error ?? `http_${response.status}` });
       setError({
         message:
           payload?.message ??
@@ -55,6 +60,7 @@ export default function ContactPage() {
         fields: Array.isArray(payload?.errors) ? payload.errors : [],
       });
     } catch {
+      track("Contact Failed", { reason: "network" });
       setError({
         message: "We could not reach our server. Please check your connection and try again.",
         fallbackEmail: COMPANY.email,
