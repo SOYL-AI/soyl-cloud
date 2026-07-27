@@ -37,6 +37,9 @@ from tests.conftest import TwoTenants
 UNTENANTED_TABLES: dict[str, str] = {
     "public.lead": "A lead arrives before any tenant exists (DECISION-LOG.md).",
     "core.user_account": "A user may belong to several tenants; tenancy lives on membership.",
+    "core.session": "Resolved from a cookie before any tenant is known.",
+    "core.credential_token": "Resolved from a link in an email before any tenant is known.",
+    "core.oauth_account": "Resolved from a provider callback before any tenant is known.",
     "public.alembic_version": "Alembic's bookkeeping.",
 }
 
@@ -306,7 +309,9 @@ async def test_every_tenant_scoped_table_has_rls_enabled_and_forced(
                            )                          AS has_tenant_id
                     FROM pg_class c
                     JOIN pg_namespace n ON n.oid = c.relnamespace
-                    WHERE c.relkind = 'r' AND n.nspname IN ('core', 'public')
+                    WHERE c.relkind IN ('r', 'p')
+                      AND NOT c.relispartition
+                      AND n.nspname IN ('core', 'public', 'audit')
                     ORDER BY 1
                     """
                 )
@@ -357,9 +362,10 @@ async def test_every_protected_table_actually_has_a_policy(
                     FROM pg_class c
                     JOIN pg_namespace n ON n.oid = c.relnamespace
                     LEFT JOIN pg_policy p ON p.polrelid = c.oid
-                    WHERE c.relkind = 'r'
-                      AND n.nspname IN ('core', 'public')
+                    WHERE c.relkind IN ('r', 'p')
+                      AND n.nspname IN ('core', 'public', 'audit')
                       AND c.relrowsecurity
+                      AND NOT c.relispartition
                     GROUP BY 1
                     ORDER BY 1
                     """
@@ -386,7 +392,8 @@ async def test_the_declared_exceptions_still_exist(migrator_engine: AsyncEngine)
                     text(
                         "SELECT n.nspname || '.' || c.relname AS qualified_name "
                         "FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace "
-                        "WHERE c.relkind = 'r' AND n.nspname IN ('core', 'public')"
+                        "WHERE c.relkind IN ('r', 'p') AND NOT c.relispartition "
+                        "AND n.nspname IN ('core', 'public', 'audit')"
                     )
                 )
             ).all()
