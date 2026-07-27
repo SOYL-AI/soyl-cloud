@@ -27,6 +27,7 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.sql import text
 
 TENANT_SETTING = "app.tenant_id"
+USER_SETTING = "app.user_id"
 
 
 def create_engine(database_url: str) -> AsyncEngine:
@@ -69,6 +70,30 @@ async def tenant_session(
             await session.execute(
                 text("SELECT set_config(:key, :value, TRUE)"),
                 {"key": TENANT_SETTING, "value": str(tenant_id)},
+            )
+            yield session
+
+
+@asynccontextmanager
+async def user_session(
+    factory: async_sessionmaker[AsyncSession],
+    user_id: UUID,
+) -> AsyncIterator[AsyncSession]:
+    """A session that can see one user's own rows, and no tenant's data.
+
+    Exists for exactly one question: *which tenants does this user belong to?*
+    That query cannot be tenant-scoped, because the tenant is its answer. See
+    migration 003 — before it existed, this lookup silently returned nothing
+    and every login concluded the user had no memberships.
+
+    Transaction-local like `tenant_session`, for the same pooling reason. It
+    sets no tenant, so every tenant-scoped table still returns zero rows here.
+    """
+    async with factory() as session:
+        async with session.begin():
+            await session.execute(
+                text("SELECT set_config(:key, :value, TRUE)"),
+                {"key": USER_SETTING, "value": str(user_id)},
             )
             yield session
 

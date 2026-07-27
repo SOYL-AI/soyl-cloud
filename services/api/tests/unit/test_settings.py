@@ -111,7 +111,7 @@ def test_production_refuses_to_start_without_email(missing: str) -> None:
     Booting anyway means every new account is stuck unverified and nobody
     finds out until a customer says so.
     """
-    with pytest.raises(ValidationError, match="RESEND|EMAIL_FROM"):
+    with pytest.raises(ValidationError, match=r"RESEND|EMAIL_FROM"):
         build(**{missing: None})
 
 

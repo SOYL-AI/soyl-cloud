@@ -7,8 +7,14 @@ would refuse one.
 The single rule this module enforces: **a failed audit write must never fail
 the operation it was recording.** A login that succeeds and then 500s because
 the log was unreachable is strictly worse than a login that succeeds
-unrecorded. Failures are logged to stderr, loudly, where the platform collects
-them.
+unrecorded.
+
+Catching the exception is not enough to keep that promise, and the first
+version of this file did not. A failed INSERT aborts the whole Postgres
+transaction, so swallowing the error left a poisoned transaction whose COMMIT
+silently rolled back everything the caller had already done — in practice, a
+logout that revoked nothing. The write therefore runs inside a SAVEPOINT, so a
+failure rolls back the audit row and nothing else.
 """
 
 from __future__ import annotations
@@ -69,22 +75,26 @@ class AuditRepository:
         identifiers and state names, not payloads.
         """
         try:
-            await self._session.execute(
-                insert(AuditLog).values(
-                    action=action,
-                    outcome=outcome,
-                    actor_kind=actor_kind,
-                    actor_id=actor_id,
-                    tenant_id=tenant_id,
-                    resource_kind=resource_kind,
-                    resource_id=resource_id,
-                    ip=ip,
-                    user_agent=user_agent,
-                    trace_id=trace_id,
-                    before=before,
-                    after=after,
+            # SAVEPOINT. Without it a rejected insert — a policy violation, a
+            # missing partition — aborts the caller's transaction too, and the
+            # operation being audited is silently undone at commit.
+            async with self._session.begin_nested():
+                await self._session.execute(
+                    insert(AuditLog).values(
+                        action=action,
+                        outcome=outcome,
+                        actor_kind=actor_kind,
+                        actor_id=actor_id,
+                        tenant_id=tenant_id,
+                        resource_kind=resource_kind,
+                        resource_id=resource_id,
+                        ip=ip,
+                        user_agent=user_agent,
+                        trace_id=trace_id,
+                        before=before,
+                        after=after,
+                    )
                 )
-            )
         except SQLAlchemyError:
             logger.exception(
                 "audit write failed action=%s outcome=%s actor=%s", action, outcome, actor_id

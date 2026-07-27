@@ -12,7 +12,12 @@ The three rules:
    password-database leak from elsewhere into a targeted attack on us.
 2. **Every outcome is audited, including the failures.** A login that fails is
    more interesting than one that succeeds.
-3. **Email failure never fails the operation.** An account is still created if
+3. **An audit row must outlive the failure it records.** Raising rolls the
+   transaction back, taking the audit row with it — so the failure paths below
+   commit before they raise. Without that, the events most worth having
+   (rejected logins, replayed reset links) are precisely the ones that never
+   reach the log.
+4. **Email failure never fails the operation.** An account is still created if
    the verification mail bounces; the link can be resent. The alternative is a
    signup funnel that breaks whenever Resend has a bad afternoon.
 """
@@ -25,6 +30,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import text
 
 from soyl.domain.identity.secrets import (
     PasswordTooLong,
@@ -169,14 +175,17 @@ class AuthService:
             # such user" returns in microseconds and "wrong password" in ~50ms.
             verify_dummy_password(password)
             await self._record_failed_login(email, context, reason="no_such_user")
+            await self._commit_audit()
             raise AuthError("invalid_credentials", "Email or password is incorrect")
 
         if not verify_password(password, user.password_hash):
             await self._record_failed_login(email, context, reason="bad_password", user_id=user.id)
+            await self._commit_audit()
             raise AuthError("invalid_credentials", "Email or password is incorrect")
 
         if user.status != "active":
             await self._record_failed_login(email, context, reason="suspended", user_id=user.id)
+            await self._commit_audit()
             raise AuthError("invalid_credentials", "Email or password is incorrect")
 
         # The only moment the plaintext is available to re-hash with, so it is
@@ -184,6 +193,12 @@ class AuthService:
         if user.password_hash and needs_rehash(user.password_hash):
             await self._users.set_password_hash(user.id, hash_password(password))
 
+        # app.user_id, not app.tenant_id: this is the lookup that decides which
+        # tenant to activate, so it cannot already be scoped to one
+        # (migration 003).
+        await self._session.execute(
+            text("SELECT set_config('app.user_id', :user_id, TRUE)"), {"user_id": str(user.id)}
+        )
         memberships = await self._users.memberships(user.id)
         active_tenant_id = memberships[0].tenant_id if memberships else None
 
@@ -251,11 +266,15 @@ class AuthService:
             return
 
         await self._sessions.revoke(session.id)
+        # tenant_id is deliberately omitted here even though the session had
+        # one: this runs on an untenanted session, and audit.log's policy would
+        # reject a row naming a tenant we are not scoped to. The savepoint in
+        # AuditRepository would contain the failure, but the row would be lost.
+        # The session id is recorded instead, which resolves to the tenant.
         await self._audit.record(
             action=audit_actions.ACTION_LOGOUT,
             outcome="success",
             actor_id=session.user_id,
-            tenant_id=session.active_tenant_id,
             resource_kind="session",
             resource_id=str(session.id),
             ip=context.ip,
@@ -278,6 +297,7 @@ class AuthService:
                 trace_id=context.trace_id,
                 after={"reason": "invalid_or_expired"},
             )
+            await self._commit_audit()
             raise AuthError("invalid_token", "That link is invalid or has expired")
 
         await self._users.mark_email_verified(user_id)
@@ -346,6 +366,7 @@ class AuthService:
                 trace_id=context.trace_id,
                 after={"reason": "invalid_or_expired"},
             )
+            await self._commit_audit()
             raise AuthError("invalid_token", "That link is invalid or has expired")
 
         await self._users.set_password_hash(user_id, password_hash)
@@ -369,6 +390,16 @@ class AuthService:
             trace_id=context.trace_id,
             after={"sessions_revoked": revoked},
         )
+
+    async def _commit_audit(self) -> None:
+        """Commit before raising, so the audit row survives the exception.
+
+        Only ever called on a path that has written nothing but the audit row,
+        so this commits exactly that. The caller's context manager will then
+        see the exception and roll back a transaction that has nothing left in
+        it.
+        """
+        await self._session.commit()
 
     # ── Email, which is allowed to fail ─────────────────────────────────────
 
