@@ -1,7 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-// @ts-expect-error - plain-JS helper, no declaration file
 import { readHeadings } from "./headings.mjs";
 
 type Page = { route: string; levels: number[]; h1: string[] };

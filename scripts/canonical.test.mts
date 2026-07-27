@@ -1,7 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-// @ts-expect-error - plain-JS helpers, no declaration files
 import { pages, sitemapXml, robotsTxt } from "./site-output.mjs";
 import { SITE_HOST, SITE_URL } from "../src/lib/constants.ts";
 
