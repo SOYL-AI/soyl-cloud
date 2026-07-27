@@ -5,6 +5,7 @@ silently and is discovered only when a table is missing in production.
 """
 
 from soyl.infrastructure.db.base import Base
+from soyl.infrastructure.db.models.audit import AuditLog
 from soyl.infrastructure.db.models.core import (
     Membership,
     MembershipProperty,
@@ -12,14 +13,19 @@ from soyl.infrastructure.db.models.core import (
     Tenant,
     UserAccount,
 )
+from soyl.infrastructure.db.models.identity import CredentialToken, OAuthAccount, Session
 from soyl.infrastructure.db.models.lead import Lead
 
 __all__ = [
+    "AuditLog",
     "Base",
+    "CredentialToken",
     "Lead",
     "Membership",
     "MembershipProperty",
+    "OAuthAccount",
     "Property",
+    "Session",
     "Tenant",
     "UserAccount",
 ]
