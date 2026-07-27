@@ -126,6 +126,9 @@ async def test_docs_are_closed_outside_development(
             database_url="postgresql+asyncpg://soyl_app:pw@db.example.com:5432/soyl",
             redis_url="redis://cache.example.com:6379/0",
             lead_ingest_token="b" * 32,
+            web_base_url="https://www.soyl.cloud",
+            resend_api_key="re_not_a_real_key",
+            email_from="SOYL <notifications@soyl.cloud>",
         )
     )
 

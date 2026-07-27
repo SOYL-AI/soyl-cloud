@@ -11,6 +11,7 @@ from fastapi import Depends, Header, HTTPException, Request, status
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
+from soyl.infrastructure.email import EmailSender
 from soyl.settings import Settings
 
 
@@ -28,6 +29,10 @@ def get_session_factory(request: Request) -> async_sessionmaker[AsyncSession]:
 
 def get_redis(request: Request) -> Redis:
     return request.app.state.redis  # type: ignore[no-any-return]
+
+
+def get_email_sender(request: Request) -> EmailSender:
+    return request.app.state.email_sender  # type: ignore[no-any-return]
 
 
 def require_lead_token(

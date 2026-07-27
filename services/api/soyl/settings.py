@@ -16,7 +16,7 @@ import os
 from functools import lru_cache
 from typing import Literal
 
-from pydantic import Field, PostgresDsn, RedisDsn, model_validator
+from pydantic import Field, HttpUrl, PostgresDsn, RedisDsn, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Environment = Literal["local", "preview", "staging", "prod"]
@@ -47,6 +47,23 @@ class Settings(BaseSettings):
     # health check that can hang forever takes the load balancer with it.
     health_timeout_seconds: float = 2.0
 
+    # Where the web app lives. Verification and reset links are built from it,
+    # so a wrong value sends people to a dead host — hence the production
+    # invariant below rather than a default that would quietly ship.
+    web_base_url: HttpUrl = HttpUrl("http://localhost:3000")
+
+    # Transactional email for verification and reset. Absent is valid in local
+    # development: signup still creates the account and logs the link.
+    # Deliberately a *different* key from the web app's, so revoking one does
+    # not take out the other.
+    resend_api_key: str | None = None
+    email_from: str | None = None
+
+    # How long claims stay cached in Redis before being reloaded. Revocation
+    # does not wait for this — bumping a user's version counter invalidates
+    # them immediately (handbook §23.1).
+    claims_cache_seconds: int = 300
+
     @model_validator(mode="after")
     def production_invariants(self) -> Settings:
         if self.environment not in ("staging", "prod"):
@@ -76,6 +93,22 @@ class Settings(BaseSettings):
 
         if self.database_url.scheme != "postgresql+asyncpg":
             raise ValueError("database_url must use the postgresql+asyncpg driver")
+
+        # Checked before the scheme: a localhost URL is the more specific
+        # mistake and its message is the more useful one, so it should be the
+        # error that surfaces when both apply. A verification link pointing at
+        # localhost is a signup funnel that silently ends.
+        if (self.web_base_url.host or "") in ("localhost", "127.0.0.1"):
+            raise ValueError(f"{self.environment} web_base_url points at localhost")
+
+        if self.web_base_url.scheme != "https":
+            raise ValueError(f"{self.environment} web_base_url must be https")
+
+        if not (self.resend_api_key and self.email_from):
+            raise ValueError(
+                f"{self.environment} requires SOYL_RESEND_API_KEY and SOYL_EMAIL_FROM — "
+                "signup cannot verify an address without them"
+            )
 
         return self
 
