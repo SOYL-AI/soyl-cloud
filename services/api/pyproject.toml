@@ -26,6 +26,10 @@ dependencies = [
     # production. Confined to soyl/infrastructure/storage/ so the Azure Blob
     # switch stays one file (UPDATE.md §5).
     "aioboto3>=15.5,<16.0",
+    # The model provider SDK. Permitted, but only inside
+    # soyl/infrastructure/providers/ — enforced by the import-linter contract
+    # below rather than by anyone remembering (UPDATE.md §6.9).
+    "openai>=2.9,<3.0",
 ]
 
 [dependency-groups]
@@ -90,6 +94,10 @@ ignore_missing_imports = true
 
 [tool.importlinter]
 root_package = "soyl"
+# Required to forbid an *external* package such as `openai`; without it
+# import-linter only reasons about first-party modules and the §6.9 contract
+# cannot be expressed at all.
+include_external_packages = true
 
 # ── Layering, per docs/architecture/04-backend.md §21 ──
 # interface → application → domain → (nothing)
@@ -103,6 +111,20 @@ layers = [
     "soyl.application",
     "soyl.domain",
 ]
+
+# UPDATE.md §6.9, made enforceable. The seam is worth nothing if a provider
+# SDK can be imported from a use case, and this is the check that notices.
+[[tool.importlinter.contracts]]
+name = "Provider SDKs live only in the provider adapter layer"
+type = "forbidden"
+source_modules = [
+    "soyl.domain",
+    "soyl.application",
+    "soyl.interface",
+    "soyl.infrastructure.db",
+    "soyl.infrastructure.storage",
+]
+forbidden_modules = ["openai"]
 
 [[tool.importlinter.contracts]]
 name = "The domain does not know how it is stored or served"

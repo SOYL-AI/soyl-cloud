@@ -67,6 +67,20 @@ class Settings(BaseSettings):
     storage_access_key: str = ""
     storage_secret_key: str = ""
 
+    # Azure OpenAI (AI Foundry). Absent means the deterministic fake provider
+    # is used, which is correct for local development and CI: the whole
+    # ingestion pipeline runs without a key, a network or a bill. Production
+    # refuses to boot without it — see the invariant below.
+    azure_openai_endpoint: HttpUrl | None = None
+    azure_openai_api_key: str | None = None
+    # What you named it in Foundry, which is not the model name.
+    azure_openai_embedding_deployment: str = "text-embedding-3-small"
+    # What is behind the deployment. Stored beside every vector so a model
+    # change can be rolled forward document by document.
+    azure_openai_embedding_model: str = "text-embedding-3-small"
+    azure_openai_api_version: str = "2024-10-21"
+    embedding_dimensions: int = 1536
+
     # How long claims stay cached in Redis before being reloaded. Revocation
     # does not wait for this — bumping a user's version counter invalidates
     # them immediately (handbook §23.1).
@@ -111,6 +125,13 @@ class Settings(BaseSettings):
 
         if self.web_base_url.scheme != "https":
             raise ValueError(f"{self.environment} web_base_url must be https")
+
+        if not (self.azure_openai_endpoint and self.azure_openai_api_key):
+            raise ValueError(
+                f"{self.environment} requires SOYL_AZURE_OPENAI_ENDPOINT and "
+                "SOYL_AZURE_OPENAI_API_KEY — the fake embedding provider produces "
+                "vectors that are not semantic and must never reach a real corpus"
+            )
 
         if not (self.storage_access_key and self.storage_secret_key):
             raise ValueError(

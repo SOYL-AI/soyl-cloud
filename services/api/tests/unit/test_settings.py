@@ -20,6 +20,10 @@ PROD = {
     "web_base_url": "https://www.soyl.cloud",
     "resend_api_key": "re_not_a_real_key",
     "email_from": "SOYL <notifications@soyl.cloud>",
+    "storage_access_key": "storage-key",
+    "storage_secret_key": "storage-secret",
+    "azure_openai_endpoint": "https://soyl.openai.azure.com",
+    "azure_openai_api_key": "azure-key",
 }
 
 
@@ -124,3 +128,36 @@ def test_local_needs_neither_email_nor_https() -> None:
         email_from=None,
     )
     assert settings.environment == "local"
+
+
+@pytest.mark.parametrize("missing", ["azure_openai_endpoint", "azure_openai_api_key"])
+def test_production_refuses_to_start_without_a_real_embedding_provider(missing: str) -> None:
+    """The fake provider must never build a real corpus.
+
+    Its vectors are a hash, not meaning. A corpus embedded with them looks
+    healthy and retrieves nonsense, and the failure is invisible until someone
+    asks a question and gets a confidently wrong document back.
+    """
+    with pytest.raises(ValidationError, match="AZURE_OPENAI"):
+        build(**{missing: None})
+
+
+@pytest.mark.parametrize("missing", ["storage_access_key", "storage_secret_key"])
+def test_production_refuses_to_start_without_storage(missing: str) -> None:
+    with pytest.raises(ValidationError, match="STORAGE"):
+        build(**{missing: ""})
+
+
+def test_local_falls_back_to_the_fake_provider_without_complaint() -> None:
+    settings = build(
+        environment="local",
+        database_url="postgresql+asyncpg://soyl_app:pw@localhost:5433/soyl",
+        web_base_url="http://localhost:3000",
+        resend_api_key=None,
+        email_from=None,
+        storage_access_key="",
+        storage_secret_key="",
+        azure_openai_endpoint=None,
+        azure_openai_api_key=None,
+    )
+    assert settings.azure_openai_endpoint is None
