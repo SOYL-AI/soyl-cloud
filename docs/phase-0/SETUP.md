@@ -71,6 +71,29 @@ The stack deliberately does **not** use the default ports:
 
 Override with `SOYL_POSTGRES_PORT`, `SOYL_REDIS_PORT`, `SOYL_MINIO_PORT`.
 
+### Use `127.0.0.1`, never `localhost`
+
+Every URL in `.env` names `127.0.0.1` rather than `localhost`, and that is not
+cosmetic.
+
+On Windows, `localhost` resolves to IPv6 `::1` first. If WSL has ever bound the
+same port — and it does, through `wslrelay` — you get **two** listeners:
+
+```
+::1   wslrelay            ← localhost reaches this
+::    com.docker.backend  ← the one you want
+```
+
+The relay accepts the TCP connection and forwards nowhere, so a client connects
+successfully and then times out waiting for the protocol handshake. Everything
+looks reachable: `docker compose ps` says healthy, `pg_isready` inside the
+container passes, a raw socket connect from the host succeeds. Only the actual
+query hangs.
+
+It cost an hour here, and the symptom is indistinguishable from a hung database
+until you run `Get-NetTCPConnection -LocalPort 5433 -State Listen` and see two
+owners. `127.0.0.1` forces IPv4 and skips the problem entirely.
+
 ## The two env files, and why there are two
 
 | File | Read by | Contains |

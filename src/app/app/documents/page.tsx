@@ -1,19 +1,17 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { DocumentList, type DocumentRow } from "@/components/workspace/DocumentList";
 import { DocumentUploader } from "@/components/workspace/DocumentUploader";
-import { WorkspaceHeader } from "@/components/workspace/WorkspaceHeader";
-import { Badge } from "@/components/ui/Badge";
-import { Container } from "@/components/ui/Container";
+import { PageBody, PageHeader } from "@/components/workspace/PageHeader";
+import { WorkspaceShell } from "@/components/workspace/WorkspaceShell";
 import { apiFetch } from "@/lib/api-client";
 import { requireSession } from "@/lib/session";
 
 /**
  * The knowledge base.
  *
- * Server-rendered so the first paint already has the list; the client
- * component takes over polling only while something is still processing.
+ * Server-rendered so the first paint already has the list; the client takes
+ * over only to poll while something is still processing.
  */
 
 export const dynamic = "force-dynamic";
@@ -35,44 +33,43 @@ export default async function DocumentsPage() {
     sessionToken: session.sessionToken,
   });
 
+  const list = documents.ok ? documents.data : [];
+  const ready = list.filter((document) => document.status === "ready").length;
+
   return (
-    <div className="min-h-screen bg-[var(--color-soyl-gray-50)]">
-      <WorkspaceHeader
-        workspaceName={tenant.ok ? tenant.data.name : null}
-        userEmail={session.email}
-      />
+    <WorkspaceShell
+      workspaceName={tenant.ok ? tenant.data.name : null}
+      userEmail={session.email}
+    >
+      <PageBody>
+        <PageHeader
+          eyebrow="Knowledge base"
+          title="Your documents"
+          description="Everything you upload here becomes searchable. Answers will cite the exact document and section they came from."
+        />
 
-      <main className="py-12">
-        <Container size="md">
-          <div className="mb-10">
-            <Badge variant="secondary" className="mb-4 inline-flex">
-              Knowledge base
-            </Badge>
-            <h1 className="text-4xl font-bold tracking-tight text-[var(--color-soyl-charcoal)]">
-              Your documents
-            </h1>
-            <p className="mt-2 max-w-2xl text-[var(--color-soyl-gray-600)]">
-              Everything you upload here becomes searchable. Answers cite the
-              exact document and section they came from.
-            </p>
-          </div>
+        <DocumentUploader />
 
-          <DocumentUploader />
-
-          <section className="mt-10 rounded-[28px] border border-[var(--color-soyl-gray-200)] bg-white p-8">
-            <h2 className="mb-2 text-xl font-bold text-[var(--color-soyl-charcoal)]">
+        <section className="mt-10" aria-labelledby="uploaded-heading">
+          <div className="mb-5 flex items-baseline justify-between gap-4">
+            <h2
+              id="uploaded-heading"
+              className="text-sm font-semibold uppercase tracking-wide text-[var(--color-soyl-gray-500)]"
+            >
               Uploaded
             </h2>
-            <DocumentList initial={documents.ok ? documents.data : []} />
-          </section>
+            {list.length > 0 && (
+              <span className="text-sm text-[var(--color-soyl-gray-500)]">
+                {ready} of {list.length} indexed
+              </span>
+            )}
+          </div>
 
-          <p className="mt-10 text-center text-sm text-[var(--color-soyl-gray-500)]">
-            <Link href="/app" className="underline hover:text-[var(--color-soyl-charcoal)]">
-              Back to your workspace
-            </Link>
-          </p>
-        </Container>
-      </main>
-    </div>
+          <div className="rounded-[28px] border border-[var(--color-soyl-gray-200)] bg-white px-6">
+            <DocumentList initial={list} />
+          </div>
+        </section>
+      </PageBody>
+    </WorkspaceShell>
   );
 }
