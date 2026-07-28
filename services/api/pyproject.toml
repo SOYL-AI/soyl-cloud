@@ -68,7 +68,12 @@ asyncio_default_test_loop_scope = "session"
 # A test that is skipped is a test that is not protecting anything. The tenant
 # isolation suite in particular must fail rather than skip when the database
 # is unreachable (UPDATE.md §6.2), so skips are surfaced loudly.
-addopts = "-ra --strict-markers --strict-config"
+addopts = "-ra --strict-markers --strict-config -m 'not azure'"
+markers = [
+    # Calls the real Azure endpoint and costs money. Excluded by default and
+    # in CI, which has no credentials. Run with: pytest -m azure
+    "azure: hits the real Azure OpenAI deployment",
+]
 
 [tool.ruff]
 line-length = 100
