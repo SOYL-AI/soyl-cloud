@@ -20,20 +20,35 @@
     "framer-motion": "^12.40.0",
     "gsap": "^3.15.0",
     "lucide-react": "^1.21.0",
-    "next": "16.2.9",
+    "next": "16.2.12",
     "next-auth": "^4.24.15",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.2.9",
-    "tailwindcss": "^4",
+    "eslint-config-next": "16.2.12",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5"
+  },
+  "comments": {
+    "overrides": [
+      "These pin transitive dependencies that Next bundles at versions with published high-severity advisories. npm's own suggested fix is next@9.3.3 — a downgrade of seven majors — so it is not a fix.",
+      "postcss: XSS via unescaped </style>, plus two sourceMappingURL path-traversal advisories. Next bundles 8.4.31; 8.5.x is the same major and the same API.",
+      "sharp: four inherited libvips CVEs. Used by Next only for image optimisation; 0.34 to 0.35 is a minor bump.",
+      "brace-expansion and js-yaml: DoS advisories reached through eslint tooling, so build-time only. Pinned anyway because a red badge nobody has triaged is indistinguishable from one nobody should act on.",
+      "Every one of these is removable once Next ships a release that carries the patched versions itself. Check on each Next bump rather than leaving them to ossify."
+    ]
+  },
+  "overrides": {
+    "postcss": "^8.5.24",
+    "sharp": "^0.35.3",
+    "brace-expansion": "^5.0.8",
+    "js-yaml": "^4.2.1"
   }
 }
