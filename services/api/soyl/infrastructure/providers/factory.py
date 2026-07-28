@@ -13,9 +13,11 @@ from __future__ import annotations
 
 import logging
 
-from soyl.domain.ai.ports import EmbeddingProvider
+from soyl.domain.ai.ports import EmbeddingProvider, QuestionProvider
 from soyl.infrastructure.providers.azure_openai import AzureOpenAIEmbeddings
+from soyl.infrastructure.providers.azure_questions import AzureOpenAIQuestions
 from soyl.infrastructure.providers.fake import FakeEmbeddings
+from soyl.infrastructure.providers.fake_questions import FakeQuestions
 from soyl.settings import Settings
 
 logger = logging.getLogger("soyl.providers")
@@ -37,3 +39,20 @@ def build_embedding_provider(settings: Settings) -> EmbeddingProvider:
         "Its vectors are not semantic — retrieval quality cannot be measured with them."
     )
     return FakeEmbeddings(dimensions=settings.embedding_dimensions)
+
+
+def build_question_provider(settings: Settings) -> QuestionProvider:
+    if settings.azure_openai_endpoint and settings.azure_openai_api_key:
+        return AzureOpenAIQuestions(
+            endpoint=str(settings.azure_openai_endpoint),
+            api_key=settings.azure_openai_api_key,
+            deployment=settings.azure_openai_chat_deployment,
+            model=settings.azure_openai_chat_model,
+            api_version=settings.azure_openai_api_version,
+        )
+
+    logger.warning(
+        "no Azure OpenAI credentials; using the fake question generator. "
+        "Its questions are built from headings, not meaning."
+    )
+    return FakeQuestions()

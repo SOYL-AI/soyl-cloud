@@ -80,6 +80,15 @@ class Settings(BaseSettings):
     azure_openai_embedding_model: str = "text-embedding-3-small"
     azure_openai_api_version: str = "2024-10-21"
     embedding_dimensions: int = 1536
+    # The cheap model that writes hypothetical questions at ingest (§43.2).
+    # Absent selects the deterministic fake, and question generation is
+    # optional by design — a document without them is a slightly worse
+    # retrieval target, not a missing one.
+    azure_openai_chat_deployment: str = "gpt-5.4-mini"
+    azure_openai_chat_model: str = "gpt-5.4-mini-2026-03-17"
+    # Per chunk. The handbook says 2-4; three is the middle and the cost is
+    # linear in this number.
+    questions_per_chunk: int = 3
 
     # How long claims stay cached in Redis before being reloaded. Revocation
     # does not wait for this — bumping a user's version counter invalidates

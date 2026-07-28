@@ -58,6 +58,33 @@ class EmbeddingResult:
             raise ProviderError("provider returned an empty embedding")
 
 
+@dataclass(frozen=True, slots=True)
+class QuestionResult:
+    """Hypothetical questions for one chunk, plus what they cost."""
+
+    questions: list[str]
+    usage: Usage
+
+
+class QuestionProvider(Protocol):
+    """Generates the questions a chunk is the answer to (§43.2).
+
+    Separate from `EmbeddingProvider` because they are different models with
+    different prices and different failure modes — and because question
+    generation is allowed to fail without failing the ingestion, while
+    embedding is not. A document with no hypothetical questions is a slightly
+    worse retrieval target; a document with no vectors is not in the corpus.
+    """
+
+    @property
+    def model(self) -> str:
+        ...
+
+    async def generate(self, *, context_header: str, content: str, count: int) -> QuestionResult:
+        """Questions a user might ask that this passage answers."""
+        ...
+
+
 class EmbeddingProvider(Protocol):
     """Turns text into vectors."""
 

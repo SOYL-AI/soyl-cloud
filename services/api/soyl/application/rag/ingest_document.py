@@ -29,8 +29,9 @@ import uuid
 from dataclasses import dataclass
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy.sql import text
 
-from soyl.domain.ai.ports import EmbeddingProvider, ProviderError
+from soyl.domain.ai.ports import EmbeddingProvider, ProviderError, QuestionProvider
 from soyl.domain.rag.chunking import chunk_document, context_header
 from soyl.domain.storage import ObjectNotFound, StoragePort
 from soyl.infrastructure.db.repositories.document_repository import (
@@ -76,6 +77,8 @@ async def ingest_document(
     tenant_id: uuid.UUID,
     document_id: uuid.UUID,
     job_id: uuid.UUID,
+    questions: QuestionProvider | None = None,
+    questions_per_chunk: int = 3,
 ) -> IngestionResult:
     """Run the pipeline for one document. Raises `IngestionFailed` on any stage.
 
@@ -220,6 +223,21 @@ async def ingest_document(
             )
             await IngestionJobRepository(session).mark_succeeded(job_id)
 
+        # ── hypothetical questions (§43.2) ──────────────────────────────────
+        # Deliberately *after* the document is marked ready, and deliberately
+        # unable to fail the ingestion. A document without hypothetical
+        # questions is a slightly worse retrieval target; a document stuck in
+        # 'processing' because a cheap model had a bad minute is a broken one.
+        if questions is not None:
+            await _generate_questions(
+                factory=factory,
+                questions=questions,
+                embeddings=embeddings,
+                tenant_id=tenant_id,
+                document_id=document_id,
+                per_chunk=questions_per_chunk,
+            )
+
     except IngestionFailed as known:
         logger.warning(
             "ingestion failed document=%s stage=%s retryable=%s",
@@ -281,3 +299,94 @@ async def _record_failure(
             await DocumentRepository(session).set_status(document_id, "failed")
     except Exception:
         logger.exception("could not record ingestion failure for document=%s", document_id)
+
+
+async def _generate_questions(
+    *,
+    factory: async_sessionmaker[AsyncSession],
+    questions: QuestionProvider,
+    embeddings: EmbeddingProvider,
+    tenant_id: uuid.UUID,
+    document_id: uuid.UUID,
+    per_chunk: int,
+) -> int:
+    """Write hypothetical questions for a document's chunks.
+
+    Never raises. Every failure path here leaves a document that is already
+    `ready` and searchable — the questions are an improvement to retrieval, not
+    a precondition for it, and §43.2 describes them as closing a vocabulary gap
+    rather than as the index itself.
+    """
+    written = 0
+
+    try:
+        async with tenant_session(factory, tenant_id) as session:
+            rows = (
+                await session.execute(
+                    text(
+                        "SELECT id, context_header, content FROM rag.chunk "
+                        "WHERE document_id = :id ORDER BY ordinal"
+                    ),
+                    {"id": document_id},
+                )
+            ).all()
+
+        for row in rows:
+            try:
+                generated = await questions.generate(
+                    context_header=row.context_header or "",
+                    content=row.content,
+                    count=per_chunk,
+                )
+            except ProviderError:
+                # One chunk failing does not justify abandoning the rest.
+                logger.warning("question generation failed for chunk=%s", row.id)
+                continue
+
+            if not generated.questions:
+                continue
+
+            vectors = await embeddings.embed(generated.questions)
+
+            async with tenant_session(factory, tenant_id) as session:
+                for question, vector in zip(
+                    generated.questions, vectors.vectors, strict=True
+                ):
+                    await session.execute(
+                        text(
+                            "INSERT INTO rag.chunk_question "
+                            "(chunk_id, tenant_id, question, embedding) "
+                            "VALUES (:chunk_id, :tenant_id, :question, CAST(:embedding AS vector))"
+                        ),
+                        {
+                            "chunk_id": row.id,
+                            "tenant_id": tenant_id,
+                            "question": question,
+                            "embedding": vector_literal(vector),
+                        },
+                    )
+                    written += 1
+
+                await UsageRepository(session).record(
+                    tenant_id=tenant_id,
+                    kind="llm",
+                    provider=generated.usage.provider,
+                    model=generated.usage.model,
+                    route="hypothetical_questions",
+                    input_tokens=generated.usage.input_tokens,
+                    output_tokens=generated.usage.output_tokens,
+                    cost_inr=_question_cost(questions, generated.usage),
+                )
+    except Exception:
+        logger.exception("question generation failed for document=%s", document_id)
+
+    return written
+
+
+def _question_cost(provider: QuestionProvider, usage: object):  # type: ignore[no-untyped-def]
+    cost = getattr(provider, "cost_inr", None)
+    if not callable(cost):
+        return 0
+    return cost(
+        getattr(usage, "input_tokens", 0), getattr(usage, "output_tokens", 0)
+    )
