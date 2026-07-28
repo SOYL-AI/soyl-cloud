@@ -21,7 +21,7 @@ import uuid
 import httpx
 import pymupdf
 
-PASSWORD = "a-perfectly-reasonable-passphrase"
+PASSWORD = "a-perfectly-reasonable-passphrase"  # noqa: S105 - a throwaway account for one run
 DEADLINE_SECONDS = 120
 
 SECTIONS = [
@@ -148,7 +148,7 @@ async def main(base_url: str) -> int:
 
         started = time.monotonic()
         document_id = await upload(client, headers, pdf, "guest-complaint-sop.pdf", "application/pdf")
-        document, waited = await wait_for(client, headers, document_id, DEADLINE_SECONDS)
+        document, _ = await wait_for(client, headers, document_id, DEADLINE_SECONDS)
         total = time.monotonic() - started
 
         if not document:

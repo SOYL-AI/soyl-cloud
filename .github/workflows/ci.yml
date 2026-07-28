@@ -104,6 +104,13 @@ jobs:
       SOYL_ADMIN_DATABASE_URL: postgresql+asyncpg://postgres:postgres@localhost:5432/soyl
       SOYL_REDIS_URL: redis://localhost:6379/0
       SOYL_LEAD_INGEST_TOKEN: ci-lead-ingest-token-not-a-secret-value
+      SOYL_STORAGE_ENDPOINT_URL: http://127.0.0.1:9000
+      SOYL_STORAGE_BUCKET: soyl-documents
+      SOYL_STORAGE_ACCESS_KEY: soyl-local
+      SOYL_STORAGE_SECRET_KEY: soyl-local-secret
+      # No Azure credentials in CI. The provider factory falls back to the
+      # deterministic fake, and the tests that need the real endpoint are
+      # marked `azure` and excluded by default.
 
     defaults:
       run:
@@ -127,6 +134,22 @@ jobs:
           export PGPASSWORD=postgres
           psql -h localhost -U postgres -d soyl -v ON_ERROR_STOP=1 -f docker/postgres/00-extensions.sql
           psql -h localhost -U postgres -d soyl -v ON_ERROR_STOP=1 -f docker/postgres/01-roles.sql
+
+      # Not a service container: GitHub's `services:` cannot supply a command,
+      # and MinIO needs `server /data` to start at all. A plain docker run can.
+      # It is worth the extra step — the storage tests assert things a mock
+      # gets wrong, like whether a signed content type is actually binding.
+      - name: Start MinIO
+        working-directory: .
+        run: |
+          docker run -d --name minio -p 9000:9000             -e MINIO_ROOT_USER=soyl-local             -e MINIO_ROOT_PASSWORD=soyl-local-secret             minio/minio@sha256:14cea493d9a34af32f524e538b8346cf79f3321eff8e708c1e2960462bd8936e             server /data
+          for _ in $(seq 1 30); do
+            if curl -sf http://127.0.0.1:9000/minio/health/live >/dev/null; then
+              echo "MinIO ready"; exit 0
+            fi
+            sleep 2
+          done
+          echo "MinIO did not become ready"; docker logs minio; exit 1
 
       - name: Migrate
         run: uv run alembic upgrade head
@@ -152,6 +175,11 @@ jobs:
       # domain (UPDATE.md §6.9) once M4 adds one.
       - name: Architecture
         run: uv run lint-imports
+
+      # The worker is a second process against the same image, so a broken
+      # entrypoint would not surface anywhere else until a deploy.
+      - name: Worker entrypoint imports
+        run: uv run python -c "from soyl.infrastructure.queue.worker import WorkerSettings; print(WorkerSettings.functions)"
 
   # ── Migration reversibility ───────────────────────────────────────────────
   # UPDATE.md §13: "every migration reversible". A downgrade that has never
