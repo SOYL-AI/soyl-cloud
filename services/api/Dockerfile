@@ -35,26 +35,20 @@ RUN uv sync --frozen --no-install-project --no-dev
 COPY services/api/alembic.ini ./
 COPY services/api/alembic ./alembic
 COPY services/api/scripts ./scripts
+COPY services/api/entrypoint.sh ./entrypoint.sh
 COPY services/api/soyl ./soyl
 COPY docker/postgres ./docker/postgres
 RUN uv sync --frozen --no-dev
 
 # Non-root. Railway does not require it; the next platform might, and an image
 # that only runs as root is one that has to be rebuilt to find out.
-RUN useradd --create-home --uid 10001 soyl && chown -R soyl:soyl /app
+RUN chmod +x /app/entrypoint.sh \
+ && useradd --create-home --uid 10001 soyl \
+ && chown -R soyl:soyl /app
 USER soyl
 
 EXPOSE 8000
 
-# Migrations run here, immediately before the server, rather than in a platform
-# release hook. Railway has no release phase, and a container that starts
-# against an unmigrated database serves 500s that look like application bugs.
-# Keeping it in CMD also means every platform gets the same behaviour, which is
-# the portability rule in 09-infrastructure-integrations.md §52.2.
-#
-# Safe with one replica, which is what railway.json pins. Alembic takes a lock,
-# but before scaling past one, move this to a release job.
-#
-# PORT is injected by the platform (Railway uses 8080). The fallback keeps
-# `docker run` working unaided.
-CMD ["sh", "-c", "alembic upgrade head && uvicorn soyl.main:create_app --factory --host 0.0.0.0 --port ${PORT:-8000}"]
+# The role is chosen by SOYL_PROCESS: 'api' (default) or 'worker'. See
+# entrypoint.sh for why dispatch lives there rather than in railway.json.
+CMD ["/app/entrypoint.sh"]
