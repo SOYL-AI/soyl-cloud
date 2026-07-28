@@ -15,11 +15,14 @@ from soyl.infrastructure.db.models.core import (
 )
 from soyl.infrastructure.db.models.identity import CredentialToken, OAuthAccount, Session
 from soyl.infrastructure.db.models.lead import Lead
+from soyl.infrastructure.db.models.rag import Document, IngestionJob
 
 __all__ = [
     "AuditLog",
     "Base",
     "CredentialToken",
+    "Document",
+    "IngestionJob",
     "Lead",
     "Membership",
     "MembershipProperty",
