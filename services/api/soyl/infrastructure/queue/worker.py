@@ -19,14 +19,13 @@ import logging
 import uuid
 from typing import Any, ClassVar
 
-from arq.connections import RedisSettings
-
 from soyl.application.rag.ingest_document import IngestionFailed, ingest_document
 from soyl.infrastructure.db.session import create_engine, create_session_factory
 from soyl.infrastructure.providers.factory import (
     build_embedding_provider,
     build_question_provider,
 )
+from soyl.infrastructure.queue.connection import redis_settings
 from soyl.infrastructure.storage.s3 import S3Storage
 from soyl.settings import Settings, get_settings
 
@@ -121,10 +120,6 @@ async def shutdown(ctx: dict[str, Any]) -> None:
     engine = ctx.get("engine")
     if engine is not None:
         await engine.dispose()
-
-
-def redis_settings() -> RedisSettings:
-    return RedisSettings.from_dsn(str(get_settings().redis_url))
 
 
 class WorkerSettings:

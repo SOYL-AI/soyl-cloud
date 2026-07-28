@@ -33,7 +33,7 @@ from soyl.infrastructure.db.repositories.document_repository import (
     DocumentRepository,
     IngestionJobRepository,
 )
-from soyl.infrastructure.queue.worker import redis_settings
+from soyl.infrastructure.queue.connection import redis_settings
 from soyl.interface.http.authenticated import AuthedRequest
 from soyl.interface.http.deps import get_storage
 
