@@ -30,6 +30,13 @@ dependencies = [
     # soyl/infrastructure/providers/ — enforced by the import-linter contract
     # below rather than by anyone remembering (UPDATE.md §6.9).
     "openai>=2.9,<3.0",
+    # Digital-native PDF extraction (UPDATE.md §8). Scanned documents need a
+    # layout-aware OCR service, which is a later decision — this one refuses
+    # them with a readable message rather than producing empty chunks.
+    "pymupdf>=1.27,<2.0",
+    # Token counting, so chunk sizes are measured in the unit the model
+    # charges in rather than guessed from characters.
+    "tiktoken>=0.13,<1.0",
 ]
 
 [dependency-groups]
