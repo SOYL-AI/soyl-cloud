@@ -138,7 +138,7 @@ export default async function AppPage() {
               id="next-heading"
               className="mb-6 text-sm font-semibold uppercase tracking-wide text-[var(--color-soyl-gray-500)]"
             >
-              Coming next
+              Knowledge base
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
               {[
@@ -146,26 +146,59 @@ export default async function AppPage() {
                   icon: FileText,
                   title: "Your documents",
                   body: "Upload SOPs, policies, contracts and rate sheets. We index them so they can be asked about.",
+                  href: "/app/documents",
                 },
                 {
                   icon: MessageSquareText,
                   title: "Ask anything",
                   body: "Plain questions about your own documents, answered with the exact source cited.",
                 },
-              ].map((entry) => (
-                <div
-                  key={entry.title}
-                  className="rounded-[28px] border border-[var(--color-soyl-gray-200)] bg-white/60 p-6"
-                >
-                  <span className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-soyl-gray-100)] text-[var(--color-soyl-gray-400)]">
-                    <entry.icon size={22} />
-                  </span>
-                  <h3 className="text-lg font-bold text-[var(--color-soyl-gray-600)]">
-                    {entry.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-[var(--color-soyl-gray-500)]">{entry.body}</p>
-                </div>
-              ))}
+              ].map((entry) => {
+                // A tile that goes somewhere is a link; one that does not is a
+                // div. Making the second look clickable is worse than saying so.
+                const body = (
+                  <>
+                    <span
+                      className={[
+                        "mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl",
+                        entry.href
+                          ? "bg-[var(--color-soyl-mint-light)] text-[var(--color-soyl-mint-dark)]"
+                          : "bg-[var(--color-soyl-gray-100)] text-[var(--color-soyl-gray-400)]",
+                      ].join(" ")}
+                    >
+                      <entry.icon size={22} />
+                    </span>
+                    <h3
+                      className={[
+                        "text-lg font-bold",
+                        entry.href
+                          ? "text-[var(--color-soyl-charcoal)]"
+                          : "text-[var(--color-soyl-gray-600)]",
+                      ].join(" ")}
+                    >
+                      {entry.title}
+                    </h3>
+                    <p className="mt-1 text-sm text-[var(--color-soyl-gray-500)]">{entry.body}</p>
+                  </>
+                );
+
+                return entry.href ? (
+                  <Link
+                    key={entry.title}
+                    href={entry.href}
+                    className="rounded-[28px] border border-[var(--color-soyl-gray-200)] bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                  >
+                    {body}
+                  </Link>
+                ) : (
+                  <div
+                    key={entry.title}
+                    className="rounded-[28px] border border-[var(--color-soyl-gray-200)] bg-white/60 p-6"
+                  >
+                    {body}
+                  </div>
+                );
+              })}
             </div>
           </section>
 

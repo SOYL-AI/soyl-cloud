@@ -142,6 +142,8 @@ class WorkerSettings:
     # finds something rather than an empty result.
     keep_result = 300
 
-    @staticmethod
-    def redis_settings() -> RedisSettings:
-        return redis_settings()
+    # ARQ reads this as an attribute, not a callable, so it is resolved when
+    # the class is defined. That means settings are validated at worker import
+    # rather than on the first job — which is where a bad Redis URL should
+    # surface anyway.
+    redis_settings = redis_settings()
