@@ -99,6 +99,14 @@ class RetrievalResult:
     # skipped, which is how a reader tells "the reranker scored this 0.9" from
     # "the reranker never ran".
     scores: list[float] = field(default_factory=list)
+    # Chunks the reranker scored and the threshold rejected, as (id, score).
+    #
+    # "We never found it" and "we found it and judged it too weak" are different
+    # failures with different fixes — one is a retriever problem, the other a
+    # calibration problem — and from the outside both look like an empty answer.
+    # Without this the two are indistinguishable, which is how a mis-set
+    # threshold gets debugged as a broken retriever.
+    dropped: list[tuple[uuid.UUID, float]] = field(default_factory=list)
     # False when the reranker was absent, too slow, or failed. §45.3 requires
     # the annotation: a silent degradation looks like a quality regression
     # nobody can account for.
@@ -185,6 +193,11 @@ async def retrieve(
         )
 
     kept = [item for item in ranked if item.score >= min_rerank_score]
+    dropped = [
+        (chunks[item.index].chunk_id, item.score)
+        for item in ranked
+        if item.score < min_rerank_score
+    ]
 
     if not kept:
         logger.info(
@@ -206,6 +219,7 @@ async def retrieve(
         fused=[by_id[chunk.chunk_id] for chunk in ordered_chunks],
         query=query,
         scores=[item.score for item in kept],
+        dropped=dropped,
         reranked=True,
         usage=usage,
     )

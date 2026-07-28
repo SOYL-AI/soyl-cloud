@@ -93,10 +93,20 @@ RESPONSE_FORMAT: ResponseFormatJSONSchema = {
     },
 }
 
-# Enough to judge relevance, short enough that 30 of them fit comfortably. A
-# passage whose relevance is not apparent in 1200 characters is not the passage
-# that answers the question.
-CANDIDATE_CHARS = 1200
+# Large enough to hold a whole chunk. §43.1 caps an SOP chunk at 900 tokens,
+# which is roughly 3600 characters, and merged sections reach that cap.
+#
+# This was 1200 and it was wrong. The labelled set caught it: the query "what is
+# the reference number on the Sparkle Linens agreement" scored its own answer
+# 0.00, because the contract number sits past character 1200 of a chunk whose
+# first third is about supplier due diligence. The reranker was reading a
+# fragment and judging it accurately — the fragment really is irrelevant.
+#
+# The general form of that bug is the dangerous one: truncation makes the
+# reranker judge something *different from what the retriever will hand the
+# model*, so the disagreement is invisible from either end. A candidate limit
+# below the chunk limit is never correct.
+CANDIDATE_CHARS = 4000
 
 MAX_SCORE = 10.0
 
