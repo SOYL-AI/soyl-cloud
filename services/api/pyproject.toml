@@ -12,7 +12,11 @@ dependencies = [
     "alembic>=1.17,<2.0",
     "pydantic[email]>=2.12,<3.0",
     "pydantic-settings>=2.13,<3.0",
-    "redis>=6.4,<7.0",
+    # Held at 5.x because arq pins redis<6. Nothing we use from redis-py needs
+    # 6.x — the claims cache is get/set/incr/ping and aclose, all present since
+    # 5.0.1 — so matching arq is cheaper than replacing the queue UPDATE.md §5
+    # names. Revisit when arq widens its constraint.
+    "redis>=5.0.1,<6.0",
     "structlog>=25.4,<26.0",
     # Argon2id, per UPDATE.md §5. The reference implementation's own bindings;
     # nothing else in the Python ecosystem is a serious alternative.
@@ -37,6 +41,9 @@ dependencies = [
     # Token counting, so chunk sizes are measured in the unit the model
     # charges in rather than guessed from characters.
     "tiktoken>=0.13,<1.0",
+    # The ingestion queue (UPDATE.md §5). Ingestion must not run in the
+    # request path, and a 40-page PDF has two minutes to become queryable.
+    "arq>=0.27,<1.0",
 ]
 
 [dependency-groups]

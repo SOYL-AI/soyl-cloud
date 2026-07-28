@@ -16,7 +16,11 @@ from redis.asyncio import Redis
 
 from soyl.infrastructure.db.session import create_engine, create_session_factory
 from soyl.infrastructure.email import EmailSender
-from soyl.infrastructure.providers.factory import build_embedding_provider
+from soyl.infrastructure.providers.factory import (
+    build_embedding_provider,
+    build_question_provider,
+)
+from soyl.infrastructure.storage.s3 import S3Storage
 from soyl.interface.http.errors import register_exception_handlers
 from soyl.interface.http.v1.router import router as v1_router
 from soyl.settings import Settings, get_settings
@@ -33,6 +37,14 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Stateless, so one instance is fine. Unconfigured is a valid state: local
     # development logs the verification link instead of sending it.
     app.state.embeddings = build_embedding_provider(settings)
+    app.state.questions = build_question_provider(settings)
+    app.state.storage = S3Storage(
+        endpoint_url=str(settings.storage_endpoint_url) if settings.storage_endpoint_url else None,
+        region=settings.storage_region,
+        bucket=settings.storage_bucket,
+        access_key=settings.storage_access_key,
+        secret_key=settings.storage_secret_key,
+    )
     app.state.email_sender = EmailSender(
         api_key=settings.resend_api_key, from_address=settings.email_from
     )

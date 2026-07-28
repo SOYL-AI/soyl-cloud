@@ -43,8 +43,12 @@ class DocumentRepository:
         blob_uri: str,
         checksum: str,
         property_ids: list[uuid.UUID] | None = None,
+        document_id: uuid.UUID | None = None,
     ) -> Document:
         document = Document(
+            # Supplied when the object key was built before the row, so the two
+            # agree without an update afterwards.
+            id=document_id or uuid.uuid4(),
             tenant_id=tenant_id,
             title=title,
             doc_type=doc_type,
