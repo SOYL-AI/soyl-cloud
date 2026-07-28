@@ -2,10 +2,11 @@
 
 from fastapi import APIRouter
 
-from soyl.interface.http.v1 import auth, health, leads, tenants
+from soyl.interface.http.v1 import auth, documents, health, leads, tenants
 
 router = APIRouter()
 router.include_router(health.router)
 router.include_router(auth.router)
 router.include_router(leads.router)
 router.include_router(tenants.router)
+router.include_router(documents.router)

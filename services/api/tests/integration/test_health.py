@@ -129,6 +129,10 @@ async def test_docs_are_closed_outside_development(
             web_base_url="https://www.soyl.cloud",
             resend_api_key="re_not_a_real_key",
             email_from="SOYL <notifications@soyl.cloud>",
+            storage_access_key="storage-key",
+            storage_secret_key="storage-secret",
+            azure_openai_endpoint="https://soyl.openai.azure.com",
+            azure_openai_api_key="azure-key",
         )
     )
 
