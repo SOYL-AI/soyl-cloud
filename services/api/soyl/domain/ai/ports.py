@@ -85,6 +85,56 @@ class QuestionProvider(Protocol):
         ...
 
 
+@dataclass(frozen=True, slots=True)
+class Ranked:
+    """One candidate's position after reranking."""
+
+    # Index into the candidate list the caller passed in. An index rather than
+    # the text, so the caller keeps ownership of what a "document" is and the
+    # provider never has to round-trip content it might alter.
+    index: int
+    # Normalised to 0..1, because §45.3's threshold is stated as a normalised
+    # 0.25 and a raw logit would make that number mean something different for
+    # every implementation.
+    score: float
+
+
+@dataclass(frozen=True, slots=True)
+class RerankResult:
+    """Candidates in their new order, best first, plus what it cost."""
+
+    results: list[Ranked]
+    usage: Usage
+
+
+class RerankProvider(Protocol):
+    """Reorders retrieved candidates by reading them against the query (§45.3).
+
+    Retrieval embeds the query and the documents independently, which is fast
+    and approximate. A reranker reads both together, which is slow and accurate
+    — so it only ever sees the ~30 candidates retrieval already shortlisted.
+
+    The handbook specifies a cross-encoder here and names an LLM listwise rerank
+    as the fallback when one is unavailable. This port is the reason that choice
+    is reversible: it describes what reranking *does*, not how, so swapping in a
+    real cross-encoder later is a factory change and nothing else.
+    """
+
+    @property
+    def model(self) -> str:
+        ...
+
+    async def rerank(self, *, query: str, documents: list[str], top_n: int) -> RerankResult:
+        """Score candidates against the query and return them reordered.
+
+        May return fewer than `top_n`. It must never return more, and every
+        index it returns must be one it was given — the caller uses them to
+        look up chunks, and a fabricated index would be a crash or, worse, a
+        citation pointing at the wrong document.
+        """
+        ...
+
+
 class EmbeddingProvider(Protocol):
     """Turns text into vectors."""
 

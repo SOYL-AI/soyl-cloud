@@ -20,6 +20,7 @@ green tick that means nothing.
 
 from __future__ import annotations
 
+import asyncio
 import uuid
 from collections.abc import AsyncIterator
 
@@ -27,11 +28,14 @@ import pytest
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from sqlalchemy.sql import text
 
+from soyl.application.rag import retrieve as retrieve_module
 from soyl.application.rag.ingest_document import ingest_document
 from soyl.application.rag.retrieve import retrieve
+from soyl.domain.ai.ports import ProviderError, Ranked, RerankResult, Usage
 from soyl.infrastructure.db.session import create_session_factory, tenant_session
 from soyl.infrastructure.providers.fake import FakeEmbeddings
 from soyl.infrastructure.providers.fake_questions import FakeQuestions
+from soyl.infrastructure.providers.fake_rerank import FakeRerank
 from soyl.infrastructure.storage.s3 import S3Storage
 from tests.conftest import ApiTestSettings
 from tests.integration.test_ingestion import prepare
@@ -342,6 +346,188 @@ async def test_an_impossible_threshold_returns_nothing(
     # And it still records what it considered, so the M6 inspector can show
     # that the pipeline looked rather than that nothing happened.
     assert result.fused
+
+
+# ── Reranking ───────────────────────────────────────────────────────────────
+#
+# Reranking is a quality stage, not a correctness one. Every test here is about
+# what happens when it *doesn't* work, because that is the path that runs on a
+# bad day and the one nobody exercises by hand.
+
+
+class Hangs:
+    """A reranker that never returns. Stands in for a wedged provider."""
+
+    model = "hangs"
+
+    async def rerank(self, *, query: str, documents: list[str], top_n: int) -> RerankResult:
+        await asyncio.sleep(60)
+        raise AssertionError("unreachable")
+
+
+class Fails:
+    """A reranker that is down."""
+
+    model = "fails"
+
+    async def rerank(self, *, query: str, documents: list[str], top_n: int) -> RerankResult:
+        raise ProviderError("rerank provider returned 503", retryable=True)
+
+
+class Lies:
+    """A reranker that returns a confident ranking over indices it invented."""
+
+    model = "lies"
+
+    async def rerank(self, *, query: str, documents: list[str], top_n: int) -> RerankResult:
+        return RerankResult(
+            results=[Ranked(index=-1, score=1.0), Ranked(index=9999, score=0.9)],
+            usage=Usage(provider="fake", model=self.model),
+        )
+
+
+class Rejects:
+    """A reranker that finds nothing good enough."""
+
+    model = "rejects"
+
+    async def rerank(self, *, query: str, documents: list[str], top_n: int) -> RerankResult:
+        return RerankResult(
+            results=[Ranked(index=index, score=0.05) for index in range(len(documents))],
+            usage=Usage(provider="fake", model=self.model),
+        )
+
+
+async def test_reranking_marks_the_result_as_reranked(
+    app_factory: async_sessionmaker[AsyncSession], corpus: uuid.UUID
+) -> None:
+    async with tenant_session(app_factory, corpus) as session:
+        result = await retrieve(
+            session,
+            embeddings=FakeEmbeddings(),
+            reranker=FakeRerank(),
+            query="cancellation of a corporate booking",
+        )
+
+    assert result.reranked
+    assert result.rerank_skipped_reason is None
+    assert len(result.scores) == len(result.chunks)
+
+
+async def test_a_hanging_reranker_falls_back_to_fusion_order(
+    app_factory: async_sessionmaker[AsyncSession],
+    corpus: uuid.UUID,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """§45.3: skipped for that turn, fusion order used, with an annotation.
+
+    The budget is patched down so the test does not sit for twelve seconds —
+    what is being asserted is the fallback, not the duration.
+    """
+    monkeypatch.setattr(retrieve_module, "RERANK_BUDGET_SECONDS", 0.1)
+
+    async with tenant_session(app_factory, corpus) as session:
+        result = await retrieve(
+            session, embeddings=FakeEmbeddings(), reranker=Hangs(), query="cancellation"
+        )
+
+    assert result.chunks, "a slow reranker must not cost the user their answer"
+    assert not result.reranked
+    assert result.rerank_skipped_reason is not None
+    assert "budget" in result.rerank_skipped_reason
+
+
+async def test_a_failing_reranker_falls_back_to_fusion_order(
+    app_factory: async_sessionmaker[AsyncSession], corpus: uuid.UUID
+) -> None:
+    async with tenant_session(app_factory, corpus) as session:
+        result = await retrieve(
+            session, embeddings=FakeEmbeddings(), reranker=Fails(), query="cancellation"
+        )
+
+    assert result.chunks
+    assert not result.reranked
+    assert result.rerank_skipped_reason is not None
+    assert "503" in result.rerank_skipped_reason
+
+
+async def test_invented_indices_never_reach_a_citation(
+    app_factory: async_sessionmaker[AsyncSession], corpus: uuid.UUID
+) -> None:
+    """The quiet failure the port's docstring warns about.
+
+    `-1` is a valid Python list index. Trusting it would return a real chunk,
+    from the other end of the candidate list, with a real citation — an answer
+    that looks correct and sources the wrong document.
+    """
+    async with tenant_session(app_factory, corpus) as session:
+        result = await retrieve(
+            session, embeddings=FakeEmbeddings(), reranker=Lies(), query="cancellation"
+        )
+
+    assert result.found_nothing
+
+
+async def test_nothing_clearing_the_rerank_threshold_returns_nothing(
+    app_factory: async_sessionmaker[AsyncSession], corpus: uuid.UUID
+) -> None:
+    """§45.3's stance, and the reason the threshold exists at all.
+
+    Retrieval found candidates and the reranker judged all of them weak. The
+    honest outcome is zero chunks, not the best of a bad set — this is the same
+    behaviour as "nothing in the corpus covers that", reached a different way.
+    """
+    async with tenant_session(app_factory, corpus) as session:
+        result = await retrieve(
+            session, embeddings=FakeEmbeddings(), reranker=Rejects(), query="cancellation"
+        )
+
+    assert result.found_nothing
+    assert result.reranked, "it ran and rejected everything; that is not a skip"
+    assert result.rerank_skipped_reason is None
+
+
+async def test_no_reranker_is_not_recorded_as_a_skipped_one(
+    app_factory: async_sessionmaker[AsyncSession], corpus: uuid.UUID
+) -> None:
+    """"Never configured" and "failed today" must be distinguishable.
+
+    Both give fusion order. Only one is worth waking up for.
+    """
+    async with tenant_session(app_factory, corpus) as session:
+        result = await retrieve(session, embeddings=FakeEmbeddings(), query="cancellation")
+
+    assert result.chunks
+    assert not result.reranked
+    assert result.rerank_skipped_reason is None
+
+
+async def test_usage_is_collected_from_every_model_call(
+    app_factory: async_sessionmaker[AsyncSession], corpus: uuid.UUID
+) -> None:
+    """§6.6: the usage ledger from the first model call.
+
+    Retrieval makes two — an embedding and a rerank — and both have to reach
+    the caller, because a cost the caller never sees is a cost nobody bills.
+    """
+    async with tenant_session(app_factory, corpus) as session:
+        result = await retrieve(
+            session, embeddings=FakeEmbeddings(), reranker=FakeRerank(), query="cancellation"
+        )
+
+    assert len(result.usage) == 2
+
+
+async def test_a_failed_rerank_still_reports_the_embedding_it_paid_for(
+    app_factory: async_sessionmaker[AsyncSession], corpus: uuid.UUID
+) -> None:
+    """The embedding was bought before the reranker failed, so it is owed."""
+    async with tenant_session(app_factory, corpus) as session:
+        result = await retrieve(
+            session, embeddings=FakeEmbeddings(), reranker=Fails(), query="cancellation"
+        )
+
+    assert len(result.usage) == 1
 
 
 # ── Isolation ───────────────────────────────────────────────────────────────
