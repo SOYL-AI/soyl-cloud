@@ -205,3 +205,87 @@ def test_a_root_level_chunk_says_so_rather_than_leaving_it_blank() -> None:
     header = context_header(title="Menu", heading_path=[])
 
     assert "(document root)" in header
+
+
+# ── Regressions found by the retrieval eval corpus ──────────────────────────
+#
+# Both of these survived the original test suite because that suite used tidy
+# hand-written fixtures. They appeared the moment the chunker met seven
+# documents written the way real SOPs are written, and both corrupt the
+# context header — which §43.2 calls the highest-impact retrieval improvement
+# available, and which is embedded, so the damage reaches the vector.
+
+
+def test_a_cross_reference_wrapped_onto_a_new_line_is_not_a_heading() -> None:
+    """The bug: "…in section\n7. The pool deck…" became a root-level heading.
+
+    Because it parsed at depth 1 it replaced the document title at the root of
+    the path for *every subsequent chunk*, not just its own. Cross-references
+    and hard wrapping are both ordinary in the contracts and SOPs we ingest, so
+    one sentence could poison the rest of a document.
+    """
+    document = """# Food and Beverage
+
+## 1. Outlet hours
+
+The bar operates from 11:00 to 23:30 subject to the excise conditions in section
+7. The pool deck serves from 08:00 to 19:00 and closes at sunset.
+
+## 2. Buffet service
+
+Hot items are held above 63 degrees.
+"""
+
+    sections = split_into_sections(document)
+    roots = {section.heading_path[0] for section in sections if section.heading_path}
+
+    assert roots == {"Food and Beverage"}
+    assert all("pool deck" not in " > ".join(s.heading_path) for s in sections)
+
+
+def test_a_numbered_clause_after_a_blank_line_is_still_a_heading() -> None:
+    """The fix must not cost us the numbered-clause form itself.
+
+    Contracts number their clauses and do not use markdown, so losing this
+    would trade one bad heading path for no heading path at all.
+    """
+    document = """# Supply Agreement
+
+12. Term and termination
+
+This agreement runs for twenty-four months.
+"""
+
+    sections = split_into_sections(document)
+
+    assert any(s.heading_path[-1] == "12 Term and termination" for s in sections)
+
+
+def test_a_merged_section_keeps_its_heading_in_the_body() -> None:
+    """The bug: merging siblings silently dropped the absorbed heading.
+
+    The merged chunk keeps the first section's path, so without the marker a
+    chunk headed "Arrival timings" runs straight into the departure policy with
+    nothing between them. A question about late checkout then matches a chunk
+    whose header — embedded with the content — says the passage is about
+    arrival.
+    """
+    document = """# Front Office
+
+## 3. Arrival timings
+
+Standard arrival time is 14:00.
+
+## 4. Departure timings
+
+Standard departure time is 11:00.
+"""
+
+    chunks = chunk_document(document, doc_type="sop", count_tokens=words)
+
+    assert len(chunks) == 1
+    assert chunks[0].heading_path[-1] == "3. Arrival timings"
+    assert "4. Departure timings" in chunks[0].content
+    # And both policies are actually present, which is the point of merging.
+    assert "14:00" in chunks[0].content
+    assert "11:00" in chunks[0].content

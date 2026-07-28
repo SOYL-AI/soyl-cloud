@@ -77,11 +77,31 @@ class Chunk:
     token_count: int
 
 
-def heading_level(line: str) -> int | None:
+def heading_level(line: str, *, starts_block: bool = True) -> int | None:
     """Depth of a heading line, or None if it is not one.
 
     Markdown depth is the number of hashes. Numbered-clause depth is the number
     of dotted components, so "3.2" nests under "3".
+
+    `starts_block` says whether the line begins a new block — that is, whether
+    the line before it was blank or was itself a heading. It gates the numbered
+    form only, and it is not optional in practice.
+
+    Without it, hard-wrapped prose containing a cross-reference is read as a
+    heading. Real text like:
+
+        The bar operates from 11:00 to 23:30 subject to the conditions in section
+        7. The pool deck serves from 08:00 to 19:00 and closes at sunset.
+
+    wraps so that "7. The pool deck serves..." starts a line, matches the
+    numbered-clause pattern, and becomes a heading — and because it is depth 1,
+    it replaces the document title at the root of the path for **every
+    subsequent chunk**. The context header §43.2 calls the highest-impact
+    retrieval improvement then carries nonsense for the rest of the document.
+
+    Cross-references and hard wrapping are both ordinary in the SOPs and
+    contracts we ingest, so this is not an edge case. A markdown `#` heading is
+    unambiguous and is not gated.
     """
     match = _HEADING.match(line)
     if not match:
@@ -89,6 +109,9 @@ def heading_level(line: str) -> int | None:
 
     if match.group("hashes"):
         return len(match.group("hashes"))
+
+    if not starts_block:
+        return None
     return len(match.group("number").split("."))
 
 
@@ -107,9 +130,14 @@ def split_into_sections(text: str) -> list[Section]:
     sections: list[Section] = []
     path: list[str] = []
     current = Section(heading_path=[])
+    # A numbered clause only counts as a heading when it opens a block. See
+    # `heading_level` — without this, wrapped prose containing "…in section\n7."
+    # becomes a root-level heading and poisons every path after it.
+    starts_block = True
 
     for line in text.splitlines():
-        level = heading_level(line)
+        level = heading_level(line, starts_block=starts_block)
+        starts_block = not line.strip() or level is not None
 
         if level is None:
             current.lines.append(line)
@@ -215,9 +243,19 @@ def chunk_document(
         siblings = pending.heading_path[:-1] == section.heading_path[:-1]
 
         if siblings and combined_tokens <= target:
+            # The absorbed section's heading is re-emitted into the body.
+            #
+            # The chunk keeps the first section's heading path, so without this
+            # the two bodies run together with nothing marking where one policy
+            # ends and the next begins. A chunk headed "Arrival timings" whose
+            # second half is the departure policy will answer a question about
+            # late checkout with text the header says is about arrival — and
+            # the context header is embedded, so the error is in the vector too.
+            heading = section.heading_path[-1] if section.heading_path else ""
+            marker = f"{'#' * max(len(section.heading_path), 1)} {heading}" if heading else ""
             pending = Section(
                 heading_path=pending.heading_path,
-                lines=[pending.text, section.text],
+                lines=[pending.text, marker, section.text],
             )
         else:
             flush(pending)

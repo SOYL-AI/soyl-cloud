@@ -1,0 +1,29 @@
+corpus: 50 chunks · 40 questions · 12 probes
+reranked: 40/40
+
+  recall@10     1.000   target 0.85   PASS
+  precision@5   1.000   target 0.70   PASS
+  MRR           0.925
+  context purity           0.750   (share of returned chunks that earn their place)
+  recall@10 pre-threshold  1.000   (what the retriever found before §45.3's cut)
+  probes        0.583   (7/12 returned nothing)
+
+by tag:
+  exact-identifier  n=2   recall@10=1.000  precision@5=1.000
+  multi-chunk       n=2   recall@10=1.000  precision@5=1.000
+  near-miss         n=12  recall@10=1.000  precision@5=1.000
+  numeric           n=16  recall@10=1.000  precision@5=1.000
+  procedural        n=24  recall@10=1.000  precision@5=1.000
+  vocabulary-gap    n=18  recall@10=1.000  precision@5=1.000
+
+probes that returned something they should not have (5):
+  p03  1 chunks — what commission does booking.com charge us
+      near-miss: section 6 of the commercial policy gives the ten per cent travel agent commission, which is a different arrangement. Answering ten per cent here would be a confident invention
+  p05  2 chunks — what time does the spa open
+      near-miss: outlet hours are given for every other outlet, so the shape of the answer exists and the answer does not
+  p06  3 chunks — what was our occupancy last march
+      no operating data anywhere in the corpus
+  p07  2 chunks — can guests smoke on their balcony
+      near-miss: housekeeping lists signs of smoking as a thing to report, and the ashtrays in the smoking area are mentioned; neither is a smoking policy
+  p12  2 chunks — how do i reset the television in a guest room
+      near-miss: the quarterly room inspection lists the television, which is not a fault procedure

@@ -103,6 +103,9 @@ ignore = [
 # Test fixtures use literal local-development passwords on purpose, and build
 # SQL from a parametrised list of table names that is defined in the file.
 "tests/**" = ["S105", "S106", "S608", "E501"]
+# The retrieval eval is a command-line tool whose entire output is printed, and
+# the report is a fixed-width table that reads worse wrapped than long.
+"evals/**" = ["T201", "E501"]
 
 [tool.mypy]
 python_version = "3.12"

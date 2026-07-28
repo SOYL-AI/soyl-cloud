@@ -1,0 +1,391 @@
+#  The labelled retrieval set — 40 question/chunk pairs, plus the probes.
+#
+#  Read evals/README.md before changing anything here. In particular: questions
+#  are written in the words an operator would use, never the document's words.
+#  A question that borrows the document's phrasing measures nothing, because
+#  lexical search will find it whatever the rest of the pipeline does.
+#
+#  `answers` names a *section of a document*, not a chunk id. Chunk ids are
+#  regenerated on every ingest and chunk boundaries move whenever the chunker is
+#  tuned, so a set labelled by id would rot on the first change to §43.1. The
+#  harness resolves a section to whichever chunk carries it — including one it
+#  was merged into — and fails loudly if it cannot, which is what stops a
+#  renamed heading from quietly scoring zero.
+#
+#  Tags:
+#    vocabulary-gap  the question and the answer share almost no words
+#    exact-identifier a contract number or a code; lexical search's job
+#    multi-chunk     more than one section is genuinely needed
+#    near-miss       a similar-sounding section elsewhere is the wrong answer
+#    numeric         the answer is a threshold, a limit or a deadline
+#    procedural      "what do I do if…"
+
+# ── Front office ────────────────────────────────────────────────────────────
+
+[[question]]
+id = "q01"
+text = "how late can a guest stay in the room before we start charging them for another night"
+answers = [{ document = "front-office-sop.md", section = "4. Departure timings and late departure" }]
+tags = ["vocabulary-gap", "numeric"]
+note = "the document never says 'stay in the room'; it says 'departure time' and 'extended occupancy'"
+
+[[question]]
+id = "q02"
+text = "a company pulled out of their booking yesterday evening for tonight, do we still bill them"
+answers = [{ document = "front-office-sop.md", section = "6. Cancellation and no-show — corporate and contracted bookings" }]
+tags = ["vocabulary-gap", "near-miss", "numeric"]
+note = "near-miss: section 5 covers the same subject for individuals, and the banquet cancellation scale is a third wrong answer"
+
+[[question]]
+id = "q03"
+text = "guest booked the non refundable rate and his mother has just died, can we give the money back"
+answers = [{ document = "front-office-sop.md", section = "5. Cancellation and no-show — individual bookings" }]
+tags = ["vocabulary-gap", "procedural"]
+note = "'non refundable' is our word for it; the document says 'advance purchase rate plan'"
+
+[[question]]
+id = "q04"
+text = "we have sold more rooms than we have tonight, who gets sent to another hotel first"
+answers = [{ document = "front-office-sop.md", section = "8. Overbooking and relocating a guest" }]
+tags = ["vocabulary-gap", "procedural"]
+note = "'sent to another hotel' vs 'relocated'"
+
+[[question]]
+id = "q05"
+text = "a british couple are checking in tonight, is there anything we have to file with the government"
+answers = [{ document = "front-office-sop.md", section = "2. Identity, registration and foreign nationals" }]
+tags = ["vocabulary-gap", "procedural"]
+note = "the answer is Form C within 24 hours; the question never says Form C, passport or foreign national"
+
+[[question]]
+id = "q06"
+text = "how much can a manager take off a guest's bill on his own without asking anyone"
+answers = [
+  { document = "front-office-sop.md", section = "10. Handling a complaint at the desk" },
+  { document = "commercial-contracts.md", section = "5. Discount and approval authority" },
+]
+tags = ["multi-chunk", "numeric"]
+note = "two genuinely different limits — the complaint waiver and the discount authority — and an operator asking this needs both"
+
+# ── Housekeeping ────────────────────────────────────────────────────────────
+
+[[question]]
+id = "q07"
+text = "how quickly should a room be ready again after someone checks out"
+answers = [{ document = "housekeeping-sop.md", section = "2. Servicing a departure room" }]
+tags = ["vocabulary-gap", "numeric"]
+note = "merged into section 1 at ingest; the harness has to resolve it there"
+
+[[question]]
+id = "q08"
+text = "the sign has been on the door since yesterday morning and nobody has answered, what now"
+answers = [{ document = "housekeeping-sop.md", section = "4. Privacy requests and unserviced rooms" }]
+tags = ["vocabulary-gap", "procedural"]
+note = "deliberately never names the sign; 'do not disturb' and 'privacy request' are both absent from the question"
+
+[[question]]
+id = "q09"
+text = "someone left a gold chain behind in a room, how long do we hang on to it"
+answers = [{ document = "housekeeping-sop.md", section = "8. Lost and found" }]
+tags = ["numeric", "procedural"]
+
+[[question]]
+id = "q10"
+text = "can the girls use the descaler and the bleach together to get the bathroom done faster"
+answers = [{ document = "housekeeping-sop.md", section = "10. Chemical handling and staff safety" }]
+tags = ["vocabulary-gap", "procedural"]
+note = "the answer is a chlorine gas hazard; the question is phrased as a productivity question, which is how it would actually be asked"
+
+[[question]]
+id = "q11"
+text = "attendant found a cockroach in 402, does the room have to come out of sale"
+answers = [{ document = "housekeeping-sop.md", section = "11. Pest control and reporting" }]
+tags = ["procedural"]
+
+[[question]]
+id = "q12"
+text = "we ruined a guest's shirt in the wash, who pays and does the same apply to our own bedsheets"
+answers = [
+  { document = "housekeeping-sop.md", section = "5. Linen handling and laundry despatch" },
+  { document = "commercial-contracts.md", section = "8. Laundry and linen supply" },
+]
+tags = ["multi-chunk", "near-miss"]
+note = "guest laundry damage is housekeeping; linen lost by the contractor is the commercial contract. Both say 'depreciated replacement value', which is exactly why one alone is a wrong answer"
+
+# ── Food, beverage and banquets ─────────────────────────────────────────────
+
+[[question]]
+id = "q13"
+text = "the wedding party want to move to a date in november instead, does that count as cancelling"
+answers = [{ document = "fnb-banquet-sop.md", section = "6. Banquet cancellation and postponement" }]
+tags = ["vocabulary-gap", "near-miss"]
+note = "near-miss: the front office cancellation sections are about rooms and are the wrong answer"
+
+[[question]]
+id = "q14"
+text = "conference is ten days away and the client has just pulled out, what percentage do we invoice"
+answers = [{ document = "fnb-banquet-sop.md", section = "6. Banquet cancellation and postponement" }]
+tags = ["numeric", "near-miss"]
+note = "ten days falls in the fifteen-to-seven band at seventy-five per cent; the sliding scale has to be retrieved, not guessed"
+
+[[question]]
+id = "q15"
+text = "how long can the food stay out on the breakfast spread before we have to bin it"
+answers = [{ document = "fnb-banquet-sop.md", section = "2. Buffet setup, holding and replenishment" }]
+tags = ["vocabulary-gap", "numeric"]
+
+[[question]]
+id = "q16"
+text = "table four says she cannot have nuts, how do we put that order through"
+answers = [{ document = "fnb-banquet-sop.md", section = "3. Allergen declaration and dietary requests" }]
+tags = ["vocabulary-gap", "procedural"]
+
+[[question]]
+id = "q17"
+text = "the party want to bring their own whisky to the function room, what do we charge per bottle"
+answers = [{ document = "fnb-banquet-sop.md", section = "8. Corkage and outside food" }]
+tags = ["numeric", "near-miss"]
+note = "near-miss: the bar licensing section is adjacent and is about our own alcohol"
+
+[[question]]
+id = "q18"
+text = "there is a lot of biryani left over from the banquet, can the staff take it home"
+answers = [{ document = "fnb-banquet-sop.md", section = "11. Waste, leftovers and donation" }]
+tags = ["vocabulary-gap", "procedural"]
+
+# ── Engineering ─────────────────────────────────────────────────────────────
+
+[[question]]
+id = "q19"
+text = "guest in 305 says there is no hot water and it is nearly midnight, can it wait until the morning"
+answers = [{ document = "engineering-maintenance.md", section = "4. Water supply, hot water and plumbing" }]
+tags = ["procedural", "near-miss"]
+note = "near-miss: 'water' also matches the water treatment section, the pool section and the flooding section"
+
+[[question]]
+id = "q20"
+text = "there are people stuck in the lift, can our own technician open it up and get them out"
+answers = [{ document = "engineering-maintenance.md", section = "6. Lift maintenance and entrapment" }]
+tags = ["procedural"]
+
+[[question]]
+id = "q21"
+text = "how often are we supposed to run the backup generator and does it need something plugged into it"
+answers = [{ document = "engineering-maintenance.md", section = "5. Electrical distribution and standby power" }]
+tags = ["vocabulary-gap", "numeric"]
+note = "'something plugged into it' is the operator's way of asking about an on-load test"
+
+[[question]]
+id = "q22"
+text = "contractor wants to do welding near the kitchen tomorrow, what do we need before he starts"
+answers = [{ document = "engineering-maintenance.md", section = "11. Contractor access and permits to work" }]
+tags = ["procedural", "near-miss"]
+note = "near-miss: the fire systems section also discusses detector isolation"
+
+[[question]]
+id = "q23"
+text = "morning chlorine reading came back under one, do we have to shut the pool"
+answers = [{ document = "engineering-maintenance.md", section = "9. Swimming pool operation" }]
+tags = ["numeric", "procedural"]
+
+[[question]]
+id = "q24"
+text = "210 has a fault engineering cannot fix today, can the desk still sell it for tonight"
+answers = [{ document = "engineering-maintenance.md", section = "2. Guest fault reporting and response" }]
+tags = ["procedural"]
+
+# ── Safety ──────────────────────────────────────────────────────────────────
+
+[[question]]
+id = "q25"
+text = "the oil in the fryer has caught light, which one of the red cylinders do we grab"
+answers = [{ document = "safety-emergency.md", section = "3. Extinguisher selection and use" }]
+tags = ["vocabulary-gap", "procedural"]
+note = "'red cylinders' rather than 'extinguisher'; the answer is wet chemical and never water"
+
+[[question]]
+id = "q26"
+text = "alarm is going off, do we ring the fire brigade straight away or check it out first"
+answers = [{ document = "safety-emergency.md", section = "1. Fire alarm activation and first response" }]
+tags = ["procedural", "near-miss"]
+note = "near-miss: the engineering fire systems testing section is about maintenance, not response"
+
+[[question]]
+id = "q27"
+text = "a guest has a bad headache and is asking us for a tablet, can we give her one"
+answers = [{ document = "safety-emergency.md", section = "4. Medical emergency and first aid" }]
+tags = ["vocabulary-gap", "procedural"]
+
+[[question]]
+id = "q28"
+text = "we have had a threatening call about a device in the building, can staff use their walkie talkies"
+answers = [{ document = "safety-emergency.md", section = "6. Bomb threat and suspicious articles" }]
+tags = ["procedural"]
+
+[[question]]
+id = "q29"
+text = "guest is demanding to see the corridor footage from last night, are we allowed to show her"
+answers = [{ document = "safety-emergency.md", section = "11. CCTV, access control and privacy" }]
+tags = ["procedural"]
+
+[[question]]
+id = "q30"
+text = "water is pouring through the ceiling into the basement plant room, what is the very first thing to do"
+answers = [{ document = "safety-emergency.md", section = "7. Flooding and water ingress" }]
+tags = ["procedural", "near-miss"]
+note = "near-miss: three engineering sections are about water. The answer is 'isolate the electrics before anyone goes in'"
+
+# ── People ──────────────────────────────────────────────────────────────────
+
+[[question]]
+id = "q31"
+text = "can i put someone on the late shift and then have them open up the next morning"
+answers = [{ document = "hr-staff-policy.md", section = "1. Working hours, shifts and rest" }]
+tags = ["vocabulary-gap", "numeric"]
+note = "the answer is the eleven-hour rest rule, which the question never gestures at"
+
+[[question]]
+id = "q32"
+text = "one of the front desk girls is expecting her first baby, how much time off does she get"
+answers = [{ document = "hr-staff-policy.md", section = "3. Leave entitlement" }]
+tags = ["vocabulary-gap", "numeric"]
+
+[[question]]
+id = "q33"
+text = "a guest at the bar was making comments to one of our waitresses, what are we supposed to do"
+answers = [{ document = "hr-staff-policy.md", section = "8. Harassment and the prevention of sexual harassment" }]
+tags = ["procedural"]
+
+[[question]]
+id = "q34"
+text = "how much notice does a confirmed employee have to give us if they resign"
+answers = [{ document = "hr-staff-policy.md", section = "11. Notice, separation and exit" }]
+tags = ["near-miss", "numeric"]
+note = "near-miss: the commercial contract section is also about notice periods, in months, and is the wrong answer"
+
+[[question]]
+id = "q35"
+text = "chef's food handling certificate ran out last week, can he still work the line"
+answers = [{ document = "hr-staff-policy.md", section = "9. Training and certification" }]
+tags = ["procedural", "near-miss"]
+note = "near-miss: the kitchen hygiene section covers medical examinations for food handlers, which is a different thing"
+
+# ── Commercial ──────────────────────────────────────────────────────────────
+
+[[question]]
+id = "q36"
+text = "what is the reference number on the Sparkle Linens agreement"
+answers = [{ document = "commercial-contracts.md", section = "8. Laundry and linen supply" }]
+tags = ["exact-identifier"]
+note = "SL-2026-114. An embedding of a contract number is meaningless; this is the lexical retriever's job and nothing else's"
+
+[[question]]
+id = "q37"
+text = "sparkle brought the sheets back two days after collection, what do we get for that"
+answers = [{ document = "commercial-contracts.md", section = "8. Laundry and linen supply" }]
+tags = ["numeric", "vocabulary-gap"]
+note = "two days is beyond the thirty-six hour escalation point, so the answer is the two per cent service credit"
+
+[[question]]
+id = "q38"
+text = "we want to buy a new dishwasher for about three lakh, whose sign off do i need"
+answers = [{ document = "commercial-contracts.md", section = "11. Procurement approval limits" }]
+tags = ["numeric", "procedural"]
+
+[[question]]
+id = "q39"
+text = "which code do we put a government officer's booking on and is breakfast included"
+answers = [{ document = "commercial-contracts.md", section = "1. Rate plans and rate codes" }]
+tags = ["exact-identifier", "numeric"]
+note = "GOV, room with breakfast"
+
+[[question]]
+id = "q40"
+text = "an agent is asking for his commission on a guest who never turned up, do we pay it"
+answers = [{ document = "commercial-contracts.md", section = "6. Travel agent commission" }]
+tags = ["near-miss", "procedural"]
+note = "near-miss: the front office no-show section is about charging the guest, not paying the agent"
+
+
+#  ── Probes ──────────────────────────────────────────────────────────────────
+#
+#  Questions the corpus genuinely does not answer. These are not scored for
+#  recall or precision; the only correct behaviour is to retrieve nothing and
+#  say so.
+#
+#  `UPDATE.md` §M4: "asking something genuinely not covered by the corpus
+#  produces an honest 'I don't have that' rather than a confident invention.
+#  **Test the last one deliberately and often.**"
+#
+#  Half of these are deliberately near-misses — a strongly related section
+#  exists and does not answer the question. Those are the ones that will fail
+#  first, and they are the ones worth failing on, because a plausible wrong
+#  answer is the expensive kind.
+
+[[probe]]
+id = "p01"
+text = "what is the wifi password for the conference room"
+note = "nothing in the corpus concerns network access"
+
+[[probe]]
+id = "p02"
+text = "how many rooms does the munnar property have"
+note = "the properties are named throughout but never counted"
+
+[[probe]]
+id = "p03"
+text = "what commission does booking.com charge us"
+tags = ["near-miss"]
+note = "near-miss: section 6 of the commercial policy gives the ten per cent travel agent commission, which is a different arrangement. Answering ten per cent here would be a confident invention"
+
+[[probe]]
+id = "p04"
+text = "are guests allowed to bring dogs"
+tags = ["near-miss"]
+note = "near-miss: housekeeping mentions an animal found in a room as something to report, which is not a pet policy"
+
+[[probe]]
+id = "p05"
+text = "what time does the spa open"
+tags = ["near-miss"]
+note = "near-miss: outlet hours are given for every other outlet, so the shape of the answer exists and the answer does not"
+
+[[probe]]
+id = "p06"
+text = "what was our occupancy last march"
+note = "no operating data anywhere in the corpus"
+
+[[probe]]
+id = "p07"
+text = "can guests smoke on their balcony"
+tags = ["near-miss"]
+note = "near-miss: housekeeping lists signs of smoking as a thing to report, and the ashtrays in the smoking area are mentioned; neither is a smoking policy"
+
+[[probe]]
+id = "p08"
+text = "how much is the airport pickup"
+tags = ["near-miss"]
+note = "near-miss: staff transport is covered in the people policy, guest transport is not"
+
+[[probe]]
+id = "p09"
+text = "who is the fire officer at the kochi property"
+tags = ["near-miss"]
+note = "near-miss: the safety plan refers to the senior fire officer repeatedly, as a role at an incident, and names nobody"
+
+[[probe]]
+id = "p10"
+text = "do we accept american express"
+note = "card authorisation is covered, card schemes are not"
+
+[[probe]]
+id = "p11"
+text = "what is the cancellation policy for a spa booking"
+tags = ["near-miss"]
+note = "near-miss: three separate cancellation scales exist in the corpus — rooms, corporate rooms and banquets. None is this one, and picking the closest is the failure mode this probe exists to catch"
+
+[[probe]]
+id = "p12"
+text = "how do i reset the television in a guest room"
+tags = ["near-miss"]
+note = "near-miss: the quarterly room inspection lists the television, which is not a fault procedure"
