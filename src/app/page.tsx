@@ -9,6 +9,7 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { BrowserMockup } from "@/components/mockups/BrowserMockup";
 import { PhoneMockup } from "@/components/mockups/PhoneMockup";
 import { MetricsStrip } from "@/components/sections/MetricsStrip";
+import { AdvisorTeaser } from "@/components/sections/AdvisorTeaser";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { StickyCTA } from "@/components/sections/StickyCTA";
 import { fadeUp, staggerContainer } from "@/lib/animations";
@@ -118,6 +119,11 @@ export default function Home() {
 
       {/* 2. METRICS STRIP */}
       <MetricsStrip />
+
+      {/* Directly after the metrics: the visitor has just seen the claims, and
+          this is the one place they can test one themselves before committing
+          to a demo call. */}
+      <AdvisorTeaser />
 
       {/* 3. PRODUCT STORY / BUTLER AI */}
       <section id="products" className="py-24 md:py-32 bg-white">

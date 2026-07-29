@@ -14,16 +14,19 @@ from __future__ import annotations
 import logging
 
 from soyl.domain.ai.ports import (
+    AdvisorProvider,
     AnswerProvider,
     EmbeddingProvider,
     QuestionProvider,
     RerankProvider,
 )
+from soyl.infrastructure.providers.azure_advisor import AzureOpenAIAdvisor
 from soyl.infrastructure.providers.azure_answers import AzureOpenAIAnswers
 from soyl.infrastructure.providers.azure_openai import AzureOpenAIEmbeddings
 from soyl.infrastructure.providers.azure_questions import AzureOpenAIQuestions
 from soyl.infrastructure.providers.azure_rerank import AzureOpenAIRerank
 from soyl.infrastructure.providers.fake import FakeEmbeddings
+from soyl.infrastructure.providers.fake_advisor import FakeAdvisor
 from soyl.infrastructure.providers.fake_answers import FakeAnswers
 from soyl.infrastructure.providers.fake_questions import FakeQuestions
 from soyl.infrastructure.providers.fake_rerank import FakeRerank
@@ -112,3 +115,19 @@ def build_answer_provider(settings: Settings) -> AnswerProvider:
         "It quotes the first chunk it is given and understands nothing."
     )
     return FakeAnswers()
+
+
+def build_advisor_provider(settings: Settings) -> AdvisorProvider:
+    """The public advisor. Anonymous traffic, so it is the one provider a
+    visitor can reach without an account — see the rate limit on its route."""
+    if settings.azure_openai_endpoint and settings.azure_openai_api_key:
+        return AzureOpenAIAdvisor(
+            endpoint=str(settings.azure_openai_endpoint),
+            api_key=settings.azure_openai_api_key,
+            deployment=settings.azure_openai_chat_deployment,
+            model=settings.azure_openai_chat_model,
+            api_version=settings.azure_openai_api_version,
+        )
+
+    logger.warning("no Azure OpenAI credentials; using the fake advisor.")
+    return FakeAdvisor()

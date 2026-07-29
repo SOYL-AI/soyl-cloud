@@ -20,6 +20,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/blog",
     "/book-demo",
     "/faq",
+    // The Hotel Advisor is a real entry point, not a utility page: it is the
+    // one route where someone can use the product before talking to anyone.
+    "/advisor",
   ].map((route) => ({
     // `route` is "" for the home page, giving the bare origin — which is what
     // Next resolves the home page's canonical to. `scripts/canonical.test.mts`
@@ -27,7 +30,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "daily" as const,
-    priority: route === "" ? 1 : route === "/book-demo" ? 0.9 : 0.8,
+    priority:
+      route === ""
+        ? 1
+        : route === "/book-demo" || route === "/advisor"
+          ? 0.9
+          : 0.8,
   }));
 
   // Legal and Trust pages (lower priority, less frequent changes)

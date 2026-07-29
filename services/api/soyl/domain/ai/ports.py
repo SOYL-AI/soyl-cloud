@@ -18,6 +18,7 @@ from typing import TYPE_CHECKING, Protocol
 if TYPE_CHECKING:
     # Only for the annotation. Importing the envelope at runtime would make
     # every module that touches a port pull in the whole answer schema.
+    from soyl.domain.ai.advisor import AdvisorAnswers, AdvisorInsight
     from soyl.domain.ai.envelope import DraftAnswer
     from soyl.domain.rag.retrieval import RetrievedChunk
 
@@ -157,6 +158,23 @@ class AnswerProvider(Protocol):
         self, *, question: str, chunks: list[RetrievedChunk]
     ) -> tuple[DraftAnswer, Usage]:
         """Answer the question, or say the sources do not cover it."""
+        ...
+
+
+class AdvisorProvider(Protocol):
+    """The public advisor (marketing funnel), which is not RAG.
+
+    Separate from `AnswerProvider` because the guarantees are opposite: that one
+    may say only what its sources support, this one has no sources and may say
+    only what the visitor told us. One port serving both would make the
+    difference a comment rather than a type.
+    """
+
+    @property
+    def model(self) -> str:
+        ...
+
+    async def advise(self, answers: AdvisorAnswers) -> tuple[AdvisorInsight, Usage]:
         ...
 
 

@@ -38,9 +38,18 @@ export async function apiFetch<T>(
     body?: unknown;
     sessionToken?: string;
     timeoutMs?: number;
+    /**
+     * Extra headers. Used by the public advisor to forward the visitor's
+     * address, so the API's rate limit applies to them rather than to Vercel's
+     * handful of egress addresses.
+     */
+    headers?: Record<string, string>;
   } = {},
 ): Promise<ApiResult<T>> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...options.headers,
+  };
   if (options.sessionToken) {
     headers.Authorization = `Bearer ${options.sessionToken}`;
   }

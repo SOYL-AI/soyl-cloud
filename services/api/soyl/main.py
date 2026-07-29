@@ -17,6 +17,7 @@ from redis.asyncio import Redis
 from soyl.infrastructure.db.session import create_engine, create_session_factory
 from soyl.infrastructure.email import EmailSender
 from soyl.infrastructure.providers.factory import (
+    build_advisor_provider,
     build_answer_provider,
     build_embedding_provider,
     build_question_provider,
@@ -42,6 +43,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.questions = build_question_provider(settings)
     app.state.answers = build_answer_provider(settings)
     app.state.reranker = build_rerank_provider(settings)
+    app.state.advisor = build_advisor_provider(settings)
     app.state.storage = S3Storage(
         endpoint_url=str(settings.storage_endpoint_url) if settings.storage_endpoint_url else None,
         region=settings.storage_region,

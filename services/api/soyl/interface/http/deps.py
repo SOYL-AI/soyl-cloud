@@ -11,7 +11,12 @@ from fastapi import Depends, Header, HTTPException, Request, status
 from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
-from soyl.domain.ai.ports import AnswerProvider, EmbeddingProvider, RerankProvider
+from soyl.domain.ai.ports import (
+    AdvisorProvider,
+    AnswerProvider,
+    EmbeddingProvider,
+    RerankProvider,
+)
 from soyl.domain.storage import StoragePort
 from soyl.infrastructure.email import EmailSender
 from soyl.settings import Settings
@@ -51,6 +56,10 @@ def get_answers(request: Request) -> AnswerProvider:
 
 def get_reranker(request: Request) -> RerankProvider:
     return request.app.state.reranker  # type: ignore[no-any-return]
+
+
+def get_advisor(request: Request) -> AdvisorProvider:
+    return request.app.state.advisor  # type: ignore[no-any-return]
 
 
 def require_lead_token(
