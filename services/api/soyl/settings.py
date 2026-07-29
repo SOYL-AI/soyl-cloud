@@ -33,6 +33,11 @@ class Settings(BaseSettings):
 
     environment: Environment
 
+    # Which role this container is playing. `entrypoint.sh` dispatches on the
+    # same variable; declaring it here lets the invariants below ask what the
+    # process actually needs rather than demanding the union of both roles.
+    process: Literal["api", "worker"] = "api"
+
     # The application connection. Must be soyl_app — a role without BYPASSRLS —
     # or row-level security is decoration. `production_invariants` checks it.
     database_url: PostgresDsn
@@ -148,7 +153,15 @@ class Settings(BaseSettings):
                 "SOYL_STORAGE_SECRET_KEY — documents cannot be stored without them"
             )
 
-        if not (self.resend_api_key and self.email_from):
+        # Email belongs to the API. The worker never sends one — it ingests
+        # documents — so requiring the credential there would refuse to boot a
+        # process for lacking something it does not use, and the obvious way to
+        # "fix" that is to hand the worker a live Resend key it can only ever
+        # leak. Scoping the check is the least-privilege answer, and it is why
+        # `process` is a setting rather than something only the entrypoint sees.
+        #
+        # Found by the worker's first deployment, which crashed on this.
+        if self.process == "api" and not (self.resend_api_key and self.email_from):
             raise ValueError(
                 f"{self.environment} requires SOYL_RESEND_API_KEY and SOYL_EMAIL_FROM — "
                 "signup cannot verify an address without them"

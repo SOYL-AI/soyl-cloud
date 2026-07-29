@@ -119,6 +119,29 @@ def test_production_refuses_to_start_without_email(missing: str) -> None:
         build(**{missing: None})
 
 
+@pytest.mark.parametrize("missing", ["resend_api_key", "email_from"])
+def test_the_worker_does_not_need_email_credentials(missing: str) -> None:
+    """The worker ingests documents. It has never sent an email.
+
+    Its first production deployment crashed on this check. The tempting fix was
+    to set a Resend key on the worker, which would have given a process a live
+    credential it can only ever leak — so the check is scoped to the API
+    instead, and this test is what stops it drifting back.
+    """
+    settings = build(process="worker", **{missing: None})
+
+    assert settings.process == "worker"
+
+
+def test_the_api_is_the_default_process() -> None:
+    """Absent configuration must fail closed, not open.
+
+    If `process` defaulted to "worker", forgetting to set it on the API would
+    skip the email check and ship a signup funnel that silently ends.
+    """
+    assert build().process == "api"
+
+
 def test_local_needs_neither_email_nor_https() -> None:
     settings = build(
         environment="local",
