@@ -1,0 +1,47 @@
+
+── answers ──────────────────────────────────────────────────────────
+  answer rate       0.875   (35/40 covered questions answered)
+  refusal rate      0.167   (2/12 uncovered questions refused)
+  citation integrity 1.000  (answers whose every citation was actually retrieved)
+  blocks stripped   0
+  uncited answers   0
+  mean cost         ₹0.0000
+
+ANSWERED WHAT IT SHOULD HAVE REFUSED (10):
+  p01  what is the wifi password for the conference room
+      -> Engineering and Maintenance Manual > 9. Swimming pool operation covers this.
+         1 citation(s), 2 block(s)
+  p02  how many rooms does the munnar property have
+      -> Front Office and Reservations SOP > 3. Arrival timings and early arrival covers this.
+         1 citation(s), 2 block(s)
+  p03  what commission does booking.com charge us
+      -> Commercial Policy: Rates, Contracts and Procurement > 7. Supplier onboarding and due diligence covers this.
+         1 citation(s), 2 block(s)
+  p04  are guests allowed to bring dogs
+      -> Safety and Emergency Response Plan > 7. Flooding and water ingress covers this.
+         1 citation(s), 2 block(s)
+  p05  what time does the spa open
+      -> Housekeeping Standard Operating Procedure > 7. Deep cleaning and the rotation schedule covers this.
+         1 citation(s), 2 block(s)
+  p06  what was our occupancy last march
+      -> Commercial Policy: Rates, Contracts and Procurement > 7. Supplier onboarding and due diligence covers this.
+         1 citation(s), 2 block(s)
+  p07  can guests smoke on their balcony
+      -> Engineering and Maintenance Manual > 9. Swimming pool operation covers this.
+         1 citation(s), 2 block(s)
+  p09  who is the fire officer at the kochi property
+      -> People and Employment Policy > 8. Harassment and the prevention of sexual harassment covers this.
+         1 citation(s), 2 block(s)
+  p11  what is the cancellation policy for a spa booking
+      -> Front Office and Reservations SOP > 5. Cancellation and no-show — individual bookings covers this.
+         1 citation(s), 2 block(s)
+  p12  how do i reset the television in a guest room
+      -> Front Office and Reservations SOP > 7. Group and block bookings covers this.
+         1 citation(s), 2 block(s)
+
+refused a question the corpus does answer (5):
+  q02  a company pulled out of their booking yesterday evening for tonight, do we still bill them
+  q10  can the girls use the descaler and the bleach together to get the bathroom done faster
+  q13  the wedding party want to move to a date in november instead, does that count as cancelling
+  q16  table four says she cannot have nuts, how do we put that order through
+  q22  contractor wants to do welding near the kitchen tomorrow, what do we need before he starts

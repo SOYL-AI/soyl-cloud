@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 import sys
 import uuid
 from pathlib import Path
@@ -28,6 +29,7 @@ from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.sql import text
 
+from evals.answers import render_answers, run_answers
 from evals.harness import (
     CORPUS,
     LabelError,
@@ -42,11 +44,13 @@ from soyl.domain.storage import document_key
 from soyl.infrastructure.db.repositories.document_repository import IngestionJobRepository
 from soyl.infrastructure.db.session import create_engine, create_session_factory, tenant_session
 from soyl.infrastructure.providers.factory import (
+    build_answer_provider,
     build_embedding_provider,
     build_question_provider,
     build_rerank_provider,
 )
 from soyl.infrastructure.providers.fake import FakeEmbeddings
+from soyl.infrastructure.providers.fake_answers import FakeAnswers
 from soyl.infrastructure.providers.fake_questions import FakeQuestions
 from soyl.infrastructure.providers.fake_rerank import FakeRerank
 from soyl.infrastructure.storage.s3 import S3Storage
@@ -134,7 +138,7 @@ async def load_corpus_chunks(
     return [(row.id, row.title, list(row.heading_path or []), row.content) for row in rows]
 
 
-async def main(*, azure: bool, keep: bool, pace: float) -> int:
+async def main(*, azure: bool, keep: bool, pace: float, with_answers: bool) -> int:
     settings = get_settings()
 
     embeddings: EmbeddingProvider
@@ -153,6 +157,8 @@ async def main(*, azure: bool, keep: bool, pace: float) -> int:
         questions_provider = FakeQuestions()
         reranker = FakeRerank()
         print("!! fake providers: the numbers below measure plumbing, not quality\n")
+
+    answer_provider = build_answer_provider(settings) if azure else FakeAnswers()
 
     labelled, probes = load_questions()
 
@@ -208,6 +214,54 @@ async def main(*, azure: bool, keep: bool, pace: float) -> int:
         )
         print(render(report))
 
+        if with_answers:
+            # A user row is needed because a turn belongs to somebody. Created
+            # here rather than in the fixture so a retrieval-only run does not
+            # pay for it.
+            # Through the *migrator*, not the app role. `core.user_account` is
+            # untenanted and the app role has no DELETE on it by design — a
+            # running application must not be able to remove a user account.
+            # The eval creating one is a fixture concern, so it uses the
+            # credential fixtures use.
+            migration_url = os.environ.get("SOYL_MIGRATION_DATABASE_URL")
+            if not migration_url:
+                print("SOYL_MIGRATION_DATABASE_URL is not set; skipping the answer run")
+                return 0
+
+            migrator = create_engine(migration_url)
+            user_id = uuid.uuid4()
+            async with migrator.begin() as connection:
+                await connection.execute(
+                    text(
+                        "INSERT INTO core.user_account (id, email, display_name) "
+                        "VALUES (:id, :email, 'Eval')"
+                    ),
+                    {"id": user_id, "email": f"eval-{uuid.uuid4().hex[:10]}@example.test"},
+                )
+
+            answers_report = await run_answers(
+                factory,
+                tenant_id=tenant_id,
+                user_id=user_id,
+                embeddings=embeddings,
+                answers=answer_provider,
+                reranker=reranker,
+                questions=labelled,
+                probes=probes,
+                pace=pace if azure else 0.0,
+            )
+            print(render_answers(answers_report))
+
+            Path(__file__).parent.joinpath("last-answers.txt").write_text(
+                render_answers(answers_report), encoding="utf-8"
+            )
+
+            async with migrator.begin() as connection:
+                await connection.execute(
+                    text("DELETE FROM core.user_account WHERE id = :id"), {"id": user_id}
+                )
+            await migrator.dispose()
+
         Path(__file__).parent.joinpath("last-run.txt").write_text(
             render(report), encoding="utf-8"
         )
@@ -227,11 +281,25 @@ async def main(*, azure: bool, keep: bool, pace: float) -> int:
 
 
 if __name__ == "__main__":
+    # The report contains rupee signs, em dashes and box-drawing characters, and
+    # a Windows console defaults to cp1252 — which raises UnicodeEncodeError
+    # partway through printing and loses the run. `errors="replace"` rather than
+    # a strict reconfigure because a mangled character is a better outcome than
+    # a lost measurement.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--azure", action="store_true", help="use the real providers; the only run that counts"
     )
     parser.add_argument("--keep", action="store_true", help="leave the tenant behind to inspect")
+    parser.add_argument(
+        "--answers",
+        action="store_true",
+        help="also run the full answer pipeline: citation integrity and, more "
+        "importantly, whether it refuses questions the corpus does not cover.",
+    )
     parser.add_argument(
         "--pace",
         type=float,
@@ -242,4 +310,13 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    sys.exit(asyncio.run(main(azure=args.azure, keep=args.keep, pace=args.pace)))
+    sys.exit(
+        asyncio.run(
+            main(
+                azure=args.azure,
+                keep=args.keep,
+                pace=args.pace,
+                with_answers=args.answers,
+            )
+        )
+    )

@@ -41,6 +41,8 @@ type Exchange = {
   question: string;
   envelope: Envelope | null;
   error: string | null;
+  /** What the pipeline is doing right now, while it is doing it. */
+  stage: string | null;
 };
 
 const SUGGESTIONS = [
@@ -67,40 +69,75 @@ export function AskSurface({ hasDocuments }: { hasDocuments: boolean }) {
 
     setQuestion("");
     setPending(true);
-    setExchanges((current) => [...current, { question: asked, envelope: null, error: null }]);
+    setExchanges((current) => [
+      ...current,
+      { question: asked, envelope: null, error: null, stage: "Reading your documents" },
+    ]);
+
+    function patch(update: Partial<Exchange>) {
+      setExchanges((current) => {
+        const next = [...current];
+        next[next.length - 1] = { ...next[next.length - 1], ...update };
+        return next;
+      });
+    }
 
     try {
-      const response = await fetch("/api/answers", {
+      const response = await fetch("/api/answers/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: asked, conversation_id: conversationId }),
       });
 
-      const data = (await response.json()) as AskResponse & { message?: string };
+      if (!response.ok || !response.body) {
+        const data = (await response.json().catch(() => null)) as { message?: string } | null;
+        patch({
+          error: data?.message ?? "We could not answer that just now.",
+          stage: null,
+        });
+        return;
+      }
 
-      setExchanges((current) => {
-        const next = [...current];
-        const last = next[next.length - 1];
-        if (response.ok && data.envelope) {
-          next[next.length - 1] = { ...last, envelope: data.envelope };
-        } else {
-          next[next.length - 1] = {
-            ...last,
-            error: data.message ?? "We could not answer that just now.",
-          };
+      // Frames are separated by a blank line, and a chunk boundary can land
+      // anywhere — including mid-frame — so the tail is carried over rather
+      // than parsed and dropped.
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        const frames = buffer.split("\n\n");
+        buffer = frames.pop() ?? "";
+
+        for (const frame of frames) {
+          const name = frame.match(/^event: (.+)$/m)?.[1];
+          const raw = frame.match(/^data: (.+)$/m)?.[1];
+          if (!name || !raw) continue;
+
+          const data = JSON.parse(raw) as Record<string, unknown>;
+
+          if (name === "error") {
+            patch({ error: String(data.message ?? "Something went wrong."), stage: null });
+            return;
+          }
+          if (name === "layout") {
+            patch({ stage: "Writing the answer" });
+          }
+          if (name === "envelope.complete") {
+            const payload = data as unknown as AskResponse;
+            patch({ envelope: payload.envelope, stage: null });
+            if (payload.conversation_id) setConversationId(payload.conversation_id);
+          }
         }
-        return next;
-      });
-
-      if (response.ok && data.conversation_id) setConversationId(data.conversation_id);
+      }
     } catch {
-      setExchanges((current) => {
-        const next = [...current];
-        next[next.length - 1] = {
-          ...next[next.length - 1],
-          error: "The connection dropped before the answer arrived.",
-        };
-        return next;
+      patch({
+        error: "The connection dropped before the answer arrived.",
+        stage: null,
       });
     } finally {
       setPending(false);
@@ -246,10 +283,10 @@ function Turn({
         </p>
       </div>
 
-      {pending ? (
-        <div className="flex items-center gap-2 text-sm text-charcoal/55">
+      {pending && exchange.stage ? (
+        <div className="flex items-center gap-2 text-sm text-charcoal/55" aria-live="polite">
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-          Reading your documents…
+          {exchange.stage}…
         </div>
       ) : null}
 

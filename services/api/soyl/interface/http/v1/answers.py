@@ -1,19 +1,32 @@
 """Asking a question.
 
-`POST /v1/answers` runs the pipeline and returns the envelope. Not streamed
-yet: `UPDATE.md` §9 asks for SSE and this returns the whole envelope at once.
-That is a deliberate order rather than an omission — streaming changes how the
-answer *arrives*, not what it is, and the envelope has to be right before it is
-worth chunking. The route is shaped so streaming is added beside it without
-changing the client's model of a turn.
+Two routes over one pipeline:
+
+- `POST /v1/answers` returns the whole envelope. Simple to call, easy to test,
+  and what anything server-to-server should use.
+- `POST /v1/answers/stream` emits the same envelope over SSE (§9's `stream`
+  stage), so the browser can show progress instead of a spinner.
+
+The stream emits *stages*, not tokens. Phase 0's synthesiser is a single
+structured-output call that produces a whole envelope — there is no partial
+envelope to send, because a half-parsed JSON object is not a renderable answer.
+Pretending otherwise by streaming characters would mean the client either
+buffers them all anyway or renders something the validator has not seen yet,
+and the validator is the reason any of this is trustworthy.
+
+So what streams is honest: retrieval finished, N sources found, synthesising,
+done. That turns dead time into visible progress without shipping unvalidated
+content, and when token streaming becomes worth it the event names already
+exist.
 """
 
 from __future__ import annotations
 
 import uuid
+from collections.abc import AsyncIterator
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -27,6 +40,7 @@ from soyl.interface.http.deps import (
     get_reranker,
     get_session_factory,
 )
+from soyl.interface.http.sse import event, stream
 
 router = APIRouter(prefix="/v1/answers", tags=["answers"])
 
@@ -108,3 +122,78 @@ async def ask(
         conversation_id=outcome.conversation_id,
         envelope=outcome.envelope,
     )
+
+
+@router.post("/stream")
+async def ask_streaming(
+    payload: AskRequest,
+    request: AuthedRequest,
+    factory: Factory,
+    embeddings: Embeddings,
+    answers: Answers,
+    reranker: Reranker,
+) -> Response:
+    """The same answer, with the wait made legible.
+
+    Errors are emitted as an `error` event rather than raised, because by the
+    time anything can fail here the response has already begun and its status
+    line is long gone. A client that only handled HTTP status would see a
+    perfectly successful empty stream.
+    """
+    request.require("documents:read")
+
+    async def events() -> AsyncIterator[str]:
+        sequence = 0
+
+        def frame(name: str, data: object) -> str:
+            nonlocal sequence
+            sequence += 1
+            return event(name, data, sequence=sequence)
+
+        yield frame("turn.started", {"question": payload.question})
+
+        try:
+            outcome = await answer_question(
+                factory,
+                embeddings=embeddings,
+                answers=answers,
+                reranker=reranker,
+                tenant_id=request.principal.tenant_id,
+                user_id=request.principal.user_id,
+                question=payload.question,
+                conversation_id=payload.conversation_id,
+                property_ids=payload.property_ids or None,
+                idempotency_key=payload.idempotency_key,
+            )
+        except AnswerRefused as refused:
+            yield frame("error", {"message": str(refused), "retryable": False})
+            return
+        except ProviderError:
+            yield frame(
+                "error",
+                {
+                    "message": "The model provider is unavailable. Try again in a moment.",
+                    "retryable": True,
+                },
+            )
+            return
+
+        envelope = outcome.envelope
+
+        # Layout before blocks, per §9.3: the client can allocate the shape of
+        # the answer before it has the content to put in it.
+        yield frame("layout", envelope.layout.model_dump(mode="json"))
+
+        for block in envelope.blocks:
+            yield frame("block.complete", block.model_dump(mode="json"))
+
+        yield frame(
+            "envelope.complete",
+            {
+                "turn_id": str(outcome.turn_id),
+                "conversation_id": str(outcome.conversation_id),
+                "envelope": envelope.model_dump(mode="json"),
+            },
+        )
+
+    return stream(events())
