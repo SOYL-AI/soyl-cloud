@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Analytics } from "@/components/Analytics";
+import { OrganizationSchema } from "@/components/seo/SchemaInjector";
 import { COMPANY, SITE_URL } from "@/lib/constants";
 
 /**
@@ -148,6 +149,7 @@ export default function RootLayout({
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:p-4 focus:bg-white focus:text-black">
           Skip to content
         </a>
+        <OrganizationSchema />
         <Navbar />
         <main id="main-content" className="flex-1">
           {children}

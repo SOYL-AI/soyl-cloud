@@ -40,6 +40,7 @@ export const SOCIAL = [
 ];
 
 export const RESOURCES = [
+  { name: "Hotel operations guides", href: "/resources" },
   { name: "Blog", href: "/blog" },
   { name: "Compare Butler AI", href: "/compare" },
 ];

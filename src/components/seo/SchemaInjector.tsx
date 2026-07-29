@@ -117,3 +117,89 @@ export function BreadcrumbSchema({
     />
   );
 }
+
+/**
+ * `Article` for the resources library (`UPDATE.md` §10).
+ *
+ * `dateModified` is separate from `datePublished` and both are required rather
+ * than optional: an operations reference that was accurate in 2026 and has not
+ * been touched since is a different thing from one revised last month, and the
+ * distinction is exactly what a reader — and a crawler — wants.
+ */
+export function ArticleSchema({
+  headline,
+  description,
+  slug,
+  published,
+  modified,
+  section,
+}: {
+  headline: string;
+  description: string;
+  /** Path, e.g. `/resources/hotel-sop-checklist`. */
+  slug: string;
+  published: string;
+  modified: string;
+  section: string;
+}) {
+  const url = `https://${COMPANY.domain}${slug}`;
+
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline,
+    description,
+    articleSection: section,
+    datePublished: published,
+    dateModified: modified,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
+    author: { "@type": "Organization", name: COMPANY.name, url: `https://${COMPANY.domain}` },
+    publisher: {
+      "@type": "Organization",
+      name: COMPANY.name,
+      logo: {
+        "@type": "ImageObject",
+        url: `https://${COMPANY.domain}/images/logo.png`,
+      },
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
+
+/**
+ * `Organization`, emitted once from the root layout.
+ *
+ * Sitewide rather than per page: it describes the company, not the document,
+ * and repeating it on every route gives a crawler the same facts many times
+ * with more chances to disagree with itself.
+ */
+export function OrganizationSchema() {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: COMPANY.name,
+    url: `https://${COMPANY.domain}`,
+    logo: `https://${COMPANY.domain}/images/logo.png`,
+    email: COMPANY.email,
+    telephone: COMPANY.phone,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Bengaluru",
+      addressRegion: "Karnataka",
+      addressCountry: "IN",
+    },
+  };
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
+}
