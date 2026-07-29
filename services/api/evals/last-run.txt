@@ -1,99 +1,28 @@
 corpus: 50 chunks · 40 questions · 12 probes
 reranked: 40/40
 
-  recall@10     0.362   target 0.85   FAIL
-  precision@5   0.338   target 0.70   FAIL
-  MRR           0.310
-  context purity           0.258   (share of returned chunks that earn their place)
-  recall@10 pre-threshold  0.512   (what the retriever found before §45.3's cut)
-  probes        0.167   (2/12 returned nothing)
+  recall@10     0.950   target 0.85   PASS
+  precision@5   0.950   target 0.70   PASS
+  MRR           0.894
+  context purity           0.730   (share of returned chunks that earn their place)
+  recall@10 pre-threshold  0.975   (what the retriever found before §45.3's cut)
+  probes        0.917   (11/12 returned nothing)
 
 by tag:
-  exact-identifier  n=2   recall@10=0.500  precision@5=0.500
-  multi-chunk       n=2   recall@10=0.250  precision@5=0.250
-  near-miss         n=12  recall@10=0.167  precision@5=0.167
-  numeric           n=16  recall@10=0.344  precision@5=0.344
-  procedural        n=24  recall@10=0.375  precision@5=0.333
-  vocabulary-gap    n=18  recall@10=0.333  precision@5=0.333
+  exact-identifier  n=2   recall@10=1.000  precision@5=1.000
+  multi-chunk       n=2   recall@10=1.000  precision@5=1.000
+  near-miss         n=12  recall@10=1.000  precision@5=1.000
+  numeric           n=16  recall@10=0.938  precision@5=0.938
+  procedural        n=24  recall@10=0.958  precision@5=0.958
+  vocabulary-gap    n=18  recall@10=0.889  precision@5=0.889
 
-questions missing at least one answer (26):
-  q02  recall=0.00  no hit in top 10
-      a company pulled out of their booking yesterday evening for tonight, do we still bill them
-  q03  recall=0.00  no hit in top 10
-      guest booked the non refundable rate and his mother has just died, can we give the money back
-  q05  recall=0.00  no hit in top 10
-      a british couple are checking in tonight, is there anything we have to file with the government
-      >> FOUND AND REJECTED by the threshold at [0.12]
-  q06  recall=0.50  first hit at 1
-      how much can a manager take off a guest's bill on his own without asking anyone
-  q07  recall=0.00  no hit in top 10
-      how quickly should a room be ready again after someone checks out
+questions missing at least one answer (2):
   q08  recall=0.00  no hit in top 10
       the sign has been on the door since yesterday morning and nobody has answered, what now
-  q09  recall=0.00  no hit in top 10
-      someone left a gold chain behind in a room, how long do we hang on to it
-  q10  recall=0.00  no hit in top 10
-      can the girls use the descaler and the bleach together to get the bathroom done faster
-      >> FOUND AND REJECTED by the threshold at [0.22]
-  q12  recall=0.00  no hit in top 10
-      we ruined a guest's shirt in the wash, who pays and does the same apply to our own bedsheets
-  q13  recall=0.00  no hit in top 10
-      the wedding party want to move to a date in november instead, does that count as cancelling
-  q14  recall=0.00  no hit in top 10
-      conference is ten days away and the client has just pulled out, what percentage do we invoice
-      >> FOUND AND REJECTED by the threshold at [0.20]
-  q16  recall=0.00  no hit in top 10
-      table four says she cannot have nuts, how do we put that order through
-  q17  recall=0.00  no hit in top 10
-      the party want to bring their own whisky to the function room, what do we charge per bottle
-  q18  recall=0.00  no hit in top 10
-      there is a lot of biryani left over from the banquet, can the staff take it home
-  q19  recall=0.00  no hit in top 10
-      guest in 305 says there is no hot water and it is nearly midnight, can it wait until the morning
-  q20  recall=0.00  no hit in top 10
-      there are people stuck in the lift, can our own technician open it up and get them out
-  q22  recall=0.00  no hit in top 10
-      contractor wants to do welding near the kitchen tomorrow, what do we need before he starts
-  q24  recall=0.00  no hit in top 10
-      210 has a fault engineering cannot fix today, can the desk still sell it for tonight
-  q26  recall=0.00  no hit in top 10
-      alarm is going off, do we ring the fire brigade straight away or check it out first
-  q27  recall=0.00  no hit in top 10
-      a guest has a bad headache and is asking us for a tablet, can we give her one
-      >> FOUND AND REJECTED by the threshold at [0.22]
-  q31  recall=0.00  no hit in top 10
-      can i put someone on the late shift and then have them open up the next morning
-  q32  recall=0.00  no hit in top 10
-      one of the front desk girls is expecting her first baby, how much time off does she get
-  q34  recall=0.00  no hit in top 10
-      how much notice does a confirmed employee have to give us if they resign
-      >> FOUND AND REJECTED by the threshold at [0.14]
-  q38  recall=0.00  no hit in top 10
-      we want to buy a new dishwasher for about three lakh, whose sign off do i need
-      >> FOUND AND REJECTED by the threshold at [0.18]
-  q39  recall=0.00  no hit in top 10
-      which code do we put a government officer's booking on and is breakfast included
-  q40  recall=0.00  no hit in top 10
-      an agent is asking for his commission on a guest who never turned up, do we pay it
+  q37  recall=0.00  no hit in top 10
+      sparkle brought the sheets back two days after collection, what do we get for that
+      >> FOUND AND REJECTED by the threshold at [0.00]
 
-probes that returned something they should not have (10):
-  p01  10 chunks — what is the wifi password for the conference room
-      nothing in the corpus concerns network access
-  p02  10 chunks — how many rooms does the munnar property have
-      the properties are named throughout but never counted
-  p03  4 chunks — what commission does booking.com charge us
-      near-miss: section 6 of the commercial policy gives the ten per cent travel agent commission, which is a different arrangement. Answering ten per cent here would be a confident invention
-  p04  9 chunks — are guests allowed to bring dogs
-      near-miss: housekeeping mentions an animal found in a room as something to report, which is not a pet policy
-  p05  10 chunks — what time does the spa open
-      near-miss: outlet hours are given for every other outlet, so the shape of the answer exists and the answer does not
-  p06  10 chunks — what was our occupancy last march
-      no operating data anywhere in the corpus
-  p07  8 chunks — can guests smoke on their balcony
-      near-miss: housekeeping lists signs of smoking as a thing to report, and the ashtrays in the smoking area are mentioned; neither is a smoking policy
-  p09  10 chunks — who is the fire officer at the kochi property
-      near-miss: the safety plan refers to the senior fire officer repeatedly, as a role at an incident, and names nobody
-  p11  10 chunks — what is the cancellation policy for a spa booking
-      near-miss: three separate cancellation scales exist in the corpus — rooms, corporate rooms and banquets. None is this one, and picking the closest is the failure mode this probe exists to catch
-  p12  10 chunks — how do i reset the television in a guest room
+probes that returned something they should not have (1):
+  p12  2 chunks — how do i reset the television in a guest room
       near-miss: the quarterly room inspection lists the television, which is not a fault procedure

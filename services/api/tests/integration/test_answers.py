@@ -562,3 +562,74 @@ async def test_history_is_invisible_to_another_tenant(
         repository = AnswerRepository(session)
         assert await repository.list_conversations() == []
         assert await repository.load_conversation(first.conversation_id) == []
+
+
+class RefusesInProse:
+    """A synthesiser that is handed chunks and correctly declines to use them.
+
+    The real behaviour of `gpt-5.4-mini` on a question the corpus does not
+    cover: retrieval returns something weakly related, and the model says so
+    rather than answering from it.
+    """
+
+    model = "refuses"
+
+    async def synthesise(self, *, question: str, chunks: list[RetrievedChunk]):
+        return (
+            DraftAnswer(
+                headline="The documents do not cover the airport pickup price.",
+                blocks=[
+                    DraftBlock(
+                        type="alert.callout",
+                        level="info",
+                        markdown="Nothing here covers guest transport charges.",
+                    )
+                ],
+            ),
+            Usage(provider="fake", model=self.model),
+        )
+
+
+async def test_a_synthesiser_refusal_is_recorded_as_a_refusal(
+    app_factory: async_sessionmaker[AsyncSession], tenant: tuple[uuid.UUID, uuid.UUID]
+) -> None:
+    """Found by the end-to-end eval, and it was a product bug not a metric one.
+
+    Retrieval returns weakly related chunks, so `had_evidence` is true. The
+    refusal is an alert, and alerts are exempt from provenance, so it survives
+    validation and `kept` is non-empty. Both original conditions passed and the
+    turn was written as `complete`.
+
+    That matters beyond a number: `ai.turn` is the permanent question log, and
+    §6.5 exists to answer "what did people ask that we could not answer". Every
+    synthesiser-level refusal was invisible to that query — and those are the
+    ones most worth reading, because the corpus nearly covered them.
+    """
+    outcome = await ask(app_factory, tenant, "how much is the airport pickup", answers=RefusesInProse())
+
+    assert outcome.envelope.status == "no_evidence"
+    assert outcome.envelope.provenance.documents == []
+
+    async with tenant_session(app_factory, tenant[0]) as session:
+        status = (
+            await session.execute(
+                text("SELECT status FROM ai.turn WHERE id = :id"), {"id": outcome.turn_id}
+            )
+        ).scalar_one()
+
+    # The roadmap query is `WHERE status IN ('no_evidence', 'refused', 'failed')`.
+    assert status == "no_evidence"
+
+
+async def test_a_cited_answer_is_still_complete(
+    app_factory: async_sessionmaker[AsyncSession], tenant: tuple[uuid.UUID, uuid.UUID]
+) -> None:
+    """The guard must not swallow real answers.
+
+    A rule that marked everything `no_evidence` would satisfy the test above
+    and destroy the product.
+    """
+    outcome = await ask(app_factory, tenant, "corporate cancellation window")
+
+    assert outcome.envelope.status == "complete"
+    assert outcome.envelope.provenance.documents

@@ -210,13 +210,27 @@ def assemble(
     everything = warnings[:] if warnings else []
     everything += [f"stripped {strip.block_type} ({strip.reason})" for strip in validated.strips]
 
-    # Blocks surviving is not the same as evidence existing. A refusal is
-    # itself a block — an alert saying no document covers the question — and
-    # alerts are exempt from provenance, so it always survives validation.
-    # Deciding status from the block count alone therefore reported every
-    # refusal as a complete answer, which is the one status that must never be
-    # wrong: it is what the eval, the roadmap query and the UI all read.
-    status: TurnStatus = "complete" if kept and had_evidence else "no_evidence"
+    cited = _cited(source_refs(chunks, scores), kept)
+
+    # Three conditions, and the third was missing for a while.
+    #
+    # `had_evidence` covers retrieval finding nothing. `kept` covers the
+    # validator removing everything. Neither catches the case the eval found:
+    # retrieval returns weakly related chunks, the synthesiser correctly
+    # judges them insufficient and says "the documents do not cover this" —
+    # and because that refusal is an alert, and alerts are exempt from
+    # provenance, it survived validation and the turn was recorded `complete`.
+    #
+    # It looked like a bug in the measurement. It was a bug in the product:
+    # `ai.turn` is the permanent question log, and §6.5's whole point is
+    # answering "what did people ask that we could not answer". Every
+    # synthesiser-level refusal was invisible to that query — which is the
+    # subset most worth reading, because the corpus nearly covered them.
+    #
+    # An answer citing nothing is not an answer from documents, whatever it
+    # says. Prose without provenance is already stripped, so anything reaching
+    # here uncited is an alert speaking in our own voice.
+    status: TurnStatus = "complete" if kept and had_evidence and cited else "no_evidence"
 
     envelope = Envelope(
         envelope_id=uuid.uuid4(),
@@ -254,7 +268,7 @@ def assemble(
         # Only chunks something actually cites. Listing all thirty retrieved
         # chunks would make the source drawer a search-results page and bury
         # the two that matter.
-        provenance=Provenance(documents=_cited(source_refs(chunks, scores), kept)),
+        provenance=Provenance(documents=cited),
         followups=[f.strip() for f in draft.followups if f and f.strip()][:3],
         diagnostics=Diagnostics(
             degraded=validated.degraded or bool(warnings),
