@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { DocumentList, type DocumentRow } from "@/components/workspace/DocumentList";
 import { DocumentUploader } from "@/components/workspace/DocumentUploader";
+import { LoadSamples } from "@/components/workspace/LoadSamples";
 import { PageBody, PageHeader } from "@/components/workspace/PageHeader";
 import { WorkspaceShell } from "@/components/workspace/WorkspaceShell";
 import { apiFetch } from "@/lib/api-client";
@@ -47,6 +48,14 @@ export default async function DocumentsPage() {
           title="Your documents"
           description="Everything you upload here becomes searchable. Answers will cite the exact document and section they came from."
         />
+
+        {/* Offered only to an empty workspace. Someone who has already uploaded
+            their own documents does not want a demo corpus mixed into them. */}
+        {list.length === 0 ? (
+          <div className="mb-6">
+            <LoadSamples />
+          </div>
+        ) : null}
 
         <DocumentUploader />
 
