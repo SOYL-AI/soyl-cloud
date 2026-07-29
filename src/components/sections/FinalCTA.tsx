@@ -1,9 +1,8 @@
 "use client";
 
+import { Reveal } from "@/components/ui/Reveal";
 import { Container } from "../ui/Container";
 import { Button } from "../ui/Button";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/animations";
 
 export function FinalCTA() {
   return (
@@ -14,13 +13,7 @@ export function FinalCTA() {
       </div>
 
       <Container className="relative z-10">
-        <motion.div
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          className="flex flex-col items-center text-center max-w-3xl mx-auto"
-        >
+        <Reveal className="flex flex-col items-center text-center max-w-3xl mx-auto">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
             Ready to modernize your property?
           </h2>
@@ -36,7 +29,7 @@ export function FinalCTA() {
               Contact Sales
             </Button>
           </div>
-        </motion.div>
+        </Reveal>
       </Container>
     </section>
   );

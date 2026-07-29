@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Check, Loader2, Lock, RotateCcw, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/analytics";
 
 /**
  * The public Hotel Advisor.
@@ -110,6 +111,7 @@ export function AdvisorChat() {
       });
       const data = (await response.json()) as { insight?: Insight; message?: string };
       if (response.ok && data.insight) {
+        track("Advisor Completed");
         setInsight(data.insight);
       } else {
         setError(data.message ?? "The advisor is unavailable right now.");
@@ -122,6 +124,7 @@ export function AdvisorChat() {
   }
 
   function choose(value: string) {
+    if (step === 0) track("Advisor Started");
     const next = { ...answers, [question.key]: value };
     setAnswers(next);
 

@@ -24,14 +24,19 @@ export default function Footer() {
           
           {/* Links */}
           <div>
-            <h4 className="font-semibold text-white text-sm mb-5">Product</h4>
+            <h2 className="font-semibold text-white text-sm mb-5">Product</h2>
             <ul className="flex flex-col gap-3">
               {NAVIGATION.slice(0, 3).map((item) => (
                 <li key={item.name}>
                   <Link href={item.href} className="text-sm hover:text-white transition-colors flex items-center justify-between group">
                     {item.name}
+                    {/* Was gray-400 on gray-900 at 50% opacity, which is unreadable.
+                        The opacity did most of the damage: it composites the text
+                        toward its background. Lighter text, full opacity, 10px. */}
                     {item.name === "SOYL Dine" && (
-                      <span className="text-[9px] uppercase tracking-wider bg-[var(--color-soyl-gray-900)] text-[var(--color-soyl-gray-400)] px-1.5 py-0.5 rounded-sm opacity-50 group-hover:opacity-100 transition-opacity">Soon</span>
+                      <span className="text-[10px] uppercase tracking-wider bg-[var(--color-soyl-gray-900)] text-[var(--color-soyl-gray-200)] px-1.5 py-0.5 rounded-sm">
+                        Soon
+                      </span>
                     )}
                   </Link>
                 </li>
@@ -40,7 +45,7 @@ export default function Footer() {
           </div>
           
           <div>
-            <h4 className="font-semibold text-white text-sm mb-5">Company</h4>
+            <h2 className="font-semibold text-white text-sm mb-5">Company</h2>
             <ul className="flex flex-col gap-3">
               {NAVIGATION.slice(3).map((item) => (
                 <li key={item.name}>
@@ -53,7 +58,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-white text-sm mb-5">Legal</h4>
+            <h2 className="font-semibold text-white text-sm mb-5">Legal</h2>
             <ul className="flex flex-col gap-3">
               {LEGAL.map((item) => (
                 <li key={item.name}>
@@ -64,7 +69,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-white text-sm mb-5">Resources</h4>
+            <h2 className="font-semibold text-white text-sm mb-5">Resources</h2>
             <ul className="flex flex-col gap-3">
               {RESOURCES.map((item) => (
                 <li key={item.name}>

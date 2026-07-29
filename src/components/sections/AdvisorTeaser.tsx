@@ -1,11 +1,8 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, MessageSquareText, Quote, Search } from "lucide-react";
 import Link from "next/link";
 
+import { RevealGroup } from "@/components/ui/Reveal";
 import { Container } from "@/components/ui/Container";
-import { fadeUp, staggerContainer } from "@/lib/animations";
 
 /**
  * The Hotel Advisor entry point on the landing page.
@@ -35,14 +32,8 @@ export function AdvisorTeaser() {
       className="border-y border-charcoal/10 bg-cream py-16 sm:py-24"
     >
       <Container>
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16"
-        >
-          <motion.div variants={fadeUp}>
+        <RevealGroup className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-charcoal/45">
               Hotel Advisor
             </p>
@@ -87,12 +78,12 @@ export function AdvisorTeaser() {
                 Five questions. No account.
               </span>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div variants={fadeUp}>
+          <div>
             <AnswerPreview />
-          </motion.div>
-        </motion.div>
+          </div>
+        </RevealGroup>
       </Container>
     </section>
   );

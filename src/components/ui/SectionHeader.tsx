@@ -1,14 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/animations";
+import { Reveal } from "@/components/ui/Reveal";
 import { Badge } from "./Badge";
 import { cn } from "@/lib/utils";
 
-import { HTMLMotionProps } from "framer-motion";
-
-interface SectionHeaderProps extends HTMLMotionProps<"div"> {
+interface SectionHeaderProps {
   badge?: string;
   title: string;
   description?: string;
@@ -23,6 +20,7 @@ interface SectionHeaderProps extends HTMLMotionProps<"div"> {
    * only the tag changes.
    */
   as?: "h1" | "h2" | "h3";
+  className?: string;
 }
 
 export function SectionHeader({
@@ -32,20 +30,14 @@ export function SectionHeader({
   align = "center",
   as: Heading = "h2",
   className,
-  ...props
 }: SectionHeaderProps) {
   return (
-    <motion.div
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
+    <Reveal
       className={cn(
         "flex flex-col gap-4 mb-16",
         align === "center" ? "items-center text-center mx-auto max-w-3xl" : "items-start max-w-2xl",
         className
       )}
-      {...props}
     >
       {badge && <Badge variant="secondary">{badge}</Badge>}
       <Heading className="text-3xl md:text-5xl font-bold tracking-tight text-[var(--color-soyl-charcoal)]">
@@ -56,6 +48,6 @@ export function SectionHeader({
           {description}
         </p>
       )}
-    </motion.div>
+    </Reveal>
   );
 }

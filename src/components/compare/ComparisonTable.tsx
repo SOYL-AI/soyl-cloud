@@ -36,6 +36,8 @@ export function ComparisonTable({ categories, competitorName }: ComparisonTableP
     if (status === "Contact Vendor") {
       return (
         <div className="flex items-center justify-center text-center">
+          {/* Synthesised italic. The real italic face is a separate 48 KB
+              font file, which is not worth loading on every page for one cell. */}
           <span className="text-sm italic text-[var(--color-soyl-gray-400)]">
             Contact Vendor
           </span>

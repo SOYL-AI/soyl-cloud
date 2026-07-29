@@ -40,11 +40,11 @@ export function AuthShell({
           )}
 
           <p className="mt-8 text-center text-xs text-[var(--color-soyl-gray-500)]">
-            <Link href="/privacy" className="underline hover:text-[var(--color-soyl-charcoal)]">
+            <Link href="/legal/privacy" className="underline hover:text-[var(--color-soyl-charcoal)]">
               Privacy
             </Link>
             {" · "}
-            <Link href="/terms" className="underline hover:text-[var(--color-soyl-charcoal)]">
+            <Link href="/legal/terms" className="underline hover:text-[var(--color-soyl-charcoal)]">
               Terms
             </Link>
           </p>

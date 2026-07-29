@@ -24,7 +24,11 @@ export function Analytics() {
         defer
         data-domain={domain}
         src="https://plausible.io/js/script.outbound-links.js"
-        strategy="afterInteractive"
+        // `lazyOnload` rather than `afterInteractive`: it waits for the browser
+        // to go idle, which keeps a third-party DNS, TCP and TLS chain off the
+        // path that decides LCP. Pageviews are still recorded — the queue below
+        // holds any custom event fired before the script arrives.
+        strategy="lazyOnload"
       />
       {/*
         Queues custom events fired before the script finishes loading. Without

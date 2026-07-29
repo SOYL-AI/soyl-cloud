@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "../ui/Button";
 
 interface StickyCTAProps {
@@ -26,15 +25,17 @@ export function StickyCTA({ title = "SOYL Cloud — AI Concierge for Hotels" }: 
   }, []);
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -100, opacity: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm py-3 px-6 hidden md:block"
-        >
+    // Kept mounted and translated out of view rather than conditionally
+    // rendered, so it can animate away as well as in — and so this component
+    // does not need an animation library to do one slide. `inert` while hidden
+    // keeps its two buttons out of the tab order.
+    <div
+      inert={!isVisible}
+      aria-hidden={!isVisible}
+      className={`fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm py-3 px-6 hidden md:block transition-[transform,opacity] duration-300 ease-out ${
+        isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+      }`}
+    >
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <span className="text-sm font-semibold text-[var(--color-soyl-charcoal)]">
               {title}
@@ -47,9 +48,7 @@ export function StickyCTA({ title = "SOYL Cloud — AI Concierge for Hotels" }: 
                 Book a Demo →
               </Button>
             </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+      </div>
+    </div>
   );
 }

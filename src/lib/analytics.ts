@@ -23,7 +23,27 @@ export type AnalyticsEvent =
   /** The contact form failed. `reason` distinguishes our fault from the visitor's. */
   | "Contact Failed"
   /** The visitor did something inside the Calendly iframe. `stage` says what. */
-  | "Calendly Interaction";
+  | "Calendly Interaction"
+  /**
+   * The Calendly embed was requested. Distinct from "Calendly Interaction",
+   * which cannot fire until the embed exists — the gap between the two is the
+   * cost of the facade, and without this event that cost is invisible.
+   */
+  | "Demo Booking Started"
+  /**
+   * The signup funnel, in order. `UPDATE.md` §11's funnel screen is
+   * "signups, verified, created a property, uploaded a document, asked a
+   * question" — these are those steps, named so the drop-off between any two
+   * is one subtraction rather than a join.
+   */
+  | "Signup Submitted"
+  | "Email Verified"
+  | "Property Created"
+  | "Document Uploaded"
+  | "Question Asked"
+  /** The public advisor, which is the top of the funnel for anyone who tries it. */
+  | "Advisor Started"
+  | "Advisor Completed";
 
 type PlausibleFunction = (
   event: string,

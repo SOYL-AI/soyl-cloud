@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FileText, UploadCloud, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState } from "react";
+import { track } from "@/lib/analytics";
 
 /**
  * Drag-and-drop upload.
@@ -115,6 +116,7 @@ export function DocumentUploader() {
         // 3. Confirm, which queues ingestion.
         update(localId, { progress: 100, state: "processing" });
         const confirmed = await fetch(`/api/documents/${document_id}/ingest`, { method: "POST" });
+        if (confirmed.ok) track("Document Uploaded");
 
         if (!confirmed.ok) {
           const body = (await confirmed.json().catch(() => null)) as { message?: string } | null;

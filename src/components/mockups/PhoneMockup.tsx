@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { Reveal } from "@/components/ui/Reveal";
 import { cn } from "@/lib/utils";
 
 interface PhoneMockupProps {
@@ -48,15 +48,8 @@ export function PhoneMockup({
   );
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-      className="relative flex justify-center w-full"
-      whileHover={float ? { y: -8, transition: { duration: 0.4 } } : undefined}
-    >
+    <Reveal className={cn("relative flex justify-center w-full", float && "soyl-float")}>
       {content}
-    </motion.div>
+    </Reveal>
   );
 }

@@ -1,64 +1,59 @@
-"use client";
+import { CheckCircle2 } from "lucide-react";
 
-import { useEffect } from "react";
-import { motion } from "framer-motion";
+import { CalendlyFacade } from "@/components/booking/CalendlyFacade";
 import { Container } from "@/components/ui/Container";
-import { track } from "@/lib/analytics";
 
 /**
- * Calendly posts its progress to the parent window. Without listening for it
- * the booking funnel is invisible: the iframe is a third-party origin, so a
- * scheduled demo produces no pageview and no click we can see.
+ * The demo booking page.
  *
- * Event names are Calendly's own (`calendly.event_type_viewed`,
- * `calendly.date_and_time_selected`, `calendly.event_scheduled`).
+ * A server component now. It was `"use client"` for one `useEffect` listening
+ * to Calendly, which meant the whole page — heading, copy, layout — shipped and
+ * hydrated as a client bundle to support a listener that only matters after
+ * someone clicks. That listener moved into the facade island, and nothing else
+ * here needs JavaScript.
+ *
+ * `UPDATE.md` §10: marketing routes are RSC with no client-side data fetching
+ * for primary content.
  */
-function useCalendlyTracking() {
-  useEffect(() => {
-    function onMessage(event: MessageEvent) {
-      if (!event.origin.includes("calendly.com")) return;
 
-      const name = (event.data as { event?: unknown } | null)?.event;
-      if (typeof name !== "string" || !name.startsWith("calendly.")) return;
-
-      track("Calendly Interaction", { stage: name.replace("calendly.", "") });
-    }
-
-    window.addEventListener("message", onMessage);
-    return () => window.removeEventListener("message", onMessage);
-  }, []);
-}
+const INCLUDED = [
+  "A walk through your own operation, not a canned script",
+  "The product answering questions against a document like one of yours",
+  "Straight answers on pricing, data handling, and what it will not do",
+];
 
 export default function BookDemo() {
-  useCalendlyTracking();
-
   return (
-    <div className="flex flex-col min-h-screen pt-32 pb-24 bg-[var(--color-soyl-gray-50)]">
+    <main className="min-h-screen bg-[var(--color-soyl-gray-50)] pb-24 pt-32">
       <Container>
-        <div className="max-w-4xl mx-auto w-full">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-white rounded-3xl p-6 md:p-10 shadow-xl border border-[var(--color-soyl-gray-200)]"
-          >
-            <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] mb-4">Book Your Free Demo</h1>
-              <p className="text-[var(--color-soyl-gray-600)] text-lg">See how SOYL Cloud can transform your property's operations.</p>
-            </div>
+        <div className="mx-auto w-full max-w-3xl">
+          <div className="mb-8 text-center">
+            <h1 className="text-3xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] sm:text-4xl">
+              Book a demo
+            </h1>
+            <p className="mx-auto mt-3 max-w-xl text-lg leading-relaxed text-[var(--color-soyl-gray-600)]">
+              Thirty minutes with someone who built this, not a sales script.
+            </p>
+          </div>
 
-            <div className="w-full h-[700px] rounded-xl overflow-hidden">
-              <iframe 
-                src="https://calendly.com/siddharthpriyatam/30min"
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                title="Book a Demo via Calendly"
-              />
-            </div>
-          </motion.div>
+          <ul className="mx-auto mb-8 max-w-xl space-y-2">
+            {INCLUDED.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-2.5 text-sm text-[var(--color-soyl-gray-600)]"
+              >
+                <CheckCircle2
+                  className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-soyl-mint-dark)]"
+                  aria-hidden
+                />
+                {item}
+              </li>
+            ))}
+          </ul>
+
+          <CalendlyFacade />
         </div>
       </Container>
-    </div>
+    </main>
   );
 }

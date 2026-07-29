@@ -1,5 +1,6 @@
 "use client";
 
+import { track } from "@/lib/analytics";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
@@ -45,6 +46,7 @@ function VerifyEmail() {
         if (response.ok) {
           setState("done");
           // Give the confirmation a moment to be read rather than flashing it.
+          track("Email Verified");
           setTimeout(() => router.replace("/login?notice=verified"), 1500);
           return;
         }

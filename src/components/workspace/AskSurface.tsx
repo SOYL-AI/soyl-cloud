@@ -15,6 +15,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnswerBlocks } from "@/components/workspace/AnswerBlocks";
 
 import type { AskResponse, Envelope } from "@soyl/contracts";
+import { track } from "@/lib/analytics";
 
 /**
  * Asking questions of your own documents.
@@ -190,6 +191,9 @@ export function AskSurface({ hasDocuments }: { hasDocuments: boolean }) {
           if (name === "envelope.complete") {
             const payload = data as unknown as AskResponse;
             patch({ envelope: payload.envelope, stage: null });
+            // The envelope's own status, so the funnel can tell an answered
+            // question from a refused one without a second query.
+            track("Question Asked", { status: payload.envelope.status });
             if (payload.conversation_id) setConversationId(payload.conversation_id);
             void loadHistory();
           }

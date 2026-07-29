@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import { track } from "@/lib/analytics";
 
 /**
  * Add a property without leaving the workspace.
@@ -66,6 +67,8 @@ export function AddPropertyDialog() {
       });
 
       if (response.ok) {
+
+        track("Property Created");
         setOpen(false);
         // The list is server-rendered, so refresh rather than mutating local
         // state — one source of truth, and it reflects what the API actually

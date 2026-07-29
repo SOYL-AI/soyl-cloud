@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { Menu, X, ChevronDown, MessageSquare, LayoutDashboard, Utensils, UtensilsCrossed, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "./ui/Button";
 
 export default function Navbar() {
@@ -101,20 +100,43 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button className="md:hidden p-2 text-[var(--color-soyl-gray-600)] hover:text-gray-900 transition-colors" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        {/* An icon is not a name. Without `aria-label` this button is
+            announced as "button" and a screen reader user has no way to know
+            it opens the menu. `aria-expanded` is what tells them whether it is
+            currently open. */}
+        <button
+          className="md:hidden p-2 text-[var(--color-soyl-gray-600)] hover:text-gray-900 transition-colors"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isOpen}
+          aria-controls="mobile-menu"
+        >
+          {isOpen ? <X size={24} aria-hidden /> : <Menu size={24} aria-hidden />}
         </button>
       </div>
 
       {/* Mobile Nav */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-b border-gray-100 overflow-hidden shadow-lg absolute top-full left-0 w-full"
-          >
+      {/* A CSS grid-rows transition rather than framer-motion.
+          The Navbar is on every page, so its import decided whether the whole
+          animation library shipped on the critical path of every marketing
+          route — ~50 KB and the main-thread cost of hydrating it, to slide one
+          panel. `grid-template-rows: 0fr -> 1fr` animates to auto height, which
+          is the thing plain CSS could not do until recently and the reason
+          this needed a library at all.
+
+          Kept mounted and hidden rather than conditionally rendered, so it can
+          animate out as well as in. `inert` keeps its links out of the tab
+          order while closed — without it, a keyboard user tabs into a menu
+          they cannot see. */}
+      <div
+        id="mobile-menu"
+        inert={!isOpen}
+        aria-hidden={!isOpen}
+        className={`md:hidden absolute top-full left-0 w-full grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden bg-white border-b border-gray-100 shadow-lg">
             <div className="p-6 flex flex-col gap-2">
               <div className="flex flex-col gap-1 pl-4 border-l-2 border-gray-100">
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Products</p>
@@ -135,10 +157,9 @@ export default function Navbar() {
                   Book Demo
                 </Button>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      </div>
     </nav>
   );
 }

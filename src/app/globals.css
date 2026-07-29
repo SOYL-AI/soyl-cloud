@@ -8,7 +8,11 @@
   --color-soyl-black: #0A0F14;
   --color-soyl-charcoal: #1A1F25;
   --color-soyl-gray-900: #2A2F36;
-  --color-soyl-gray-600: #6B7280;
+  /* Darkened from #6B7280 in M5. The old value was 4.83:1 on white — a pass
+     for normal text by a hair, and a fail on the gray-50 sections that make up
+     half the page. This is 5.98:1 on white and 5.72:1 on gray-50, which clears
+     AA everywhere it is used and is visually almost identical. */
+  --color-soyl-gray-600: #5B6472;
   --color-soyl-gray-400: #9CA3AF;
   --color-soyl-gray-200: #E5E7EB;
   --color-soyl-gray-100: #F3F4F6;
@@ -74,5 +78,88 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ── Scroll reveal ─────────────────────────────────────────────────────────
+   Paired with src/components/ui/Reveal.tsx. CSS rather than an animation
+   library: transitions on opacity and transform are composited off the main
+   thread, and TBT was what held marketing performance below 90.
+
+   The hidden state lives here rather than in inline styles so it applies from
+   first paint — an element that starts visible and is hidden by JavaScript on
+   hydration is a flash of content, which is worse than no animation. */
+
+.soyl-reveal,
+.soyl-reveal-group > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+}
+
+.soyl-reveal[data-revealed="true"],
+.soyl-reveal-group[data-revealed="true"] > * {
+  opacity: 1;
+  transform: none;
+}
+
+/* Staggered, so a row of cards arrives in sequence. Capped at six: beyond that
+   the last item waits long enough to read as a fault rather than a flourish. */
+.soyl-reveal-group[data-revealed="true"] > *:nth-child(1) { transition-delay: 0s; }
+.soyl-reveal-group[data-revealed="true"] > *:nth-child(2) { transition-delay: 0.1s; }
+.soyl-reveal-group[data-revealed="true"] > *:nth-child(3) { transition-delay: 0.2s; }
+.soyl-reveal-group[data-revealed="true"] > *:nth-child(4) { transition-delay: 0.3s; }
+.soyl-reveal-group[data-revealed="true"] > *:nth-child(5) { transition-delay: 0.4s; }
+.soyl-reveal-group[data-revealed="true"] > *:nth-child(n + 6) { transition-delay: 0.5s; }
+
+@keyframes soyl-reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.soyl-reveal-load {
+  animation: soyl-reveal-in 0.6s ease-out both;
+}
+
+/* A stated preference for less motion. These animations are decorative, so the
+   correct response is to show the final state immediately rather than to
+   shorten them. Content must never depend on an animation having run. */
+@media (prefers-reduced-motion: reduce) {
+  .soyl-reveal,
+  .soyl-reveal-group > *,
+  .soyl-reveal-load {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+}
+
+/* A gentle lift on hover, for the product mockups. Was a framer-motion
+   `whileHover`; a transform transition is the same effect without the runtime,
+   and it is inert on touch devices where there is no hover to begin with. */
+.soyl-float {
+  transition: transform 0.35s ease-out;
+}
+
+@media (hover: hover) {
+  .soyl-float:hover {
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soyl-float,
+  .soyl-float:hover {
+    transition: none;
+    transform: none;
   }
 }

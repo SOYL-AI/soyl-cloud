@@ -30,8 +30,9 @@ export const NAVIGATION = [
 ];
 
 export const LEGAL = [
-  { name: "Privacy Policy", href: "/privacy" },
-  { name: "Terms of Service", href: "/terms" },
+  { name: "Privacy Policy", href: "/legal/privacy" },
+  { name: "Terms of Service", href: "/legal/terms" },
+  { name: "Data Processing", href: "/legal/dpa" },
 ];
 
 export const SOCIAL = [

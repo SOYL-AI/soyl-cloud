@@ -17,6 +17,20 @@ const nextConfig: NextConfig = {
   //   the pile at one error; M1 fixed it and made typecheck blocking in CI.
   //
   // Do not add either back to get a deploy out. Fix the type.
+
+  async redirects() {
+    // `UPDATE.md` §10 puts the legal documents under `/legal/*`. They used to
+    // live at the top level, and those URLs are linked from the footer of every
+    // page indexed so far — so they redirect rather than 404.
+    //
+    // Permanent (308), because they are never coming back: a temporary
+    // redirect would leave both URLs eligible to rank and split whatever
+    // authority the originals have.
+    return [
+      { source: "/privacy", destination: "/legal/privacy", permanent: true },
+      { source: "/terms", destination: "/legal/terms", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+import { track } from "@/lib/analytics";
 import { useState } from "react";
 
 import { AuthShell, Field, FormError } from "@/components/auth/AuthShell";
@@ -39,6 +41,12 @@ export default function SignupPage() {
       });
 
       if (response.ok) {
+        // Fired on the API's 202, not on the button click, so the number
+        // counts accepted signups rather than attempts. Deliberately carries
+        // nothing about *which* address: the API answers identically whether
+        // or not it was already registered, and a property here would undo
+        // that by making the two cases distinguishable in analytics.
+        track("Signup Submitted");
         // Always here, whether or not the address was already registered.
         // The API answers identically by design and this must not undo it.
         router.replace("/login?notice=check-email");
@@ -99,11 +107,11 @@ export default function SignupPage() {
 
         <p className="text-xs text-[var(--color-soyl-gray-500)]">
           By creating an account you agree to our{" "}
-          <Link href="/terms" className="underline">
+          <Link href="/legal/terms" className="underline">
             Terms
           </Link>{" "}
           and{" "}
-          <Link href="/privacy" className="underline">
+          <Link href="/legal/privacy" className="underline">
             Privacy Policy
           </Link>
           .

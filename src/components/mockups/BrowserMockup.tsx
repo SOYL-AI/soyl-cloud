@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { Reveal } from "@/components/ui/Reveal";
 import { cn } from "@/lib/utils";
 
 interface BrowserMockupProps {
@@ -11,6 +11,19 @@ interface BrowserMockupProps {
   children?: React.ReactNode;
   glow?: boolean;
   float?: boolean;
+  /**
+   * Set on the hero image only.
+   *
+   * Without it `next/image` lazy-loads, so the browser does not begin fetching
+   * the largest element on the page until layout has settled — which is the
+   * definition of a late LCP. With it, the image is preloaded in the document
+   * head and the fetch starts with the HTML.
+   *
+   * Deliberately opt-in: `priority` on every mockup would preload four large
+   * images and make the hero compete with three below-fold ones for bandwidth,
+   * which is worse than lazy-loading all of them.
+   */
+  priority?: boolean;
 }
 
 export function BrowserMockup({ 
@@ -19,7 +32,8 @@ export function BrowserMockup({
   className, 
   children,
   glow = false,
-  float = false
+  float = false,
+  priority = false,
 }: BrowserMockupProps) {
   const content = (
     <div className={cn(
@@ -43,7 +57,8 @@ export function BrowserMockup({
             fill
             className="object-cover object-top"
             sizes="(max-width: 768px) 100vw, 80vw"
-            quality={90}
+            quality={80}
+            priority={priority}
           />
         ) : (
           children
@@ -53,18 +68,11 @@ export function BrowserMockup({
   );
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className="relative w-full"
-      whileHover={float ? { y: -5, transition: { duration: 0.3 } } : undefined}
-    >
+    <Reveal className={cn("relative w-full", float && "soyl-float")}>
       {glow && (
         <div className="absolute inset-0 -m-4 bg-[var(--color-soyl-mint)] opacity-15 blur-3xl rounded-full z-0 pointer-events-none mix-blend-multiply" />
       )}
       {content}
-    </motion.div>
+    </Reveal>
   );
 }

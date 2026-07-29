@@ -1,18 +1,15 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { ArrowRight, Play, Check, ShieldCheck, Hotel, Bed, UtensilsCrossed } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { Reveal, RevealGroup, RevealOnLoad } from "@/components/ui/Reveal";
 import { BrowserMockup } from "@/components/mockups/BrowserMockup";
 import { PhoneMockup } from "@/components/mockups/PhoneMockup";
 import { MetricsStrip } from "@/components/sections/MetricsStrip";
 import { AdvisorTeaser } from "@/components/sections/AdvisorTeaser";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { StickyCTA } from "@/components/sections/StickyCTA";
-import { fadeUp, staggerContainer } from "@/lib/animations";
 import { ProductSchema } from "@/components/seo/SchemaInjector";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,31 +30,28 @@ export default function Home() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[600px] bg-[var(--background-image-gradient-glow)] -z-10" />
 
         <Container>
-          <motion.div 
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col items-center text-center max-w-4xl mx-auto"
-          >
-            <motion.div variants={fadeUp} className="mb-8">
+          {/* Not animated. The h1 below is the LCP element, and an opacity
+              tween on it delays LCP by exactly the tween's duration — the
+              metric measures when the element reaches its final painted state.
+              Above the fold, the fastest animation is none. */}
+          <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+            <div className="mb-8">
               <Badge variant="outline" dot>LIVE: AI-Powered Hospitality Platform</Badge>
-            </motion.div>
+            </div>
 
-            <motion.h1 
-              variants={fadeUp}
+            <h1
               className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-[var(--color-soyl-charcoal)] leading-[1.05] mb-8"
             >
               Resolve guest requests in under <span className="text-[var(--color-soyl-mint-dark)]">30 seconds.</span>
-            </motion.h1>
+            </h1>
 
-            <motion.p 
-              variants={fadeUp}
+            <p
               className="text-xl md:text-2xl text-[var(--color-soyl-gray-600)] mb-12 max-w-3xl leading-relaxed font-medium"
             >
               Your AI concierge handles room service, housekeeping, and guest communication — so your staff can focus on what matters. No app download. Works from day one.
-            </motion.p>
+            </p>
 
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
               <Button size="lg" variant="primary" href="/book-demo" className="w-full sm:w-auto group">
                 Book a Demo
                 <ArrowRight size={20} className="ml-2 transition-transform group-hover:translate-x-1" />
@@ -66,25 +60,23 @@ export default function Home() {
                 <Play size={18} className="mr-2 text-[var(--color-soyl-mint-dark)]" />
                 Watch Product Tour
               </Button>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* Hero Mockups Showcase */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            transition={{ delay: 0.4 }}
+          <RevealOnLoad
+            delay={0.4}
             className="mt-20 md:mt-32 relative max-w-[1200px] mx-auto"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-20 h-40 bottom-0 top-auto pointer-events-none" />
             
             <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 relative">
               <div className="w-full md:w-3/5 relative z-10">
-                <BrowserMockup 
-                  src="/images/soyl_hero_main.png" 
-                  alt="PMS Lite Dashboard"
+                <BrowserMockup
+                  src="/images/soyl_hero_main.png"
+                  alt="The PMS Lite dashboard, showing today's arrivals, room status and open service requests"
                   glow
+                  priority
                 />
               </div>
               <div className="w-[280px] md:w-[320px] md:absolute md:-right-4 lg:right-10 md:bottom-[-40px] z-20">
@@ -96,10 +88,8 @@ export default function Home() {
               </div>
 
               {/* Floating annotations */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1, duration: 0.5 }}
+              <RevealOnLoad
+                delay={1}
                 className="absolute left-[10%] top-[20%] z-30 bg-white border border-[var(--color-soyl-gray-200)] shadow-xl rounded-2xl p-4 hidden lg:block"
               >
                 <div className="flex gap-3 items-center">
@@ -111,9 +101,9 @@ export default function Home() {
                     <p className="text-xs text-[var(--color-soyl-gray-600)]">Sent to Housekeeping</p>
                   </div>
                 </div>
-              </motion.div>
+              </RevealOnLoad>
             </div>
-          </motion.div>
+          </RevealOnLoad>
         </Container>
       </section>
 
@@ -140,13 +130,7 @@ export default function Home() {
             </div>
             
             <div className="order-1 md:order-2">
-              <motion.div
-                variants={staggerContainer}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-100px" }}
-                className="flex flex-col gap-10"
-              >
+              <RevealGroup className="flex flex-col gap-10">
                 <div>
                   <h3 className="text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-4">Instant responses, zero delays.</h3>
                   <p className="text-lg text-[var(--color-soyl-gray-600)] leading-relaxed">
@@ -160,7 +144,7 @@ export default function Home() {
                     { title: "Voice & Text", desc: "Guests can send a voice note or type — just like chatting with a friend." },
                     { title: "Smart Routing", desc: "Food goes to the kitchen, towels to housekeeping. Automatically." }
                   ].map((item, i) => (
-                    <motion.li key={i} variants={fadeUp} className="flex gap-4">
+                    <Reveal key={i} as="li" className="flex gap-4">
                       <div className="w-10 h-10 rounded-full bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)] shrink-0">
                         <Check size={20} />
                       </div>
@@ -168,16 +152,16 @@ export default function Home() {
                         <h4 className="text-lg font-bold text-[var(--color-soyl-charcoal)] mb-1">{item.title}</h4>
                         <p className="text-[var(--color-soyl-gray-600)]">{item.desc}</p>
                       </div>
-                    </motion.li>
+                    </Reveal>
                   ))}
                 </ul>
 
-                <motion.div variants={fadeUp}>
+                <Reveal>
                   <Button variant="outline" href="/products/butler-ai">
                     Explore Butler AI
                   </Button>
-                </motion.div>
-              </motion.div>
+                </Reveal>
+              </RevealGroup>
             </div>
           </div>
         </Container>
@@ -192,14 +176,9 @@ export default function Home() {
             description="Manage bookings, rooms, billing, and staff operations from a single, clean interface designed for speed."
           />
 
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.7 }}
-          >
+          <Reveal>
             <BrowserMockup src="/images/pms_dashboard_main.png" alt="PMS Lite Dashboard" glow />
-          </motion.div>
+          </Reveal>
 
           <div className="mt-16 text-center">
             <Button variant="outline" href="/products/pms-lite">
@@ -213,12 +192,7 @@ export default function Home() {
       <section className="py-24 md:py-32 bg-white">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <Reveal>
               <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] mb-6">
                 The ROI is immediate.
               </h2>
@@ -236,13 +210,9 @@ export default function Home() {
                   <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">More online reviews generated</p>
                 </div>
               </div>
-            </motion.div>
+            </Reveal>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
+            <Reveal
               className="bg-[var(--color-soyl-charcoal)] rounded-[2rem] p-10 md:p-14 text-white shadow-2xl relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-soyl-mint)] rounded-full blur-[80px] opacity-20 translate-x-1/2 -translate-y-1/2" />
@@ -263,7 +233,7 @@ export default function Home() {
                   <div className="text-[var(--color-soyl-gray-400)]">Boutique Hotel Trial User</div>
                 </div>
               </div>
-            </motion.div>
+            </Reveal>
           </div>
         </Container>
       </section>
@@ -283,12 +253,9 @@ export default function Home() {
               { icon: ShieldCheck, title: "Hotel Chains", desc: "Enterprise dashboards with cross-property analytics." },
               { icon: UtensilsCrossed, title: "Restaurants", desc: "QR ordering and kitchen workflows." }
             ].map((item, i) => (
-              <motion.div
+              <Reveal
                 key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
+                delay={i * 0.1}
                 className="bg-white p-8 rounded-2xl border border-[var(--color-soyl-gray-200)] shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="w-12 h-12 bg-[var(--color-soyl-gray-100)] rounded-xl flex items-center justify-center text-[var(--color-soyl-charcoal)] mb-6">
@@ -296,7 +263,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-bold text-[var(--color-soyl-charcoal)] mb-3">{item.title}</h3>
                 <p className="text-[var(--color-soyl-gray-600)]">{item.desc}</p>
-              </motion.div>
+              </Reveal>
             ))}
           </div>
         </Container>

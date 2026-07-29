@@ -39,7 +39,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Legal and Trust pages (lower priority, less frequent changes)
-  const legalRoutes = ["/privacy", "/terms", "/security", "/company"].map((route) => ({
+  // `/privacy` and `/terms` moved under `/legal/*` and now 308 to it. A
+  // sitemap must list the destination, never the redirect — listing a
+  // redirecting URL asks a crawler to spend budget discovering what we already
+  // know.
+  const legalRoutes = [
+    "/legal/privacy",
+    "/legal/terms",
+    "/legal/dpa",
+    "/security",
+    "/company",
+  ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
