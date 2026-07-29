@@ -8,9 +8,30 @@ This directory is that set, the corpus it is labelled against, and the harness
 that measures it.
 
 ```
-uv run python -m evals.run           # fake providers — plumbing only, free
-uv run python -m evals.run --azure   # the run that counts (~8 min, ~₹25)
+uv run python -m evals.run                     # fake providers, free, plumbing only
+uv run python -m evals.run --azure             # retrieval quality (~8 min, ~₹25)
+uv run python -m evals.run --azure --answers   # retrieval AND answers (~25 min, ~₹60)
 ```
+
+`--answers` runs the full pipeline for every question and probe and reports
+three numbers that retrieval alone cannot produce:
+
+| | |
+|---|---|
+| **answer rate** | of questions the corpus covers, how many produced an answer |
+| **refusal rate** | of probes it does not cover, how many were refused |
+| **citation integrity** | answers whose every citation was in `ai.retrieval_log` |
+
+The first two are in tension by design, which is why both are reported. A
+pipeline that refuses everything scores perfectly on honesty and is worthless;
+one that answers everything is the product we are trying not to build. Moving
+one without the other is not an improvement.
+
+Citation integrity is checked against the retrieval log rather than the
+envelope, because the envelope is the thing under test — asking it to confirm
+its own citations proves only that it is internally consistent. It should
+always be 1.000, since the validator runs before persistence, so anything less
+means the validator has a hole rather than the model has a quirk.
 
 ## Read this before quoting a number from it
 

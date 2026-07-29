@@ -287,7 +287,11 @@ if __name__ == "__main__":
     # a strict reconfigure because a mangled character is a better outcome than
     # a lost measurement.
     if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        # `line_buffering` because a full run takes twenty-five minutes and
+        # Python buffers hard when stdout is a file — so redirecting the run to
+        # a log showed nothing at all until the process exited, which is
+        # indistinguishable from a hang.
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace", line_buffering=True)
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
