@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { SITE_URL } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'Hotel Advisor — SOYL Cloud',
+  title: 'Hotel Advisor',
   description:
     'Answer five questions about your property and get a read on where your team loses time to documents. No account needed.',
   openGraph: {
