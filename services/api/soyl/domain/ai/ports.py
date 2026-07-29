@@ -13,7 +13,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from decimal import Decimal
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
+
+if TYPE_CHECKING:
+    # Only for the annotation. Importing the envelope at runtime would make
+    # every module that touches a port pull in the whole answer schema.
+    from soyl.domain.ai.envelope import DraftAnswer
+    from soyl.domain.rag.retrieval import RetrievedChunk
 
 
 class ProviderError(Exception):
@@ -132,6 +138,25 @@ class RerankProvider(Protocol):
         look up chunks, and a fabricated index would be a crash or, worse, a
         citation pointing at the wrong document.
         """
+        ...
+
+
+class AnswerProvider(Protocol):
+    """Synthesises an answer from retrieved chunks (`UPDATE.md` §9).
+
+    Returns a `DraftAnswer` rather than an `Envelope`: identifiers, layout and
+    provenance resolution are assembled deterministically above this layer, so
+    a provider is never in a position to invent an id or a timestamp.
+    """
+
+    @property
+    def model(self) -> str:
+        ...
+
+    async def synthesise(
+        self, *, question: str, chunks: list[RetrievedChunk]
+    ) -> tuple[DraftAnswer, Usage]:
+        """Answer the question, or say the sources do not cover it."""
         ...
 
 

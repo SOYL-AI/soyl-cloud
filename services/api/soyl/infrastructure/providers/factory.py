@@ -13,11 +13,18 @@ from __future__ import annotations
 
 import logging
 
-from soyl.domain.ai.ports import EmbeddingProvider, QuestionProvider, RerankProvider
+from soyl.domain.ai.ports import (
+    AnswerProvider,
+    EmbeddingProvider,
+    QuestionProvider,
+    RerankProvider,
+)
+from soyl.infrastructure.providers.azure_answers import AzureOpenAIAnswers
 from soyl.infrastructure.providers.azure_openai import AzureOpenAIEmbeddings
 from soyl.infrastructure.providers.azure_questions import AzureOpenAIQuestions
 from soyl.infrastructure.providers.azure_rerank import AzureOpenAIRerank
 from soyl.infrastructure.providers.fake import FakeEmbeddings
+from soyl.infrastructure.providers.fake_answers import FakeAnswers
 from soyl.infrastructure.providers.fake_questions import FakeQuestions
 from soyl.infrastructure.providers.fake_rerank import FakeRerank
 from soyl.settings import Settings
@@ -81,3 +88,27 @@ def build_rerank_provider(settings: Settings) -> RerankProvider:
         "It scores by word overlap, so precision@5 measured with it is meaningless."
     )
     return FakeRerank()
+
+
+def build_answer_provider(settings: Settings) -> AnswerProvider:
+    """The synthesiser (`UPDATE.md` §9).
+
+    Same chat deployment as question generation and reranking. One deployment
+    serving three jobs is a Phase 0 simplification, not a design: §35.3 routes
+    each of them separately, and the day one of them needs a stronger model
+    this is the function that changes.
+    """
+    if settings.azure_openai_endpoint and settings.azure_openai_api_key:
+        return AzureOpenAIAnswers(
+            endpoint=str(settings.azure_openai_endpoint),
+            api_key=settings.azure_openai_api_key,
+            deployment=settings.azure_openai_chat_deployment,
+            model=settings.azure_openai_chat_model,
+            api_version=settings.azure_openai_api_version,
+        )
+
+    logger.warning(
+        "no Azure OpenAI credentials; using the fake synthesiser. "
+        "It quotes the first chunk it is given and understands nothing."
+    )
+    return FakeAnswers()

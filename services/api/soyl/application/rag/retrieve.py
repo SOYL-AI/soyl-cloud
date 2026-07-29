@@ -40,11 +40,9 @@ from soyl.domain.ai.ports import (
     Usage,
 )
 from soyl.domain.rag.fusion import Fused, reciprocal_rank_fusion
+from soyl.domain.rag.retrieval import RetrievedChunk
 from soyl.infrastructure.db.repositories.document_repository import vector_literal
-from soyl.infrastructure.db.repositories.retrieval_repository import (
-    Chunk,
-    RetrievalRepository,
-)
+from soyl.infrastructure.db.repositories.retrieval_repository import RetrievalRepository
 
 logger = logging.getLogger("soyl.rag.retrieve")
 
@@ -92,7 +90,7 @@ class RetrievalResult:
     most often.
     """
 
-    chunks: list[Chunk]
+    chunks: list[RetrievedChunk]
     fused: list[Fused]
     query: str
     # Post-rerank scores, aligned with `chunks`. Empty when reranking was
@@ -229,7 +227,7 @@ async def _rerank(
     reranker: RerankProvider,
     *,
     query: str,
-    chunks: list[Chunk],
+    chunks: list[RetrievedChunk],
     top_n: int,
 ) -> tuple[list[Ranked] | None, str | None, list[Usage]]:
     """Rerank within the budget, or report why not.

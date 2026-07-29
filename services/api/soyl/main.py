@@ -17,8 +17,10 @@ from redis.asyncio import Redis
 from soyl.infrastructure.db.session import create_engine, create_session_factory
 from soyl.infrastructure.email import EmailSender
 from soyl.infrastructure.providers.factory import (
+    build_answer_provider,
     build_embedding_provider,
     build_question_provider,
+    build_rerank_provider,
 )
 from soyl.infrastructure.storage.s3 import S3Storage
 from soyl.interface.http.errors import register_exception_handlers
@@ -38,6 +40,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # development logs the verification link instead of sending it.
     app.state.embeddings = build_embedding_provider(settings)
     app.state.questions = build_question_provider(settings)
+    app.state.answers = build_answer_provider(settings)
+    app.state.reranker = build_rerank_provider(settings)
     app.state.storage = S3Storage(
         endpoint_url=str(settings.storage_endpoint_url) if settings.storage_endpoint_url else None,
         region=settings.storage_region,

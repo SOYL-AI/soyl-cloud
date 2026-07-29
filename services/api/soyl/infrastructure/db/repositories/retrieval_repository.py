@@ -20,31 +20,18 @@ this design exists to make impossible.
 from __future__ import annotations
 
 import uuid
-from dataclasses import dataclass
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import text
 
 from soyl.domain.rag.fusion import Retrieved
+from soyl.domain.rag.retrieval import RetrievedChunk
 
 # Per-retriever depth, from §45.1's diagram. Deeper than the final context
 # needs, because fusion's value is in the disagreement between lists.
 VECTOR_LIMIT = 50
 LEXICAL_LIMIT = 50
 QUESTION_LIMIT = 25
-
-
-@dataclass(frozen=True, slots=True)
-class Chunk:
-    """A chunk as the answer pipeline needs it."""
-
-    chunk_id: uuid.UUID
-    document_id: uuid.UUID
-    document_title: str
-    heading_path: list[str]
-    content: str
-    context_header: str | None
-    ordinal: int
 
 
 # Applied to every retriever. Kept as one string so the three queries cannot
@@ -172,7 +159,7 @@ class RetrievalRepository:
         results.sort(key=lambda item: -item.score)
         return results
 
-    async def load(self, chunk_ids: list[uuid.UUID]) -> list[Chunk]:
+    async def load(self, chunk_ids: list[uuid.UUID]) -> list[RetrievedChunk]:
         """Fetch the chunks fusion selected, in the order it selected them.
 
         Postgres returns rows in whatever order suits it, so the ranking is
@@ -198,7 +185,7 @@ class RetrievalRepository:
         ).all()
 
         by_id = {
-            row.id: Chunk(
+            row.id: RetrievedChunk(
                 chunk_id=row.id,
                 document_id=row.document_id,
                 document_title=row.title,
