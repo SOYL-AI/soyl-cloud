@@ -10,6 +10,21 @@ interface PhoneMockupProps {
   className?: string;
   children?: React.ReactNode;
   float?: boolean;
+  /**
+   * Marks this as an above-the-fold image.
+   *
+   * Two effects, and the second is the one that was costing us. It sets
+   * `priority` on `next/image` so the browser preloads rather than lazy-loads,
+   * *and* it skips the scroll reveal — because a `Reveal` starts at
+   * `opacity: 0` and only becomes visible once JavaScript has hydrated and an
+   * IntersectionObserver has fired.
+   *
+   * An above-the-fold image inside a reveal therefore has its LCP gated on
+   * hydration plus a 0.6s transition. That is exactly what happened on
+   * /products/butler-ai: the LCP element was an `img` inside `div.soyl-reveal`
+   * and the page scored 82 while every other route was above 90.
+   */
+  priority?: boolean;
 }
 
 export function PhoneMockup({ 
@@ -17,7 +32,8 @@ export function PhoneMockup({
   alt, 
   className, 
   children,
-  float = false
+  float = false,
+  priority = false,
 }: PhoneMockupProps) {
   const content = (
     <div className={cn(
@@ -35,6 +51,7 @@ export function PhoneMockup({
           <Image 
             src={src} 
             alt={alt || "Phone Mockup"} 
+            priority={priority}
             fill
             className="object-cover object-top"
             sizes="(max-width: 768px) 280px, 320px"
@@ -46,6 +63,16 @@ export function PhoneMockup({
       </div>
     </div>
   );
+
+  // Above the fold, render immediately: a reveal would hide the largest
+  // element on the page until hydration.
+  if (priority) {
+    return (
+      <div className={cn("relative flex justify-center w-full", float && "soyl-float")}>
+        {content}
+      </div>
+    );
+  }
 
   return (
     <Reveal className={cn("relative flex justify-center w-full", float && "soyl-float")}>

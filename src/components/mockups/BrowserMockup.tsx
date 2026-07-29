@@ -67,6 +67,17 @@ export function BrowserMockup({
     </div>
   );
 
+  if (priority) {
+    return (
+      <div className={cn("relative w-full", float && "soyl-float")}>
+        {glow && (
+          <div className="absolute inset-0 -m-4 bg-[var(--color-soyl-mint)] opacity-15 blur-3xl rounded-full z-0 pointer-events-none mix-blend-multiply" />
+        )}
+        {content}
+      </div>
+    );
+  }
+
   return (
     <Reveal className={cn("relative w-full", float && "soyl-float")}>
       {glow && (

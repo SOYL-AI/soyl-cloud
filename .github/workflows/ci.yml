@@ -66,14 +66,14 @@ jobs:
   # UPDATE.md 12, M5: "Lighthouse >= 95 on SEO and >= 90 on performance for
   # every marketing route in CI."
   #
-  # SEO, accessibility, best practices, CLS and TBT are BLOCKING and pass today.
+  # BLOCKING and passing: performance >= 90, SEO >= 95, accessibility >= 90,
+  # best practices >= 90, CLS <= 0.05, TBT <= 300ms — on all eight routes.
   #
-  # Performance and LCP are warnings, and that is a deliberate, temporary
-  # state rather than a softened target. Mobile performance is 87-93 and LCP is
-  # 3.1-3.9s against a 2.0s criterion, so making them errors would fail every
-  # PR for a debt that predates the PR — the same reasoning DECISIONS.md 5
-  # applied to lint in M0. They must become errors before M5 is signed off; the
-  # remaining work is in BASELINE.md.
+  # LCP remains a warning. It is 2.6-3.5s against the 2.0s criterion, and the
+  # measurement is Lighthouse's *simulated* slow-4G value rather than an
+  # observed one — the observed element render delay is 147ms. Reducing it
+  # further means reducing bytes on the critical path, and BASELINE.md records
+  # what is left to try. It is the one M5 criterion still unmet.
   lighthouse:
     name: Web — Lighthouse
     runs-on: ubuntu-latest

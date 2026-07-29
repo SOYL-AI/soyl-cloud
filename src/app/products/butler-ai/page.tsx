@@ -164,16 +164,18 @@ export default function ButlerAIPage() {
               <div className="w-[85%] md:w-[75%] hidden md:block">
                 <BrowserMockup
                   src="/images/products_pics/Butler AI new OPs console .png"
-                  alt="Butler AI Staff Dashboard"
+                  alt="The Butler AI operations console, showing incoming guest requests routed by department"
                   glow={true}
                   float={true}
+                  priority
                 />
               </div>
               <div className="md:absolute right-[5%] bottom-[-10%] w-[280px] md:w-[320px] z-20">
                 <PhoneMockup
                   src="/images/products_pics/COncierge chat asking something guest mode .png"
-                  alt="Guest View"
+                  alt="A guest asking Butler AI a question from their phone"
                   float={true}
+                  priority
                 />
               </div>
             </div>

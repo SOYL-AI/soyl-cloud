@@ -34,7 +34,7 @@ const inter = Inter({
   // Declaring both means both are preloaded from the HTML and fetched in
   // parallel. Slightly more bytes committed up front, one fewer round trip in
   // the chain that decides LCP.
-  subsets: ["latin", "latin-ext"],
+  subsets: ["latin"],
   style: ["normal"],
   // `optional`, not `swap`.
   //
