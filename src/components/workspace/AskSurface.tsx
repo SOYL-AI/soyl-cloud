@@ -6,10 +6,11 @@ import {
   BookOpen,
   Loader2,
   MessageSquareText,
+  Plus,
   Sparkles,
   X,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AnswerBlocks } from "@/components/workspace/AnswerBlocks";
 
@@ -45,6 +46,20 @@ type Exchange = {
   stage: string | null;
 };
 
+type Conversation = {
+  id: string;
+  title: string | null;
+  turn_count: number;
+  last_turn_at: string | null;
+};
+
+type StoredTurn = {
+  turn_id: string;
+  question: string;
+  status: string;
+  envelope: Envelope | null;
+};
+
 const SUGGESTIONS = [
   "What is our cancellation policy for corporate bookings?",
   "How long do we keep items left behind in a room?",
@@ -57,7 +72,52 @@ export function AskSurface({ hasDocuments }: { hasDocuments: boolean }) {
   const [pending, setPending] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [sourcesFor, setSourcesFor] = useState<Envelope | null>(null);
+  const [history, setHistory] = useState<Conversation[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
+
+  const loadHistory = useCallback(async () => {
+    try {
+      const response = await fetch("/api/conversations");
+      if (response.ok) setHistory((await response.json()) as Conversation[]);
+    } catch {
+      // The sidebar is incidental to asking a question. Failing to load it
+      // should never surface an error over the thing the user came to do.
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadHistory();
+  }, [loadHistory]);
+
+  async function resume(id: string) {
+    setSourcesFor(null);
+    try {
+      const response = await fetch(`/api/conversations/${id}`);
+      if (!response.ok) return;
+
+      const turns = (await response.json()) as StoredTurn[];
+      setConversationId(id);
+      setExchanges(
+        turns.map((turn) => ({
+          question: turn.question,
+          envelope: turn.envelope,
+          error:
+            turn.status === "failed" && !turn.envelope
+              ? "This question failed to complete."
+              : null,
+          stage: null,
+        })),
+      );
+    } catch {
+      // Same reasoning as above.
+    }
+  }
+
+  function startNew() {
+    setConversationId(null);
+    setExchanges([]);
+    setSourcesFor(null);
+  }
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -131,6 +191,7 @@ export function AskSurface({ hasDocuments }: { hasDocuments: boolean }) {
             const payload = data as unknown as AskResponse;
             patch({ envelope: payload.envelope, stage: null });
             if (payload.conversation_id) setConversationId(payload.conversation_id);
+            void loadHistory();
           }
         }
       }
@@ -145,7 +206,19 @@ export function AskSurface({ hasDocuments }: { hasDocuments: boolean }) {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex gap-6">
+      {/* Only once there is something to resume. An empty sidebar on a first
+          visit is a column of nothing next to the thing they came to use. */}
+      {history.length > 0 ? (
+        <HistoryList
+          conversations={history}
+          activeId={conversationId}
+          onResume={resume}
+          onNew={startNew}
+        />
+      ) : null}
+
+      <div className="flex min-w-0 flex-1 flex-col">
       <div className="flex-1 space-y-8 pb-6">
         {exchanges.length === 0 ? (
           <Empty hasDocuments={hasDocuments} onPick={ask} />
@@ -212,8 +285,76 @@ export function AskSurface({ hasDocuments }: { hasDocuments: boolean }) {
         </p>
       </div>
 
+      </div>
+
       <SourceDrawer envelope={sourcesFor} onClose={() => setSourcesFor(null)} />
     </div>
+  );
+}
+
+/**
+ * Past conversations.
+ *
+ * Tenant-wide rather than per-user, matching the API: a duty manager asks
+ * something on the late shift and the general manager reads it next morning.
+ * In a hotel that hand-off is the normal case.
+ *
+ * Hidden below `lg` — on a phone the answer is the whole screen, and a
+ * navigation column competing with it helps nobody.
+ */
+function HistoryList({
+  conversations,
+  activeId,
+  onResume,
+  onNew,
+}: {
+  conversations: Conversation[];
+  activeId: string | null;
+  onResume: (id: string) => void;
+  onNew: () => void;
+}) {
+  return (
+    <aside className="hidden w-60 shrink-0 lg:block" aria-label="Past questions">
+      <button
+        onClick={onNew}
+        className="mb-3 flex w-full items-center gap-2 rounded-xl border border-charcoal/15 px-3 py-2 text-sm font-medium text-charcoal/80 transition hover:border-charcoal/30 hover:bg-charcoal/[0.02]"
+      >
+        <Plus className="h-3.5 w-3.5" aria-hidden />
+        New question
+      </button>
+
+      <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-charcoal/40">
+        Recent
+      </p>
+
+      <ul className="space-y-0.5">
+        {conversations.map((conversation) => {
+          const active = conversation.id === activeId;
+          return (
+            <li key={conversation.id}>
+              <button
+                onClick={() => onResume(conversation.id)}
+                aria-current={active ? "true" : undefined}
+                className={`w-full rounded-lg px-3 py-2 text-left text-[13px] leading-snug transition ${
+                  active
+                    ? "bg-mint/25 text-charcoal"
+                    : "text-charcoal/65 hover:bg-charcoal/[0.04] hover:text-charcoal"
+                }`}
+              >
+                <span className="line-clamp-2">
+                  {conversation.title ?? "Untitled"}
+                </span>
+                {conversation.turn_count > 1 ? (
+                  <span className="mt-0.5 block text-[11px] text-charcoal/40">
+                    {conversation.turn_count} questions
+                  </span>
+                ) : null}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </aside>
   );
 }
 

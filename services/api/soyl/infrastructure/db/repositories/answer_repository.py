@@ -13,6 +13,9 @@ from __future__ import annotations
 
 import json
 import uuid
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import text
@@ -25,6 +28,27 @@ from soyl.domain.ai.ports import Usage
 # A conversation is listed by its first question. Long enough to recognise,
 # short enough not to wrap in a sidebar.
 TITLE_CHARS = 80
+
+
+@dataclass(frozen=True, slots=True)
+class ConversationRow:
+    id: uuid.UUID
+    title: str | None
+    turn_count: int
+    last_turn_at: datetime | None
+    created_at: datetime
+
+
+@dataclass(frozen=True, slots=True)
+class TurnRow:
+    turn_id: uuid.UUID
+    question: str
+    status: str
+    asked_at: datetime
+    # Null for a turn that failed before synthesis. A normal record, not a
+    # broken one, and dropping it would make the history disagree with what the
+    # user remembers asking.
+    envelope: dict[str, Any] | None
 
 
 class AnswerRepository:
@@ -262,7 +286,74 @@ class AnswerRepository:
             {"turn_id": turn_id},
         )
 
-    async def load_envelope(self, turn_id: uuid.UUID) -> dict[str, object] | None:
+    async def list_conversations(self, *, limit: int = 30) -> list[ConversationRow]:
+        """Most recently active first.
+
+        Scoped to the tenant by RLS, not to the user: a duty manager who asked
+        something on the late shift and a general manager reading it the next
+        morning are the same workspace. Per-user history would hide the answer
+        from the person it was escalated to.
+        """
+        rows = (
+            await self._session.execute(
+                text(
+                    """
+                    SELECT id, title, turn_count, last_turn_at, created_at
+                      FROM ai.conversation
+                     WHERE deleted_at IS NULL AND turn_count > 0
+                     ORDER BY last_turn_at DESC NULLS LAST
+                     LIMIT :limit
+                    """
+                ),
+                {"limit": limit},
+            )
+        ).all()
+
+        return [
+            ConversationRow(
+                id=row.id,
+                title=row.title,
+                turn_count=row.turn_count,
+                last_turn_at=row.last_turn_at,
+                created_at=row.created_at,
+            )
+            for row in rows
+        ]
+
+    async def load_conversation(self, conversation_id: uuid.UUID) -> list[TurnRow]:
+        """Every turn, with its envelope where there is one.
+
+        A LEFT JOIN rather than an inner one: a turn that failed has no
+        envelope, and dropping it from the history would make the record of
+        what happened disagree with what the user remembers asking.
+        """
+        rows = (
+            await self._session.execute(
+                text(
+                    """
+                    SELECT t.id, t.input, t.status, t.started_at, e.body
+                      FROM ai.turn t
+                      LEFT JOIN ai.envelope e ON e.turn_id = t.id
+                     WHERE t.conversation_id = :id
+                     ORDER BY t.started_at
+                    """
+                ),
+                {"id": conversation_id},
+            )
+        ).all()
+
+        return [
+            TurnRow(
+                turn_id=row.id,
+                question=row.input,
+                status=row.status,
+                asked_at=row.started_at,
+                envelope=row.body,
+            )
+            for row in rows
+        ]
+
+    async def load_envelope(self, turn_id: uuid.UUID) -> dict[str, Any] | None:
         row = (
             await self._session.execute(
                 text("SELECT body FROM ai.envelope WHERE turn_id = :turn_id"),

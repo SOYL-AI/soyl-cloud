@@ -462,3 +462,103 @@ async def test_a_conversation_cannot_be_continued_by_another_tenant(
                 text("DELETE FROM core.user_account WHERE id = :id"), {"id": stranger_user}
             )
             await connection.commit()
+
+
+# ── History ─────────────────────────────────────────────────────────────────
+
+
+async def test_a_conversation_is_listed_after_its_first_turn(
+    app_factory: async_sessionmaker[AsyncSession], tenant: tuple[uuid.UUID, uuid.UUID]
+) -> None:
+    from soyl.infrastructure.db.repositories.answer_repository import AnswerRepository
+
+    outcome = await ask(app_factory, tenant, "what is the cancellation window?")
+
+    async with tenant_session(app_factory, tenant[0]) as session:
+        rows = await AnswerRepository(session).list_conversations()
+
+    assert [row.id for row in rows] == [outcome.conversation_id]
+    assert rows[0].turn_count == 1
+    # Titled from the question, not from a model call. It is what the user will
+    # recognise in a list, and a title is not worth an inference.
+    assert rows[0].title == "what is the cancellation window?"
+
+
+async def test_loading_a_conversation_returns_its_turns_with_envelopes(
+    app_factory: async_sessionmaker[AsyncSession], tenant: tuple[uuid.UUID, uuid.UUID]
+) -> None:
+    from soyl.infrastructure.db.repositories.answer_repository import AnswerRepository
+
+    tenant_id, user_id = tenant
+    first = await ask(app_factory, tenant, "cancellation")
+    await answer_question(
+        app_factory,
+        embeddings=FakeEmbeddings(),
+        answers=FakeAnswers(),
+        reranker=FakeRerank(),
+        tenant_id=tenant_id,
+        user_id=user_id,
+        question="and late departure?",
+        conversation_id=first.conversation_id,
+    )
+
+    async with tenant_session(app_factory, tenant_id) as session:
+        turns = await AnswerRepository(session).load_conversation(first.conversation_id)
+
+    assert [turn.question for turn in turns] == ["cancellation", "and late departure?"]
+    assert all(turn.envelope is not None for turn in turns)
+    # Ordered by when they were asked, so a conversation reads as it happened.
+    assert turns[0].asked_at <= turns[1].asked_at
+
+
+async def test_a_failed_turn_stays_in_the_history_without_an_envelope(
+    app_factory: async_sessionmaker[AsyncSession], tenant: tuple[uuid.UUID, uuid.UUID]
+) -> None:
+    """A LEFT JOIN, not an inner one.
+
+    Dropping a failed turn would make the record disagree with what the user
+    remembers asking — and the turns that failed are the ones worth finding.
+    """
+    from soyl.infrastructure.db.repositories.answer_repository import AnswerRepository
+
+    tenant_id, user_id = tenant
+    first = await ask(app_factory, tenant, "cancellation")
+
+    with pytest.raises(ProviderError):
+        await answer_question(
+            app_factory,
+            embeddings=FakeEmbeddings(),
+            answers=Fails(),  # type: ignore[arg-type]
+            reranker=FakeRerank(),
+            tenant_id=tenant_id,
+            user_id=user_id,
+            question="this one will fail",
+            conversation_id=first.conversation_id,
+        )
+
+    async with tenant_session(app_factory, tenant_id) as session:
+        turns = await AnswerRepository(session).load_conversation(first.conversation_id)
+
+    failed = [turn for turn in turns if turn.question == "this one will fail"]
+    assert len(failed) == 1
+    assert failed[0].status == "failed"
+    assert failed[0].envelope is None
+
+
+async def test_history_is_invisible_to_another_tenant(
+    app_factory: async_sessionmaker[AsyncSession], tenant: tuple[uuid.UUID, uuid.UUID]
+) -> None:
+    """The question text itself is confidential.
+
+    A conversation title is the question somebody typed, which can name a
+    contract, a guest complaint or a supplier dispute. Listing across tenants
+    would leak that without ever exposing an answer.
+    """
+    from soyl.infrastructure.db.repositories.answer_repository import AnswerRepository
+
+    first = await ask(app_factory, tenant, "cancellation")
+
+    async with tenant_session(app_factory, uuid.uuid4()) as session:
+        repository = AnswerRepository(session)
+        assert await repository.list_conversations() == []
+        assert await repository.load_conversation(first.conversation_id) == []
