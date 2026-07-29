@@ -1,0 +1,35 @@
+# Line endings.
+#
+# The default is fine for source: git stores LF, Windows checks out CRLF, and
+# nothing downstream cares. Files that are *executed by a Linux kernel* are the
+# exception, and getting it wrong there is not a cosmetic problem.
+#
+# `entrypoint.sh` with CRLF makes the shebang read `#!/bin/sh\r`, so the kernel
+# looks for an interpreter literally named `/bin/sh\r`, does not find one, and
+# reports:
+#
+#     exec container process (missing dynamic library?) `/app/entrypoint.sh`:
+#     No such file or directory
+#
+# which names the script rather than the interpreter and sends you looking for
+# a missing file that is present. It took a crashed production deploy to find,
+# because `railway up` uploads the working tree — where the CRLF is — and not
+# what git stores.
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.Dockerfile text eol=lf
+entrypoint.sh text eol=lf
+
+# Same reasoning: read by tooling that is stricter about bytes than editors are.
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Binary, so git should never touch them.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
