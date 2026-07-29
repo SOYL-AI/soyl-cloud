@@ -12,7 +12,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "test": "node --test \"src/**/*.test.mts\" \"scripts/**/*.test.mts\""
+    "test": "node --test \"src/**/*.test.mts\" \"scripts/**/*.test.mts\" \"packages/**/*.test.mts\""
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

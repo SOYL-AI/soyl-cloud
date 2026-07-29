@@ -1,0 +1,119 @@
+{
+  "$defs": {
+    "DraftBlock": {
+      "additionalProperties": false,
+      "description": "One block as the synthesiser produces it.\n\nFlat rather than a union: every field is present on every block and unused\nones are null. That is uglier than four separate models and it is what a\nstrict JSON schema can actually express, so the model never has to pick a\nvariant \u2014 it fills in the fields its `type` uses.",
+      "properties": {
+        "type": {
+          "enum": [
+            "text.markdown",
+            "doc.citation",
+            "list.checklist",
+            "alert.callout"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "markdown": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Markdown"
+        },
+        "level": {
+          "anyOf": [
+            {
+              "enum": [
+                "info",
+                "warning",
+                "critical"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Level"
+        },
+        "items": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Items",
+          "type": "array"
+        },
+        "quote": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quote"
+        },
+        "provenance": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "DraftBlock",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The synthesiser's whole output.",
+  "properties": {
+    "headline": {
+      "title": "Headline",
+      "type": "string"
+    },
+    "blocks": {
+      "items": {
+        "$ref": "#/$defs/DraftBlock"
+      },
+      "title": "Blocks",
+      "type": "array"
+    },
+    "followups": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Followups",
+      "type": "array"
+    }
+  },
+  "required": [
+    "headline"
+  ],
+  "title": "DraftAnswer",
+  "type": "object"
+}

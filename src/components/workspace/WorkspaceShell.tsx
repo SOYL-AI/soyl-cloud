@@ -40,7 +40,7 @@ type NavItem = {
 const NAV: NavItem[] = [
   { href: "/app", label: "Overview", icon: LayoutGrid },
   { href: "/app/documents", label: "Documents", icon: FileText },
-  { href: "/app/ask", label: "Ask", icon: MessageSquareText, soon: true },
+  { href: "/app/ask", label: "Ask", icon: MessageSquareText },
 ];
 
 export function WorkspaceShell({

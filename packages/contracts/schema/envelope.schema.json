@@ -1,0 +1,670 @@
+{
+  "$defs": {
+    "AlertCalloutBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "alert.callout",
+          "default": "alert.callout",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "payload": {
+          "$ref": "#/$defs/AlertCalloutPayload"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "confidence": {
+          "default": "medium",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "payload"
+      ],
+      "title": "AlertCalloutBlock",
+      "type": "object"
+    },
+    "AlertCalloutPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "default": "info",
+          "enum": [
+            "info",
+            "warning",
+            "critical"
+          ],
+          "title": "Level",
+          "type": "string"
+        },
+        "markdown": {
+          "title": "Markdown",
+          "type": "string"
+        }
+      },
+      "required": [
+        "markdown"
+      ],
+      "title": "AlertCalloutPayload",
+      "type": "object"
+    },
+    "ChecklistItem": {
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "title": "Text",
+          "type": "string"
+        },
+        "done": {
+          "default": false,
+          "title": "Done",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "title": "ChecklistItem",
+      "type": "object"
+    },
+    "Diagnostics": {
+      "additionalProperties": false,
+      "description": "What went wrong, or nearly did, in producing this answer.\n\n`degraded` is true when the answer is real but the pipeline did not run as\ndesigned \u2014 the reranker timed out, a claim was stripped. It is surfaced\nrather than hidden because a silently degraded answer is indistinguishable\nfrom a good one until someone acts on it.",
+      "properties": {
+        "degraded": {
+          "default": false,
+          "title": "Degraded",
+          "type": "boolean"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "reranked": {
+          "default": false,
+          "title": "Reranked",
+          "type": "boolean"
+        },
+        "stripped_blocks": {
+          "default": 0,
+          "title": "Stripped Blocks",
+          "type": "integer"
+        },
+        "usage": {
+          "$ref": "#/$defs/Usage"
+        }
+      },
+      "title": "Diagnostics",
+      "type": "object"
+    },
+    "DocCitationBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "doc.citation",
+          "default": "doc.citation",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "payload": {
+          "$ref": "#/$defs/DocCitationPayload"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "confidence": {
+          "default": "high",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "payload"
+      ],
+      "title": "DocCitationBlock",
+      "type": "object"
+    },
+    "DocCitationPayload": {
+      "additionalProperties": false,
+      "description": "A quotation with everything needed to show the user where it came from.\n\nDenormalised deliberately. A citation that stores only `chunk_id` is a\ncitation that stops rendering the day the document is deleted \u2014 and an\nanswer whose sources have silently become unreadable is worse than one that\nnever claimed them.",
+      "properties": {
+        "chunk_id": {
+          "format": "uuid",
+          "title": "Chunk Id",
+          "type": "string"
+        },
+        "document_id": {
+          "format": "uuid",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "document_title": {
+          "title": "Document Title",
+          "type": "string"
+        },
+        "heading_path": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Heading Path",
+          "type": "array"
+        },
+        "quote": {
+          "title": "Quote",
+          "type": "string"
+        }
+      },
+      "required": [
+        "chunk_id",
+        "document_id",
+        "document_title",
+        "quote"
+      ],
+      "title": "DocCitationPayload",
+      "type": "object"
+    },
+    "Intent": {
+      "additionalProperties": false,
+      "description": "What the system understood the question to be asking.\n\nRendered so the user can see and correct it. \u00a716.2: if the system misread\nthe scope, fixing a chip is one click and retyping the question is not.",
+      "properties": {
+        "question": {
+          "title": "Question",
+          "type": "string"
+        },
+        "property_ids": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "title": "Property Ids",
+          "type": "array"
+        },
+        "unresolved": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unresolved",
+          "type": "array"
+        }
+      },
+      "required": [
+        "question"
+      ],
+      "title": "Intent",
+      "type": "object"
+    },
+    "Layout": {
+      "additionalProperties": false,
+      "description": "Advisory. A client is free to ignore it and render blocks in order.\n\nIt exists so structure can stream before content (\u00a79.3), not so the server\ncan dictate presentation.",
+      "properties": {
+        "kind": {
+          "default": "stack",
+          "enum": [
+            "stack",
+            "grid"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "cols": {
+          "default": 4,
+          "title": "Cols",
+          "type": "integer"
+        },
+        "slots": {
+          "items": {
+            "$ref": "#/$defs/LayoutSlot"
+          },
+          "title": "Slots",
+          "type": "array"
+        }
+      },
+      "title": "Layout",
+      "type": "object"
+    },
+    "LayoutSlot": {
+      "additionalProperties": false,
+      "properties": {
+        "block_id": {
+          "title": "Block Id",
+          "type": "string"
+        },
+        "span": {
+          "default": 4,
+          "title": "Span",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "block_id"
+      ],
+      "title": "LayoutSlot",
+      "type": "object"
+    },
+    "ListChecklistBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "list.checklist",
+          "default": "list.checklist",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "payload": {
+          "$ref": "#/$defs/ListChecklistPayload"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "confidence": {
+          "default": "medium",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "payload"
+      ],
+      "title": "ListChecklistBlock",
+      "type": "object"
+    },
+    "ListChecklistPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "items": {
+          "items": {
+            "$ref": "#/$defs/ChecklistItem"
+          },
+          "title": "Items",
+          "type": "array"
+        }
+      },
+      "title": "ListChecklistPayload",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "documents": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "title": "Documents",
+          "type": "array"
+        }
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
+    "SourceRef": {
+      "additionalProperties": false,
+      "description": "One retrieved chunk, referenced by blocks rather than duplicated in them.\n\nBlocks carry `provenance_refs` pointing at these ids, so a chunk cited by\nsix blocks is described once. It is also the list the source drawer renders,\nwhich is why it carries enough to be readable on its own.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "chunk_id": {
+          "format": "uuid",
+          "title": "Chunk Id",
+          "type": "string"
+        },
+        "document_id": {
+          "format": "uuid",
+          "title": "Document Id",
+          "type": "string"
+        },
+        "document_title": {
+          "title": "Document Title",
+          "type": "string"
+        },
+        "heading_path": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Heading Path",
+          "type": "array"
+        },
+        "excerpt": {
+          "title": "Excerpt",
+          "type": "string"
+        },
+        "score": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Score"
+        }
+      },
+      "required": [
+        "id",
+        "chunk_id",
+        "document_id",
+        "document_title",
+        "excerpt"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "Summary": {
+      "additionalProperties": false,
+      "properties": {
+        "headline": {
+          "title": "Headline",
+          "type": "string"
+        },
+        "confidence": {
+          "default": "medium",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "headline"
+      ],
+      "title": "Summary",
+      "type": "object"
+    },
+    "TextMarkdownBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "const": "text.markdown",
+          "default": "text.markdown",
+          "title": "Type",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "payload": {
+          "$ref": "#/$defs/TextMarkdownPayload"
+        },
+        "provenance_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "confidence": {
+          "default": "medium",
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "payload"
+      ],
+      "title": "TextMarkdownBlock",
+      "type": "object"
+    },
+    "TextMarkdownPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "markdown": {
+          "title": "Markdown",
+          "type": "string"
+        }
+      },
+      "required": [
+        "markdown"
+      ],
+      "title": "TextMarkdownPayload",
+      "type": "object"
+    },
+    "Usage": {
+      "additionalProperties": false,
+      "properties": {
+        "input_tokens": {
+          "default": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "output_tokens": {
+          "default": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "cost_inr": {
+          "default": 0.0,
+          "title": "Cost Inr",
+          "type": "number"
+        },
+        "wall_ms": {
+          "default": 0,
+          "title": "Wall Ms",
+          "type": "integer"
+        }
+      },
+      "title": "Usage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The single artifact the answer pipeline produces.",
+  "properties": {
+    "envelope_id": {
+      "format": "uuid",
+      "title": "Envelope Id",
+      "type": "string"
+    },
+    "version": {
+      "default": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "turn_id": {
+      "format": "uuid",
+      "title": "Turn Id",
+      "type": "string"
+    },
+    "conversation_id": {
+      "format": "uuid",
+      "title": "Conversation Id",
+      "type": "string"
+    },
+    "tenant_id": {
+      "format": "uuid",
+      "title": "Tenant Id",
+      "type": "string"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "locale": {
+      "default": "en-IN",
+      "title": "Locale",
+      "type": "string"
+    },
+    "status": {
+      "default": "complete",
+      "enum": [
+        "complete",
+        "no_evidence",
+        "refused",
+        "failed"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "intent": {
+      "$ref": "#/$defs/Intent"
+    },
+    "summary": {
+      "$ref": "#/$defs/Summary"
+    },
+    "layout": {
+      "$ref": "#/$defs/Layout"
+    },
+    "blocks": {
+      "items": {
+        "discriminator": {
+          "mapping": {
+            "alert.callout": "#/$defs/AlertCalloutBlock",
+            "doc.citation": "#/$defs/DocCitationBlock",
+            "list.checklist": "#/$defs/ListChecklistBlock",
+            "text.markdown": "#/$defs/TextMarkdownBlock"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/$defs/TextMarkdownBlock"
+          },
+          {
+            "$ref": "#/$defs/DocCitationBlock"
+          },
+          {
+            "$ref": "#/$defs/ListChecklistBlock"
+          },
+          {
+            "$ref": "#/$defs/AlertCalloutBlock"
+          }
+        ]
+      },
+      "title": "Blocks",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "followups": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Followups",
+      "type": "array"
+    },
+    "diagnostics": {
+      "$ref": "#/$defs/Diagnostics"
+    }
+  },
+  "required": [
+    "envelope_id",
+    "turn_id",
+    "conversation_id",
+    "tenant_id",
+    "created_at",
+    "intent",
+    "summary"
+  ],
+  "title": "Envelope",
+  "type": "object"
+}

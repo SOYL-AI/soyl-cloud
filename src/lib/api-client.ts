@@ -12,6 +12,13 @@
  *    to hold that token, which is the exfiltration class §23.1 avoids.
  */
 
+/**
+ * Enough for any CRUD call. Answering a question is not one of those — it
+ * embeds, reranks and synthesises, which is three provider round trips — so
+ * that route passes its own. A single global timeout would either abort
+ * healthy answers or leave a hung lead submission holding a function for a
+ * minute.
+ */
 const REQUEST_TIMEOUT_MS = 10_000;
 
 export type ApiResult<T> =
@@ -26,7 +33,12 @@ function baseUrl(): string {
 
 export async function apiFetch<T>(
   path: string,
-  options: { method?: string; body?: unknown; sessionToken?: string } = {},
+  options: {
+    method?: string;
+    body?: unknown;
+    sessionToken?: string;
+    timeoutMs?: number;
+  } = {},
 ): Promise<ApiResult<T>> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (options.sessionToken) {
@@ -39,7 +51,7 @@ export async function apiFetch<T>(
       method: options.method ?? "GET",
       headers,
       body: options.body === undefined ? undefined : JSON.stringify(options.body),
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      signal: AbortSignal.timeout(options.timeoutMs ?? REQUEST_TIMEOUT_MS),
       cache: "no-store",
     });
   } catch (cause) {
