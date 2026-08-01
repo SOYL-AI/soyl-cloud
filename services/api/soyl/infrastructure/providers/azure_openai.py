@@ -34,6 +34,7 @@ from openai import (
 )
 
 from soyl.domain.ai.ports import EmbeddingResult, ProviderError, Usage
+from soyl.infrastructure.providers.pricing import token_cost
 
 logger = logging.getLogger("soyl.providers.azure")
 
@@ -84,8 +85,11 @@ class AzureOpenAIEmbeddings:
         return self._dimensions
 
     def cost_inr(self, input_tokens: int) -> Decimal:
-        return (
-            Decimal(input_tokens) / Decimal(1_000_000) * self._usd_per_million * self._usd_to_inr
+        # Embeddings have no output tokens to price.
+        return token_cost(
+            input_tokens=input_tokens,
+            usd_per_million_input=self._usd_per_million,
+            usd_to_inr=self._usd_to_inr,
         )
 
     async def embed(self, texts: list[str]) -> EmbeddingResult:
@@ -121,12 +125,14 @@ class AzureOpenAIEmbeddings:
                 f"asked for {len(texts)} embeddings and got {len(vectors)}"
             )
 
+        input_tokens = response.usage.prompt_tokens if response.usage else 0
         return EmbeddingResult(
             vectors=vectors,
             usage=Usage(
                 provider=PROVIDER,
                 model=self._model,
-                input_tokens=response.usage.prompt_tokens if response.usage else 0,
+                input_tokens=input_tokens,
                 units=Decimal(len(texts)),
+                cost_inr=self.cost_inr(input_tokens),
             ),
         )

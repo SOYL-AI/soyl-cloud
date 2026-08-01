@@ -40,15 +40,20 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      # Still reporting only: 15 errors and 18 warnings of pre-existing lint
-      # debt, none of it introduced by M0 or M1. Blocking this today would fail
-      # every PR for reasons unrelated to the PR. Scheduled for M5 alongside the
-      # accessibility work, which is where most of it lives.
+      # Still reporting only: pre-existing lint debt, none of it introduced by
+      # the milestone in front of it. Blocking today would fail every PR for
+      # reasons unrelated to the PR.
+      #
+      # It **does** block when eslint fails to run. That distinction was added
+      # in M6 after finding the step had been reporting "no problems reported"
+      # for some time: a `brace-expansion` override crashed eslint on startup,
+      # and a summary line that is absent read identically to a clean run. A
+      # linter that cannot start is a broken build, not a quiet one.
       - name: Lint
-        continue-on-error: true
         run: |
           set +e
           npx eslint --format stylish > lint.log 2>&1
+          code=$?
           summary=$(grep -E "^.[0-9]+ problems?" lint.log | tail -1)
           {
             echo "## Lint"
@@ -59,7 +64,15 @@ jobs:
             cat lint.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
-          echo "::notice title=Lint::${summary:-no problems reported} — non-blocking until M5"
+
+          # eslint exits 1 for lint findings and 2 when it could not run at all.
+          if [ "$code" -ge 2 ]; then
+            echo "::error title=Lint::eslint failed to run (exit $code)"
+            cat lint.log
+            exit 1
+          fi
+
+          echo "::notice title=Lint::${summary:-clean}"
           exit 0
 
   # ── Lighthouse ────────────────────────────────────────────────────────────

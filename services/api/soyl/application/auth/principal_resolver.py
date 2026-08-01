@@ -136,7 +136,7 @@ class PrincipalResolver:
             # silently fall back to another one.
             raise NotAuthenticated
 
-        return Principal(
+        principal = Principal(
             user_id=row.user_id,
             tenant_id=uuid.UUID(claims.tenant_id),
             session_id=row.id,
@@ -144,7 +144,17 @@ class PrincipalResolver:
             scopes=scopes_for_roles(claims.roles),
             property_ids=frozenset(uuid.UUID(p) for p in claims.property_ids),
             has_all_properties=claims.has_all_properties,
+            impersonated_by=row.impersonated_by,
         )
+
+        # Narrowed here rather than at each route, so "impersonation is
+        # read-only" is one line in one place. The claims cache is not involved:
+        # it is keyed on user and tenant, and two sessions for the same pair —
+        # one real, one impersonated — must not share a scope set.
+        if row.impersonated_by is not None:
+            return principal.read_only()
+
+        return principal
 
     async def _claims_for(self, user_id: uuid.UUID, tenant_id: uuid.UUID) -> _Claims | None:
         version = await self._version(user_id)

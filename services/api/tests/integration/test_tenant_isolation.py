@@ -41,6 +41,15 @@ UNTENANTED_TABLES: dict[str, str] = {
     "core.credential_token": "Resolved from a link in an email before any tenant is known.",
     "core.oauth_account": "Resolved from a provider callback before any tenant is known.",
     "public.alembic_version": "Alembic's bookkeeping.",
+    # The one table with ENABLE and no FORCE, which is why it needs more than a
+    # line here. Internal staff are not a tenant's data and a staff member
+    # belongs to no tenant, so tenant_id would be a column that is always null.
+    # FORCE is omitted so that `soyl_migrator` — and only it — can write the
+    # table; under FORCE the sole policy is FOR SELECT and nobody at all could
+    # insert, which is how migration 007 was first written and what this suite
+    # caught. `soyl_app` is constrained by that policy for reads and by having
+    # no INSERT grant for writes. See tests/integration/test_staff_access.py.
+    "core.staff_user": "Internal staff belong to no tenant (migration 007).",
 }
 
 # Tenant-scoped but keyed on a column other than tenant_id.

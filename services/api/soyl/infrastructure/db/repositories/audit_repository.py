@@ -46,6 +46,14 @@ ACTION_SESSION_DENIED = "auth.session_denied"
 ACTION_TENANT_CREATE = "tenant.create"
 ACTION_PROPERTY_CREATE = "property.create"
 ACTION_PERMISSION_DENIED = "authz.denied"
+# Internal staff. `UPDATE.md` §11 requires every admin access to be recorded,
+# including the refused ones — a customer probing /v1/admin is exactly the row
+# worth having. Written with a null tenant_id: a staff read is not an event in
+# any one tenant's history.
+ACTION_ADMIN_ACCESS = "admin.access"
+ACTION_IMPERSONATE_START = "admin.impersonate_start"
+ACTION_IMPERSONATE_END = "admin.impersonate_end"
+ACTION_DOCUMENT_REPROCESS = "admin.document_reprocess"
 
 
 class AuditRepository:

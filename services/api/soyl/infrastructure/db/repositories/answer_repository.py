@@ -21,9 +21,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import text
 
 from soyl.application.rag.retrieve import RetrievalResult
-from soyl.domain.ai.envelope import Envelope
+from soyl.domain.ai.envelope import DraftAnswer, Envelope
 from soyl.domain.ai.envelope import Usage as EnvelopeUsage
 from soyl.domain.ai.ports import Usage
+from soyl.domain.ai.validation import Strip
 
 # A conversation is listed by its first question. Long enough to recognise,
 # short enough not to wrap in a sidebar.
@@ -127,22 +128,56 @@ class AnswerRepository:
         ).scalar_one()
         return uuid.UUID(str(row))
 
-    async def save_envelope(self, envelope: Envelope) -> None:
+    async def save_envelope(
+        self,
+        envelope: Envelope,
+        *,
+        draft: DraftAnswer | None = None,
+        strips: list[Strip] | None = None,
+    ) -> None:
+        """The envelope, and the evidence for how it got that way.
+
+        `draft` and `strips` are what the M6 answer inspector reads (§11: "the
+        raw model output, what validation stripped"). M4 logged both and stored
+        neither, which meant the one question the inspector exists to answer —
+        *why did it say that* — was answerable only for as long as the
+        application log was retained.
+
+        Both default to None so the two failure paths that call this without a
+        draft do not have to invent one.
+        """
         body = envelope.model_dump(mode="json")
+        serialised = _dumps(body)
         await self._session.execute(
             text(
                 """
-                INSERT INTO ai.envelope (id, tenant_id, turn_id, version, body, size_bytes)
+                INSERT INTO ai.envelope
+                    (id, tenant_id, turn_id, version, body, size_bytes, draft, strips)
                 VALUES (:id, NULLIF(current_setting('app.tenant_id', TRUE), '')::uuid,
-                        :turn_id, :version, CAST(:body AS jsonb), :size_bytes)
+                        :turn_id, :version, CAST(:body AS jsonb), :size_bytes,
+                        CAST(:draft AS jsonb), CAST(:strips AS jsonb))
                 """
             ),
             {
                 "id": envelope.envelope_id,
                 "turn_id": envelope.turn_id,
                 "version": envelope.version,
-                "body": _dumps(body),
-                "size_bytes": len(_dumps(body).encode()),
+                "body": serialised,
+                # The stored size is the envelope the client receives, not the
+                # row. `draft` is diagnostic weight nobody is billed for and
+                # counting it would make the number mean two things.
+                "size_bytes": len(serialised.encode()),
+                "draft": _dumps(draft.model_dump(mode="json")) if draft is not None else None,
+                "strips": _dumps(
+                    [
+                        {
+                            "block_id": strip.block_id,
+                            "block_type": strip.block_type,
+                            "reason": strip.reason,
+                        }
+                        for strip in (strips or [])
+                    ]
+                ),
             },
         )
 
@@ -208,11 +243,11 @@ class AnswerRepository:
                     """
                     INSERT INTO billing.usage_ledger
                         (tenant_id, user_id, turn_id, kind, provider, model,
-                         input_tokens, output_tokens, cached_tokens, units)
+                         input_tokens, output_tokens, cached_tokens, units, cost_inr)
                     VALUES
                         (NULLIF(current_setting('app.tenant_id', TRUE), '')::uuid,
                          :user_id, :turn_id, :kind, :provider, :model,
-                         :input_tokens, :output_tokens, :cached_tokens, :units)
+                         :input_tokens, :output_tokens, :cached_tokens, :units, :cost_inr)
                     """
                 ),
                 {
@@ -225,6 +260,10 @@ class AnswerRepository:
                     "output_tokens": usage.output_tokens,
                     "cached_tokens": usage.cached_tokens,
                     "units": usage.units,
+                    # Until M6 this column was omitted and defaulted to zero,
+                    # so the ledger held tokens and no money. §11's cost screen
+                    # is the thing that could not have worked.
+                    "cost_inr": usage.cost_inr,
                 },
             )
 

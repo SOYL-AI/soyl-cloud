@@ -47,6 +47,12 @@ class Session(Base):
     revoked_at: Mapped[datetime | None] = timestamp_column(nullable=True)
     ip: Mapped[str | None] = mapped_column(INET, nullable=True)
     user_agent: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # Non-null means staff minted this session on the account owner's behalf
+    # (migration 007). Everything that resolves a session can therefore tell,
+    # which is what makes the banner possible and the audit trail honest.
+    impersonated_by: Mapped[uuid.UUID | None] = mapped_column(
+        PGUUID(as_uuid=True), ForeignKey("core.user_account.id", ondelete="CASCADE"), nullable=True
+    )
 
 
 class CredentialToken(Base):
