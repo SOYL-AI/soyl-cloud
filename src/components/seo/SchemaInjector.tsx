@@ -149,6 +149,11 @@ export function ArticleSchema({
     "@type": "Article",
     headline,
     description,
+    // Required for Google rich results — without it an article is not
+    // eligible, which is most of the point of marking it up at all. This is
+    // the generated OG card for the same route, so it always exists and always
+    // matches the article.
+    image: [`${url}/opengraph-image`],
     articleSection: section,
     datePublished: published,
     dateModified: modified,
@@ -172,34 +177,14 @@ export function ArticleSchema({
   );
 }
 
-/**
- * `Organization`, emitted once from the root layout.
+/*
+ * There is deliberately no `OrganizationSchema` here.
  *
- * Sitewide rather than per page: it describes the company, not the document,
- * and repeating it on every route gives a crawler the same facts many times
- * with more chances to disagree with itself.
+ * One was added during M5 and then removed: `app/layout.tsx` already emits an
+ * Organization block, and a richer one — it carries `contactPoint`, `sameAs`
+ * and a postal code. Two Organization blocks on the same page is not an error,
+ * but it gives a crawler the same facts twice with two chances to disagree,
+ * and the duplicate was the poorer of the two.
+ *
+ * If sitewide organisation data needs changing, change it in the layout.
  */
-export function OrganizationSchema() {
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: COMPANY.name,
-    url: `https://${COMPANY.domain}`,
-    logo: `https://${COMPANY.domain}/images/logo.png`,
-    email: COMPANY.email,
-    telephone: COMPANY.phone,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Bengaluru",
-      addressRegion: "Karnataka",
-      addressCountry: "IN",
-    },
-  };
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
-  );
-}
