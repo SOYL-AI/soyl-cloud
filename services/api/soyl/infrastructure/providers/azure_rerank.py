@@ -41,6 +41,7 @@ from openai.types.chat import (
 from openai.types.shared_params import ResponseFormatJSONSchema
 
 from soyl.domain.ai.ports import ProviderError, Ranked, RerankResult, Usage
+from soyl.infrastructure.providers.pricing import USD_TO_INR, token_cost
 
 logger = logging.getLogger("soyl.providers.rerank")
 
@@ -124,12 +125,14 @@ class AzureOpenAIRerank:
         api_version: str = "2024-10-21",
         usd_per_million_input: Decimal = Decimal("0.25"),
         usd_per_million_output: Decimal = Decimal("2.00"),
+        usd_to_inr: Decimal = USD_TO_INR,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
     ) -> None:
         self._deployment = deployment
         self._model = model
         self._in_price = usd_per_million_input
         self._out_price = usd_per_million_output
+        self._usd_to_inr = usd_to_inr
         self._client = AsyncAzureOpenAI(
             azure_endpoint=endpoint,
             api_key=api_key,
@@ -144,6 +147,15 @@ class AzureOpenAIRerank:
     @property
     def model(self) -> str:
         return self._model
+
+    def cost_inr(self, input_tokens: int, output_tokens: int = 0) -> Decimal:
+        return token_cost(
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            usd_per_million_input=self._in_price,
+            usd_per_million_output=self._out_price,
+            usd_to_inr=self._usd_to_inr,
+        )
 
     async def rerank(self, *, query: str, documents: list[str], top_n: int) -> RerankResult:
         if not documents:
@@ -189,14 +201,17 @@ class AzureOpenAIRerank:
             ) from exc
 
         usage = response.usage
+        input_tokens = usage.prompt_tokens if usage else 0
+        output_tokens = usage.completion_tokens if usage else 0
 
         return RerankResult(
             results=_ranked(parsed.get("scores", []), candidate_count=len(documents), top_n=top_n),
             usage=Usage(
                 provider=PROVIDER,
                 model=self._model,
-                input_tokens=usage.prompt_tokens if usage else 0,
-                output_tokens=usage.completion_tokens if usage else 0,
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
+                cost_inr=self.cost_inr(input_tokens, output_tokens),
             ),
         )
 

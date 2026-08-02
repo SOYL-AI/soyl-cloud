@@ -33,6 +33,7 @@ from openai.types.chat import (
 from openai.types.shared_params import ResponseFormatJSONSchema
 
 from soyl.domain.ai.ports import ProviderError, QuestionResult, Usage
+from soyl.infrastructure.providers.pricing import token_cost
 
 logger = logging.getLogger("soyl.providers.questions")
 
@@ -99,11 +100,13 @@ class AzureOpenAIQuestions:
         return self._model
 
     def cost_inr(self, input_tokens: int, output_tokens: int = 0) -> Decimal:
-        million = Decimal(1_000_000)
-        return (
-            Decimal(input_tokens) / million * self._in_price
-            + Decimal(output_tokens) / million * self._out_price
-        ) * self._usd_to_inr
+        return token_cost(
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            usd_per_million_input=self._in_price,
+            usd_per_million_output=self._out_price,
+            usd_to_inr=self._usd_to_inr,
+        )
 
     async def generate(self, *, context_header: str, content: str, count: int) -> QuestionResult:
         prompt = (
@@ -145,12 +148,16 @@ class AzureOpenAIQuestions:
         questions = [q.strip() for q in parsed.get("questions", []) if q and q.strip()]
         usage = response.usage
 
+        input_tokens = usage.prompt_tokens if usage else 0
+        output_tokens = usage.completion_tokens if usage else 0
+
         return QuestionResult(
             questions=questions[:count],
             usage=Usage(
                 provider=PROVIDER,
                 model=self._model,
-                input_tokens=usage.prompt_tokens if usage else 0,
-                output_tokens=usage.completion_tokens if usage else 0,
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
+                cost_inr=self.cost_inr(input_tokens, output_tokens),
             ),
         )

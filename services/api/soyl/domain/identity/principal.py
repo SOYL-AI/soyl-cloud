@@ -14,7 +14,7 @@ of scope), and inventing them now would mean inventing their scopes too.
 from __future__ import annotations
 
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from uuid import UUID
 
 # Role → scopes. Coarse and human-meaningful on the left, fine and
@@ -76,6 +76,25 @@ class Principal:
     # 'all' means every property in the tenant, including ones created after
     # this principal was built — so an empty property_ids is not a denial.
     has_all_properties: bool
+    # Set when a staff member minted this session on the account owner's behalf
+    # (migration 007). The scopes are already narrowed to reads by the time
+    # anything sees this — see `read_only` below — so this field is for the
+    # banner and the audit trail, not for a second check somebody could forget.
+    impersonated_by: UUID | None = None
+
+    def read_only(self) -> Principal:
+        """The same principal with every write scope removed.
+
+        Applied to impersonated sessions at resolution time, so no route has to
+        remember. Note what this is and is not: the *tenant* boundary is
+        enforced by RLS and holds regardless of this method. Read-only is a
+        second, weaker line, and it is drawn here so that it is drawn once.
+        """
+        return replace(
+            self,
+            scopes=frozenset(s for s in self.scopes if not s.endswith(":write"))
+            - {"tenant:admin", "staff:admin"},
+        )
 
     def require(self, scope: str) -> None:
         if scope in self.scopes:
@@ -114,3 +133,27 @@ class Principal:
 
     def may_use_property(self, property_id: UUID) -> bool:
         return self.has_all_properties or property_id in self.property_ids
+
+
+@dataclass(frozen=True, slots=True)
+class StaffPrincipal:
+    """An internal staff member, reading across tenants.
+
+    A separate type from `Principal`, not a flag on it, and the distinction is
+    load-bearing. `Principal` carries a `tenant_id` that every tenant-scoped
+    query is entitled to assume is set; a staff reader has no tenant, and
+    modelling that as `tenant_id: UUID | None` would push a null check into
+    every call site that currently cannot be wrong.
+
+    It also means no admin route can be reached with a `Principal` and no
+    tenant route can be reached with a `StaffPrincipal` — the type system
+    refuses both, rather than a runtime check nobody wrote.
+    """
+
+    user_id: UUID
+    session_id: UUID
+    email: str
+
+    @property
+    def scopes(self) -> frozenset[str]:
+        return ROLE_SCOPES["soyl_staff"]

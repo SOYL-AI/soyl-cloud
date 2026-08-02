@@ -48,6 +48,21 @@ class Usage:
     cached_tokens: int = 0
     # For anything priced per unit rather than per token.
     units: Decimal = Decimal(0)
+    # What the call cost, in rupees, priced by the adapter that made it.
+    #
+    # Filled here rather than computed by the caller, and that placement is the
+    # fix for a real bug: until M6 the answer pipeline wrote every ledger row
+    # with the column's default of zero, so `billing.usage_ledger` recorded
+    # tokens and no money, and the §11 cost screen would have shown ₹0.0000 for
+    # every tenant. Ingestion got it right by asking the provider for a price
+    # through a `getattr` capability check — which the answer path simply never
+    # did, and nothing noticed because a missing number looks like a cheap
+    # month.
+    #
+    # A default of zero keeps the fakes and any future per-call-billed provider
+    # honest: unknown cost is zero cost, and the ledger says so rather than
+    # guessing.
+    cost_inr: Decimal = Decimal(0)
 
 
 @dataclass(frozen=True, slots=True)

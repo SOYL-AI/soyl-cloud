@@ -3,6 +3,7 @@
 from fastapi import APIRouter
 
 from soyl.interface.http.v1 import (
+    admin,
     advisor,
     answers,
     auth,
@@ -22,3 +23,4 @@ router.include_router(documents.router)
 router.include_router(answers.router)
 router.include_router(advisor.router)
 router.include_router(conversations.router)
+router.include_router(admin.router)

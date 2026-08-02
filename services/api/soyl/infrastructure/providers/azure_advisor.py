@@ -29,6 +29,7 @@ from openai.types.shared_params import ResponseFormatJSONSchema
 
 from soyl.domain.ai.advisor import AdvisorAnswers, AdvisorInsight, sanitise
 from soyl.domain.ai.ports import ProviderError, Usage
+from soyl.infrastructure.providers.pricing import USD_TO_INR, token_cost
 
 logger = logging.getLogger("soyl.providers.advisor")
 
@@ -139,12 +140,14 @@ class AzureOpenAIAdvisor:
         api_version: str = "2024-10-21",
         usd_per_million_input: Decimal = Decimal("0.25"),
         usd_per_million_output: Decimal = Decimal("2.00"),
+        usd_to_inr: Decimal = USD_TO_INR,
         timeout_seconds: float = 45.0,
     ) -> None:
         self._deployment = deployment
         self._model = model
         self._in_price = usd_per_million_input
         self._out_price = usd_per_million_output
+        self._usd_to_inr = usd_to_inr
         self._client = AsyncAzureOpenAI(
             azure_endpoint=endpoint,
             api_key=api_key,
@@ -156,6 +159,15 @@ class AzureOpenAIAdvisor:
     @property
     def model(self) -> str:
         return self._model
+
+    def cost_inr(self, input_tokens: int, output_tokens: int = 0) -> Decimal:
+        return token_cost(
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            usd_per_million_input=self._in_price,
+            usd_per_million_output=self._out_price,
+            usd_to_inr=self._usd_to_inr,
+        )
 
     async def advise(self, answers: AdvisorAnswers) -> tuple[AdvisorInsight, Usage]:
         filled = answers.filled()
@@ -200,9 +212,12 @@ class AzureOpenAIAdvisor:
             raise ProviderError("advisor returned an unusable body", retryable=True) from exc
 
         usage = response.usage
+        input_tokens = usage.prompt_tokens if usage else 0
+        output_tokens = usage.completion_tokens if usage else 0
         return sanitise(insight, answers=answers), Usage(
             provider=PROVIDER,
             model=self._model,
-            input_tokens=usage.prompt_tokens if usage else 0,
-            output_tokens=usage.completion_tokens if usage else 0,
+            input_tokens=input_tokens,
+            output_tokens=output_tokens,
+            cost_inr=self.cost_inr(input_tokens, output_tokens),
         )

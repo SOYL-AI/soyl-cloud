@@ -27,6 +27,7 @@ import logging
 import time
 import uuid
 from dataclasses import dataclass
+from decimal import Decimal
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -196,7 +197,7 @@ async def answer_question(
     # ── persist ─────────────────────────────────────────────────────────────
     async with tenant_session(factory, tenant_id) as session:
         repository = AnswerRepository(session)
-        await repository.save_envelope(envelope)
+        await repository.save_envelope(envelope, draft=draft, strips=strips)
         await repository.log_retrieval(
             turn_id=turn_id,
             retrieval=retrieval,
@@ -229,7 +230,9 @@ def _totals(usages: list[Usage], started: float) -> EnvelopeUsage:
     return EnvelopeUsage(
         input_tokens=sum(u.input_tokens for u in usages),
         output_tokens=sum(u.output_tokens for u in usages),
-        cost_inr=0.0,
+        # Summed from the calls rather than left at zero. Each adapter prices
+        # its own call, because the price belongs next to the model that has it.
+        cost_inr=float(sum((u.cost_inr for u in usages), Decimal(0))),
         wall_ms=int((time.perf_counter() - started) * 1000),
     )
 
