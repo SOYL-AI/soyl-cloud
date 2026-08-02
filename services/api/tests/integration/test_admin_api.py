@@ -8,6 +8,8 @@ ones.
 
 Built on the same fixtures as `test_api_tenant_isolation.py` — signup, login,
 create a tenant — so the data under test arrives the way a customer's does.
+They live in `conftest.py`, which is how pytest shares a fixture without the
+importing module ending up with two bindings for the same name.
 """
 
 from __future__ import annotations
@@ -21,13 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.sql import text
 
 from soyl.infrastructure.db.session import create_session_factory, tenant_session
-from tests.integration.test_api_tenant_isolation import (  # noqa: F401 - fixtures
-    PASSWORD,
-    Tenant,
-    build_tenant,
-    client,
-    wipe,
-)
+from tests.integration.conftest import PASSWORD, build_tenant
 
 
 @pytest.fixture

@@ -114,7 +114,7 @@ async def test_staff_reads_across_every_schema(
             # memberships but not documents or turns. What is being asserted is
             # that the query is *permitted*, i.e. does not come back empty
             # because the policy denied it.
-            result = await session.execute(text(f"SELECT count(*) FROM {table}"))  # noqa: S608
+            result = await session.execute(text(f"SELECT count(*) FROM {table}"))
             assert result.scalar_one() >= 0
 
         properties = await session.execute(text("SELECT count(*) FROM core.property"))
