@@ -4,14 +4,19 @@
     uv run python scripts/grant_staff.py revoke  someone@soyl.cloud
     uv run python scripts/grant_staff.py list
 
+In production the variable is already set inside the container, so it is:
+
+    railway ssh --service api "python scripts/grant_staff.py list"
+
 Runs as the **migrator** role, not the application. That is the whole reason
 this is a script and not an admin screen: migration 007 grants `soyl_app`
 `SELECT` on `core.staff_user` and nothing else, so the API physically cannot
 promote anyone. Adding a "make this person staff" button would mean granting
 the application the one privilege that makes every other guarantee negotiable.
 
-Reads `SOYL_DATABASE_URL_MIGRATOR` if set, falling back to the argument. Refuses
-to run against a URL whose user is `soyl_app`, which would fail at the grant
+Reads `SOYL_MIGRATION_DATABASE_URL` — the same variable Alembic and Railway
+already use, so this works inside the deployed container with no extra
+configuration. Refuses to run as `soyl_app`, which would fail at the grant
 anyway but fails here with a sentence instead of a permission error.
 """
 
@@ -25,9 +30,11 @@ import asyncpg
 
 
 def _dsn() -> str:
-    url = os.environ.get("SOYL_DATABASE_URL_MIGRATOR") or os.environ.get("SOYL_DATABASE_URL")
+    url = os.environ.get("SOYL_MIGRATION_DATABASE_URL") or os.environ.get(
+        "SOYL_DATABASE_URL_MIGRATOR"
+    )
     if not url:
-        print("Set SOYL_DATABASE_URL_MIGRATOR (or SOYL_DATABASE_URL) first.")
+        print("Set SOYL_MIGRATION_DATABASE_URL first (it is what Alembic uses).")
         raise SystemExit(2)
     # asyncpg speaks plain postgres URLs; the app's is a SQLAlchemy one.
     return url.replace("postgresql+asyncpg://", "postgresql://")

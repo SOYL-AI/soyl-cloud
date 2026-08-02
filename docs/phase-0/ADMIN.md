@@ -16,11 +16,18 @@ screen that does it.
 
 ```bash
 cd services/api
-export SOYL_DATABASE_URL_MIGRATOR="postgresql://soyl_migrator:...@host:5432/soyl"
+export SOYL_MIGRATION_DATABASE_URL="postgresql://soyl_migrator:...@host:5432/soyl"
 
 uv run python scripts/grant_staff.py grant  founder@soyl.cloud "the founder"
 uv run python scripts/grant_staff.py list
 uv run python scripts/grant_staff.py revoke someone@soyl.cloud
+```
+
+In production the variable is already set inside the container:
+
+```bash
+railway ssh --service api "python scripts/grant_staff.py grant ryan.gomez@soyl.cloud 'founder'"
+railway ssh --service api "python scripts/grant_staff.py list"
 ```
 
 The account has to exist first — sign up through the site, then grant. Revoking
