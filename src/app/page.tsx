@@ -104,7 +104,9 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
             <div className="order-2 md:order-1 flex justify-center">
-              <PhoneMockup src="/images/products_pics/COncierge chat asking something guest mode .png" />
+              <PhoneMockup priority>
+                <InteractiveConciergeChat />
+              </PhoneMockup>
             </div>
             
             <div className="order-1 md:order-2">
