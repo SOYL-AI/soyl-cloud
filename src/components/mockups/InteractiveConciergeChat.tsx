@@ -63,28 +63,7 @@ export function InteractiveConciergeChat() {
 
     let responseText = "";
 
-    // Step 1: Attempt live API call to SOYL Advisor endpoint
-    try {
-      const res = await fetch("/api/advisor", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          answers: {
-            property_type: "Hotel Room 104",
-            pain: text,
-            detail: text,
-          },
-        }),
-      });
-      if (res.ok) {
-        const data = (await res.json()) as { insight?: { headline?: string; blocks?: Array<{ markdown?: string }> } };
-        if (data?.insight?.blocks?.[0]?.markdown) {
-          responseText = data.insight.blocks[0].markdown;
-        }
-      }
-    } catch {
-      // Ignore error and fall back to prompt-engineered response
-    }
+    // Use prompt-engineered fallback response engine for guest mockups
 
     // Step 2: Prompt-engineered fallback response engine
     if (!responseText) {

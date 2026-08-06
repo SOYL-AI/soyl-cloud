@@ -7,6 +7,7 @@ import { Reveal, RevealGroup, RevealOnLoad } from "@/components/ui/Reveal";
 import { BrowserMockup } from "@/components/mockups/BrowserMockup";
 import { PhoneMockup } from "@/components/mockups/PhoneMockup";
 import { InteractiveConciergeChat } from "@/components/mockups/InteractiveConciergeChat";
+import { InteractiveHeroGuestPortal } from "@/components/mockups/InteractiveHeroGuestPortal";
 import { MetricsStrip } from "@/components/sections/MetricsStrip";
 import { AdvisorTeaser } from "@/components/sections/AdvisorTeaser";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -84,7 +85,7 @@ export default function Home() {
 
               <div className="w-[280px] lg:w-[320px] lg:absolute lg:-right-4 lg:-bottom-8 z-20">
                 <PhoneMockup float priority>
-                  <InteractiveConciergeChat />
+                  <InteractiveHeroGuestPortal />
                 </PhoneMockup>
               </div>
 
