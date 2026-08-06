@@ -1,7 +1,6 @@
 import React from "react";
-import { Check, X, Minus } from "lucide-react";
+import { Check, Minus } from "lucide-react";
 import { FeatureCategory } from "@/lib/competitors";
-import { cn } from "@/lib/utils";
 
 interface ComparisonTableProps {
   categories: FeatureCategory[];

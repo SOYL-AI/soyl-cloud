@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, QrCode, ChefHat, Package, BarChart3, Users, Smartphone, Clock, Utensils, Wine, Zap, Cloud } from "lucide-react";
+import { ArrowRight, QrCode, ChefHat, Package, BarChart3, Users, Smartphone, Wine, Zap, Cloud } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -12,7 +12,6 @@ import { StickyCTA } from "@/components/sections/StickyCTA";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { SummaryBlock, FactTable } from "@/components/seo/AEOBlocks";
 import { ProductSchema, FAQSchema } from "@/components/seo/SchemaInjector";
-import Link from "next/link";
 
 export default function SoylDine() {
   return (

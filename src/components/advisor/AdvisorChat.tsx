@@ -145,35 +145,53 @@ export function AdvisorChat() {
 
   return (
     <div className="mx-auto w-full max-w-2xl">
-      <div className="rounded-3xl border border-charcoal/10 bg-white shadow-sm">
-        <div className="flex items-center gap-3 border-b border-charcoal/10 px-5 py-4">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-mint/25">
-            <Sparkles className="h-4 w-4 text-charcoal" aria-hidden />
+      <div className="rounded-3xl border border-charcoal/10 bg-white shadow-xl overflow-hidden">
+        {/* Progress Bar */}
+        {!insight && (
+          <div className="w-full bg-gray-100 h-1.5 overflow-hidden">
+            <div
+              className="bg-[var(--color-soyl-mint-dark)] h-full transition-all duration-500 ease-out"
+              style={{ width: `${((step + 1) / QUESTIONS.length) * 100}%` }}
+            />
+          </div>
+        )}
+
+        <div className="flex items-center gap-3 border-b border-charcoal/10 px-6 py-4 bg-gray-50/50">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-mint/25 shadow-sm">
+            <Sparkles className="h-4.5 w-4.5 text-charcoal" aria-hidden />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-charcoal">Hotel Advisor</p>
-            <p className="text-[11px] text-charcoal/50">
-              A read on your operation. No account needed.
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-bold text-charcoal">Hotel Advisor AI</p>
+              {!insight && (
+                <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                  Step {step + 1} of {QUESTIONS.length}
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-charcoal/60">
+              Instant operational analysis · No account required
             </p>
           </div>
           {insight || step > 0 ? (
             <button
               onClick={restart}
-              className="rounded-lg p-2 text-charcoal/45 transition hover:bg-charcoal/5 hover:text-charcoal"
+              className="flex items-center gap-1 text-xs font-semibold rounded-lg px-2.5 py-1.5 text-charcoal/60 transition hover:bg-charcoal/10 hover:text-charcoal"
               aria-label="Start again"
             >
               <RotateCcw className="h-3.5 w-3.5" aria-hidden />
+              <span>Reset</span>
             </button>
           ) : null}
         </div>
 
-        <div className="max-h-[26rem] space-y-4 overflow-y-auto px-5 py-5">
+        <div className="max-h-[28rem] space-y-4 overflow-y-auto px-6 py-6">
           {QUESTIONS.slice(0, step).map((asked) => (
             <div key={asked.key} className="space-y-2">
-              <p className="text-sm text-charcoal/70">{asked.prompt}</p>
+              <p className="text-xs font-semibold text-charcoal/50 uppercase tracking-wider">{asked.prompt}</p>
               <div className="flex justify-end">
-                <p className="inline-flex items-center gap-1.5 rounded-2xl rounded-br-md bg-charcoal px-3.5 py-2 text-sm text-white">
-                  <Check className="h-3 w-3" aria-hidden />
+                <p className="inline-flex items-center gap-1.5 rounded-2xl rounded-br-md bg-charcoal px-4 py-2 text-sm font-medium text-white shadow-sm">
+                  <Check className="h-3.5 w-3.5 text-emerald-400" aria-hidden />
                   {answers[asked.key]}
                 </p>
               </div>
@@ -185,48 +203,71 @@ export function AdvisorChat() {
               key={question.key}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="space-y-3"
+              className="space-y-4"
             >
-              <p className="text-sm font-medium text-charcoal">{question.prompt}</p>
+              <p className="text-base font-bold text-charcoal">{question.prompt}</p>
 
               {question.options.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2.5">
                   {question.options.map((option) => (
                     <button
                       key={option}
                       onClick={() => choose(option)}
-                      className="rounded-xl border border-charcoal/15 px-3.5 py-2 text-sm text-charcoal/80 transition hover:border-charcoal/35 hover:bg-mint/10"
+                      className="rounded-xl border border-charcoal/15 bg-white px-4 py-2.5 text-sm font-medium text-charcoal/80 transition-all hover:border-charcoal/40 hover:bg-mint/15 hover:scale-[1.01] hover:shadow-sm"
                     >
                       {option}
                     </button>
                   ))}
                 </div>
               ) : (
-                <form
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    choose(detail.trim() || "Nothing specific");
-                  }}
-                  className="flex gap-2"
-                >
-                  <label htmlFor="advisor-detail" className="sr-only">
-                    {question.prompt}
-                  </label>
-                  <input
-                    id="advisor-detail"
-                    value={detail}
-                    onChange={(event) => setDetail(event.target.value)}
-                    placeholder="e.g. what our corporate cancellation window is"
-                    className="flex-1 rounded-xl border border-charcoal/15 px-3.5 py-2.5 text-sm outline-none transition focus:border-charcoal/30 focus:ring-2 focus:ring-mint/50"
-                  />
-                  <button
-                    type="submit"
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-charcoal px-4 py-2.5 text-sm font-medium text-white transition hover:bg-charcoal/90"
+                <div className="space-y-3">
+                  <form
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      choose(detail.trim() || "Corporate cancellation window");
+                    }}
+                    className="flex gap-2"
                   >
-                    Finish
-                    <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-                  </button>
-                </form>
+                    <label htmlFor="advisor-detail" className="sr-only">
+                      {question.prompt}
+                    </label>
+                    <input
+                      id="advisor-detail"
+                      value={detail}
+                      onChange={(event) => setDetail(event.target.value)}
+                      placeholder="e.g. Corporate cancellation window policy"
+                      className="flex-1 rounded-xl border border-charcoal/20 px-4 py-3 text-sm outline-none transition focus:border-charcoal focus:ring-2 focus:ring-mint/50"
+                    />
+                    <button
+                      type="submit"
+                      className="inline-flex items-center gap-2 rounded-xl bg-charcoal px-5 py-3 text-sm font-semibold text-white transition hover:bg-charcoal/90 shadow-md"
+                    >
+                      <span>Analyze</span>
+                      <ArrowRight className="h-4 w-4" aria-hidden />
+                    </button>
+                  </form>
+                  {/* Sample Query Chips */}
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    <span className="text-xs text-charcoal/50 font-medium">Or try:</span>
+                    {[
+                      "Corporate cancellation window",
+                      "Late check-out surcharge fee",
+                      "Staff room discount policy",
+                    ].map((sample) => (
+                      <button
+                        key={sample}
+                        type="button"
+                        onClick={() => {
+                          setDetail(sample);
+                          choose(sample);
+                        }}
+                        className="text-xs font-medium bg-gray-100 hover:bg-mint/20 text-charcoal/80 px-2.5 py-1 rounded-lg border border-gray-200 transition-colors"
+                      >
+                        + {sample}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
             </motion.div>
           ) : null}

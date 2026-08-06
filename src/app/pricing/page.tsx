@@ -42,7 +42,7 @@ const faqs = [
 ];
 
 export default function PricingPage() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [rooms, setRooms] = useState(50);
 
   return (
     <main className="flex min-h-screen flex-col pt-24 pb-16 bg-[var(--color-soyl-white)]">
@@ -55,8 +55,77 @@ export default function PricingPage() {
             Simple, transparent pricing
           </h1>
           <p className="text-xl text-[var(--color-soyl-gray-600)] max-w-2xl mx-auto">
-            Choose what your property needs. Pay per room for Butler AI, or a flat fee for PMS Lite.
+            Choose what your property needs. Deploy the full ARIP workforce, or pick specific modules.
           </p>
+        </section>
+
+        {/* BUTLER AI CALCULATOR */}
+        <section className="py-12">
+          <div className="max-w-4xl mx-auto bg-white rounded-[32px] border border-[var(--color-soyl-gray-200)] shadow-2xl overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-soyl-mint)] opacity-10 blur-[80px] rounded-full" />
+            <div className="p-8 md:p-10 text-center border-b border-[var(--color-soyl-gray-100)]">
+              <Badge variant="outline" className="mb-3 text-[var(--color-soyl-mint-dark)] border-[var(--color-soyl-mint-dark)] bg-[var(--color-soyl-mint-light)]">Butler AI Calculator</Badge>
+              <h2 className="text-2xl md:text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-2">Estimate Your Butler AI Investment</h2>
+              <p className="text-[var(--color-soyl-gray-600)]">Adjust room count to view estimated monthly pricing across plans.</p>
+            </div>
+            
+            <div className="p-8 md:p-10 grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+              <div>
+                <label className="block text-sm font-bold text-[var(--color-soyl-charcoal)] mb-3">
+                  Number of Rooms in Property:
+                </label>
+                <div className="flex items-center gap-4 mb-4">
+                  <input 
+                    type="range" 
+                    min="10" max="500" step="10" 
+                    value={rooms} 
+                    onChange={(e) => setRooms(parseInt(e.target.value))}
+                    className="w-full h-2.5 bg-[var(--color-soyl-gray-200)] rounded-lg appearance-none cursor-pointer accent-[var(--color-soyl-mint-dark)]"
+                  />
+                  <span className="text-3xl font-extrabold text-[var(--color-soyl-charcoal)] w-20 text-right">{rooms}</span>
+                </div>
+                <p className="text-xs text-[var(--color-soyl-gray-500)] mt-2">
+                  Prices are billed quarterly. Includes 1-month free trial.
+                </p>
+              </div>
+
+              <div className="bg-[var(--color-soyl-charcoal)] rounded-2xl p-6 text-white shadow-inner flex flex-col justify-center space-y-4">
+                <div className="flex justify-between items-center pb-3 border-b border-white/10">
+                  <span className="text-gray-300 text-sm">Starter (₹199/room)</span>
+                  <span className="text-xl font-bold text-white">₹{(rooms * 199).toLocaleString()}<span className="text-xs text-gray-400 font-normal">/mo</span></span>
+                </div>
+                <div className="flex justify-between items-center pb-3 border-b border-white/10">
+                  <span className="text-gray-300 text-sm">Core (₹299/room)</span>
+                  <span className="text-xl font-bold text-white">₹{(rooms * 299).toLocaleString()}<span className="text-xs text-gray-400 font-normal">/mo</span></span>
+                </div>
+                <div className="flex justify-between items-center pb-3 border-b border-white/10">
+                  <span className="text-emerald-400 font-semibold text-sm">Butler Tier (₹499/room)</span>
+                  <span className="text-2xl font-bold text-[var(--color-soyl-mint)]">₹{(rooms * 499).toLocaleString()}<span className="text-xs text-gray-400 font-normal">/mo</span></span>
+                </div>
+                <Button variant="primary" size="lg" href="/contact" className="w-full mt-2 bg-[var(--color-soyl-mint)] text-[var(--color-soyl-charcoal)] hover:bg-[var(--color-soyl-mint-light)]">
+                  Start 1-Month Free Trial →
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ARIP COMING SOON BANNER */}
+        <section className="py-8">
+          <div className="max-w-4xl mx-auto bg-gradient-to-r from-[#090D14] via-[#101726] to-[#090D14] rounded-3xl p-8 border border-blue-500/20 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30 mb-3">
+                <Sparkles size={14} /> ARIP Platform Pricing — Coming Soon
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-1">Autonomous Revenue Intelligence Platform</h3>
+              <p className="text-sm text-gray-400 max-w-xl">
+                ARIP is priced based on target RevPAR uplift and property asset tier. Phase 0 Pilot Waitlist is currently open for select hotel partners.
+              </p>
+            </div>
+            <Button variant="outline" href="/contact" className="border-blue-400/30 text-white hover:bg-blue-500/20 shrink-0 whitespace-nowrap">
+              Join Pilot Waitlist →
+            </Button>
+          </div>
         </section>
 
         {/* BUTLER AI */}
@@ -124,7 +193,7 @@ export default function PricingPage() {
                   <li className="flex items-start gap-3 text-sm text-gray-300"><Check size={20} className="text-[var(--color-soyl-mint)] shrink-0" /> AI-driven upsell engine</li>
                   <li className="flex items-start gap-3 text-sm text-gray-300"><Check size={20} className="text-[var(--color-soyl-mint)] shrink-0" /> Priority support</li>
                 </ul>
-                <Button variant="primary" size="lg" href="/book-demo" className="w-full bg-[var(--color-soyl-mint)] text-[var(--color-soyl-charcoal)] hover:bg-[var(--color-soyl-mint-light)]">Book a Demo</Button>
+                <Button variant="primary" size="lg" href="/contact" className="w-full bg-[var(--color-soyl-mint)] text-[var(--color-soyl-charcoal)] hover:bg-[var(--color-soyl-mint-light)]">Join Pilot Waitlist</Button>
               </div>
             </div>
           </div>
@@ -196,7 +265,7 @@ export default function PricingPage() {
                   </div>
                 </div>
                 
-                <Button variant="primary" size="lg" href="/book-demo" className="w-full bg-white text-[var(--color-soyl-charcoal)] hover:bg-[var(--color-soyl-gray-100)]">Book PMS Demo</Button>
+                <Button variant="primary" size="lg" href="/contact" className="w-full bg-white text-[var(--color-soyl-charcoal)] hover:bg-[var(--color-soyl-gray-100)]">Join Pilot Waitlist</Button>
               </div>
             </div>
           </div>
@@ -212,7 +281,7 @@ export default function PricingPage() {
           </div>
           <div className="mt-16 text-center">
             <p className="text-[var(--color-soyl-gray-600)] mb-6 text-lg">Not sure which plan is right for your property?</p>
-            <Button variant="secondary" size="lg" href="/book-demo">Book a call and we'll help you choose</Button>
+            <Button variant="secondary" size="lg" href="/contact">Join Pilot Waitlist</Button>
           </div>
         </section>
 

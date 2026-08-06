@@ -58,15 +58,20 @@ function useReveal<T extends HTMLElement>() {
     const node = ref.current;
     if (!node) return;
 
+    // Immediate check if element is already in or near viewport
+    const rect = node.getBoundingClientRect();
+    if (rect.top < (window.innerHeight || 800) + 100) {
+      node.dataset.revealed = "true";
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (!entries[0]?.isIntersecting) return;
         node.dataset.revealed = "true";
-        // Once only. Re-animating every time a section scrolls back into view
-        // is a distraction, and on a long page it is most of them.
         observer.disconnect();
       },
-      { rootMargin: "0px 0px -80px 0px" },
+      { rootMargin: "100px 0px" },
     );
 
     observer.observe(node);
@@ -83,12 +88,14 @@ export function Reveal({
   as: Element = "div",
 }: RevealProps) {
   const ref = useReveal<HTMLDivElement>();
+  // Automatically convert milliseconds (e.g. 100ms) to seconds (0.1s)
+  const delayInSeconds = delay > 10 ? delay / 1000 : delay;
 
   return (
     <Element
       ref={ref}
       className={cn("soyl-reveal", className)}
-      style={delay ? { transitionDelay: `${delay}s` } : undefined}
+      style={delayInSeconds ? { transitionDelay: `${delayInSeconds}s` } : undefined}
     >
       {children}
     </Element>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Search, User, Bot, Sparkles, Send, Paperclip } from "lucide-react";
+import { Bot, Sparkles, Send, Paperclip } from "lucide-react";
 
 export default function ButlerMockup() {
   return (
@@ -52,7 +52,7 @@ export default function ButlerMockup() {
               <Bot size={14} className="text-[var(--color-mint-dark)]" />
             </div>
             <div className="bg-white border border-gray-200 p-3 rounded-2xl rounded-tl-sm text-gray-700 shadow-sm">
-              I've just dispatched housekeeping with extra towels for Room 402. They should arrive in 5 minutes! <br/><br/>
+              I&apos;ve just dispatched housekeeping with extra towels for Room 402. They should arrive in 5 minutes! <br/><br/>
               The rooftop pool is open until 10:00 PM tonight. Let me know if you need anything else!
             </div>
           </motion.div>
