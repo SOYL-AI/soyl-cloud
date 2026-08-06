@@ -7,6 +7,7 @@ import { Reveal, RevealGroup, RevealOnLoad } from "@/components/ui/Reveal";
 import { BrowserMockup } from "@/components/mockups/BrowserMockup";
 import { PhoneMockup } from "@/components/mockups/PhoneMockup";
 import { InteractiveConciergeChat } from "@/components/mockups/InteractiveConciergeChat";
+import { InteractiveHeroGuestPortal } from "@/components/mockups/InteractiveHeroGuestPortal";
 import { MetricsStrip } from "@/components/sections/MetricsStrip";
 import { AdvisorTeaser } from "@/components/sections/AdvisorTeaser";
 import { FinalCTA } from "@/components/sections/FinalCTA";
@@ -37,7 +38,8 @@ export default function Home() {
           <source src="/videos/hero-bg.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-[#0A0D14] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] h-[600px] bg-[var(--background-image-gradient-glow)] opacity-30 pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-soyl-mint/30 via-blue-500/20 to-transparent blur-[120px] rounded-full pointer-events-none mix-blend-screen animate-pulse duration-10000" />
+        <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-500/20 via-soyl-mint/20 to-transparent blur-[120px] rounded-full pointer-events-none mix-blend-screen animate-pulse duration-7000 delay-1000" />
 
         <Container>
           <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
@@ -84,7 +86,7 @@ export default function Home() {
 
               <div className="w-[280px] lg:w-[320px] lg:absolute lg:-right-4 lg:-bottom-8 z-20">
                 <PhoneMockup float priority>
-                  <InteractiveConciergeChat />
+                  <InteractiveHeroGuestPortal />
                 </PhoneMockup>
               </div>
 

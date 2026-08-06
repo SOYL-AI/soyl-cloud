@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { TrendingUp, Search, FileText, Globe, MessageSquare, ShoppingCart, ShieldCheck, Terminal, ChevronRight, Activity, Zap } from 'lucide-react'
 import { Container } from '@/components/ui/Container'
@@ -187,7 +188,17 @@ export default function AripPage() {
               <div className="relative w-full flex items-center justify-center">
                 <div className="absolute inset-0 bg-gradient-to-tr from-soyl-mint/10 to-transparent rounded-full blur-3xl opacity-30"></div>
                 <div className="w-full relative z-10">
-                  <AripNodeDiagram />
+                  <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10 bg-[#0A0D14]/80 backdrop-blur-sm p-1">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-soyl-mint/20 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-2xl" />
+                    <Image 
+                      src="/images/arip-flow.jpg" 
+                      alt="ARIP Agent Flow" 
+                      width={1200} 
+                      height={800} 
+                      className="w-full h-auto object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 rounded-xl mix-blend-screen"
+                    />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl pointer-events-none"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -422,6 +433,32 @@ Target: Core Pricing Matrix
                 </div>
               </Reveal>
             </div>
+          </Container>
+        </section>
+
+        {/* N8N BASED VISUAL BUILDER SECTION */}
+        <section className="py-24 bg-[#0A0D14] border-t border-white/5 relative overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-soyl-mint opacity-5 blur-[120px] rounded-full pointer-events-none" />
+          <Container className="relative z-10">
+            <div className="max-w-3xl mx-auto text-center mb-16">
+              <Reveal>
+                <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">
+                  Visual Logic Builder
+                </h2>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p className="text-lg text-gray-400">
+                  Configure custom workflows and orchestrate agents with our powerful node-based editor. 
+                  Connect your PMS, OTAs, and third-party tools seamlessly.
+                </p>
+              </Reveal>
+            </div>
+            
+            <Reveal delay={0.2}>
+              <div className="w-full max-w-5xl mx-auto">
+                <AripNodeDiagram />
+              </div>
+            </Reveal>
           </Container>
         </section>
 

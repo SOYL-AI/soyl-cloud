@@ -46,6 +46,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const classes = cn(baseStyles, variants[variant], sizes[size], className);
 
     if (href) {
+      if (href.startsWith("#")) {
+        return (
+          <a href={href} className={classes}>
+            {children}
+          </a>
+        );
+      }
       return (
         <Link href={href} className={classes}>
           {children}

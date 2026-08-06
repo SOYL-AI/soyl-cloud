@@ -58,8 +58,8 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    template: "%s | SOYL Cloud",
-    default: "SOYL Cloud | AI Concierge for Modern Hotels",
+    template: "%s | SOYL AI",
+    default: "SOYL AI | AI Concierge for Modern Hotels",
   },
   description: "Resolve guest requests in under 30 seconds. AI-powered concierge, property management, and operations — unified on one platform.",
   openGraph: {

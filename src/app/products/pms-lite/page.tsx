@@ -258,38 +258,7 @@ export default function PmsLitePage() {
             </div>
             <div className="flex-[1.2] w-full">
               <Reveal delay={0.2}>
-                <div className="bg-[var(--color-soyl-charcoal)] rounded-[2rem] p-8 shadow-2xl shadow-gray-300 flex items-center justify-center min-h-[400px]">
-                  <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl">
-                    <div className="border-b border-gray-100 pb-4 mb-4 flex justify-between items-start">
-                      <div>
-                        <div className="font-bold text-[var(--color-soyl-charcoal)] text-xl">Guest Folio</div>
-                        <div className="text-gray-400 text-sm">Room 302 • Rahul Sharma</div>
-                      </div>
-                      <Badge className="bg-emerald-100 text-emerald-700">Settled</Badge>
-                    </div>
-                    <div className="space-y-3 mb-6">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Room Stay (2 Nights)</span>
-                        <span className="font-medium">₹8,000</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Restaurant • Dinner</span>
-                        <span className="font-medium">₹1,450</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Minibar</span>
-                        <span className="font-medium">₹300</span>
-                      </div>
-                    </div>
-                    <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
-                      <span className="font-bold text-gray-800">Total</span>
-                      <span className="font-bold text-xl text-gray-800">₹9,750</span>
-                    </div>
-                    <Button className="w-full mt-6 bg-[var(--color-soyl-charcoal)] hover:bg-black text-white">
-                      Download PDF
-                    </Button>
-                  </div>
-                </div>
+                <BrowserMockup src="/images/revenue_dashboard.png" alt="Revenue Dashboard" className="shadow-2xl shadow-gray-200 border border-gray-100 rounded-[2rem]" />
               </Reveal>
             </div>
           </div>

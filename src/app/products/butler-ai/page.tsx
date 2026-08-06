@@ -92,10 +92,10 @@ const bentoFeatures = [
 
 /* ─── Timeline steps ──────────────────────────────────── */
 const timelineSteps = [
-  { icon: ScanLine, label: "Guest Scans QR", desc: "No app download — instant access" },
+  { icon: ScanLine, label: "Guest Scans QR", desc: "No app download — instant access", image: "/images/butler_step1.png" },
   { icon: BotMessageSquare, label: "Opens Concierge", desc: "Beautiful interface with services" },
-  { icon: MessageSquare, label: "Makes Request", desc: "\"I need extra towels\" via chat" },
-  { icon: ArrowRightLeft, label: "AI Routes to Staff", desc: "Automatically assigned to team" },
+  { icon: MessageSquare, label: "Makes Request", desc: "\"I need extra towels\" via chat", image: "/images/butler_step3.png" },
+  { icon: ArrowRightLeft, label: "AI Routes to Staff", desc: "Automatically assigned to team", image: "/images/butler_step4.png" },
   { icon: ClipboardCheck, label: "Task Completed", desc: "Staff fulfills & guest is notified" },
 ];
 
@@ -363,7 +363,12 @@ export default function ButlerAIPage() {
                       Step {i + 1}
                     </span>
                     <h4 className="text-base font-semibold text-[var(--color-soyl-charcoal)] mb-1">{step.label}</h4>
-                    <p className="text-sm text-[var(--color-soyl-gray-600)] leading-relaxed max-w-[200px] mx-auto">{step.desc}</p>
+                    <p className="text-sm text-[var(--color-soyl-gray-600)] leading-relaxed max-w-[200px] mx-auto mb-4">{step.desc}</p>
+                    {step.image && (
+                      <div className="relative w-[200px] h-[350px] mx-auto mt-4 rounded-xl overflow-hidden shadow-xl border border-gray-100">
+                        <Image src={step.image} alt={step.label} fill className="object-cover" />
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               ))}

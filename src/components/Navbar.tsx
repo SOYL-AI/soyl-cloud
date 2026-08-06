@@ -33,7 +33,7 @@ export default function Navbar() {
               <Image src="/images/logo.png" alt="SOYL AI Logo" width={32} height={32} className="w-full h-full object-contain rounded-full bg-[#0A0D14]" />
             </div>
             <span className={`font-bold text-lg tracking-tight transition-colors ${scrolled ? "text-gray-900 group-hover:text-[var(--color-soyl-mint-dark)]" : "text-white group-hover:text-soyl-mint"}`}>
-              SOYL Cloud
+              SOYL AI
             </span>
           </Link>
 

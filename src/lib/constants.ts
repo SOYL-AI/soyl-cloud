@@ -13,7 +13,7 @@ export const SITE_HOST = "www.soyl.cloud";
 export const SITE_URL = `https://${SITE_HOST}`;
 
 export const COMPANY = {
-  name: "SOYL Cloud",
+  name: "SOYL AI",
   /** Alias of {@link SITE_HOST} — kept so existing `https://${COMPANY.domain}` call sites stay correct. */
   domain: SITE_HOST,
   address: "Bengaluru Karnataka 560043",
