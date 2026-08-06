@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
 import { BUTLER_STRENGTHS } from "@/lib/competitors";
-import { fadeUp, staggerContainer, staggerItem } from "@/lib/animations";
+import { staggerContainer, staggerItem } from "@/lib/animations";
 import { cn } from "@/lib/utils";
 
 interface WhyButlerAIProps {

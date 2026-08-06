@@ -13,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/about",
     "/products/butler-ai",
+    "/products/arip",
     "/products/pms-lite",
     "/products/soyl-dine",
     "/pricing",

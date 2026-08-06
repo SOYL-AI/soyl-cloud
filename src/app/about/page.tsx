@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -88,7 +87,7 @@ export default function AboutPage() {
           <div className="prose prose-lg text-[var(--color-soyl-gray-600)] max-w-3xl mx-auto">
             <h2 className="text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-6 text-center">Mission and Operations</h2>
             <p className="mb-6">
-              SOYL AI's mission is to provide highly available voice AI systems that handle routine guest inquiries, allowing hospitality staff to focus on high-value interactions.
+              SOYL AI&apos;s mission is to provide highly available voice AI systems that handle routine guest inquiries, allowing hospitality staff to focus on high-value interactions.
             </p>
             <p className="mb-6">
               Our infrastructure is engineered for hotels, resorts, and serviced apartments ranging from 20 to 500 rooms. We integrate directly with existing Property Management Systems (PMS) to enable real-time, context-aware responses to guest requests.

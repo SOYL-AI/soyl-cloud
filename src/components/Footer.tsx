@@ -53,7 +53,7 @@ export default function Footer() {
                 </li>
               ))}
               <li><Link href="/contact" className="text-sm hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link href="/book-demo" className="text-sm text-[var(--color-soyl-mint)] hover:text-white transition-colors font-medium">Book a Demo</Link></li>
+              <li><Link href="/contact" className="text-sm text-[var(--color-soyl-mint)] hover:text-white transition-colors font-medium">Join Pilot Waitlist</Link></li>
             </ul>
           </div>
 

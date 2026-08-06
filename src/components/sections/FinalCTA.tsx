@@ -15,18 +15,15 @@ export function FinalCTA() {
       <Container className="relative z-10">
         <Reveal className="flex flex-col items-center text-center max-w-3xl mx-auto">
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
-            Ready to modernize your property?
+            The hotels of tomorrow are joining today.
           </h2>
           <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed">
-            Join forward-thinking hotels that chose SOYL Cloud to power their guest experience and automate their operations.
+            ARIP is accepting a limited number of early properties for the pilot program. Secure your spot and be the first to deploy a real AI digital workforce.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <Button size="lg" variant="secondary" href="/book-demo" className="w-full sm:w-auto group">
-              Book Your Free Demo
+          <div className="flex flex-col sm:flex-row justify-center gap-4 w-full sm:w-auto">
+            <Button size="lg" variant="secondary" href="/contact" className="w-full sm:w-auto group">
+              Join Pilot Waitlist
               <span className="ml-2 inline-block transition-transform group-hover:translate-x-1">→</span>
-            </Button>
-            <Button size="lg" variant="outline" href="/contact" className="w-full sm:w-auto border-gray-600 bg-transparent text-white hover:bg-white/10 hover:text-white">
-              Contact Sales
             </Button>
           </div>
         </Reveal>

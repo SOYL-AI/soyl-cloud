@@ -1,23 +1,11 @@
+"use client";
+
 import { ArrowRight, BookOpen, MessageSquareText, Quote, Search } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 import { RevealGroup } from "@/components/ui/Reveal";
 import { Container } from "@/components/ui/Container";
-
-/**
- * The Hotel Advisor entry point on the landing page.
- *
- * Someone scrolling past the hero should be able to *see* what asking a
- * document looks like before deciding whether to try it. So the visual is a
- * real answer — question, cited quote, source line — rather than an
- * illustration of one. It is the clearest way to communicate the thing that
- * makes this different from a chatbot: the citation.
- *
- * The mock answer uses obviously generic policy wording. It is a diagram of the
- * interface, not a claim about anybody's documents, and inventing a
- * realistic-looking hotel's policy here would be the same mistake the advisor
- * itself is built to avoid.
- */
 
 const STEPS = [
   { icon: Search, label: "It searches your documents" },
@@ -29,11 +17,11 @@ export function AdvisorTeaser() {
   return (
     <section
       id="advisor"
-      className="border-y border-charcoal/10 bg-cream py-16 sm:py-24"
+      className="relative overflow-hidden border-y border-charcoal/10 bg-cream py-16 sm:py-24"
     >
       <Container>
         <RevealGroup className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <div>
+          <div className="relative z-10">
             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-charcoal/45">
               Hotel Advisor
             </p>
@@ -62,25 +50,10 @@ export function AdvisorTeaser() {
               })}
             </ul>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/advisor"
-                className="group inline-flex items-center gap-2 rounded-xl bg-charcoal px-5 py-3 text-sm font-semibold text-white transition hover:bg-charcoal/90"
-              >
-                <MessageSquareText className="h-4 w-4" aria-hidden />
-                Try the Hotel Advisor
-                <ArrowRight
-                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                  aria-hidden
-                />
-              </Link>
-              <span className="text-sm text-charcoal/50">
-                Five questions. No account.
-              </span>
-            </div>
+            <PremiumCTA />
           </div>
 
-          <div>
+          <div className="relative">
             <AnswerPreview />
           </div>
         </RevealGroup>
@@ -89,50 +62,146 @@ export function AdvisorTeaser() {
   );
 }
 
-/**
- * A static picture of a cited answer.
- *
- * Not a live demo: a real call on the landing page would cost money per scroll
- * and would be the slowest element on the page. This shows the shape, and the
- * button next to it goes to the thing that actually runs.
- */
+function PremiumCTA() {
+  return (
+    <div className="mt-8 flex flex-wrap items-center gap-4">
+      <Link
+        href="/advisor"
+        className="group relative inline-flex items-center gap-2.5 rounded-xl bg-[var(--color-soyl-charcoal)] px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[var(--color-soyl-charcoal)]/90 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+      >
+        <MessageSquareText className="h-4 w-4 text-[var(--color-soyl-mint)]" aria-hidden />
+        <span>Try the Hotel Advisor Free</span>
+        <ArrowRight
+          className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+          aria-hidden
+        />
+      </Link>
+      <span className="text-sm font-medium text-charcoal/60 bg-white/60 px-3 py-1.5 rounded-lg border border-charcoal/10">
+        ⚡ 5 questions. No signup required.
+      </span>
+    </div>
+  );
+}
+
+function AnimatedText({ text, delay = 0 }: { text: string; delay?: number }) {
+  const words = text.split(" ");
+  return (
+    <motion.span
+      custom={delay}
+      variants={{
+        hidden: { opacity: 1 },
+        visible: (d: number) => ({
+          opacity: 1,
+          transition: {
+            delayChildren: d,
+            staggerChildren: 0.05,
+          },
+        }),
+      }}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+      aria-label={text}
+    >
+      {words.map((word, i) => (
+        <span key={i} className="inline-flex">
+          <motion.span
+            variants={{
+              hidden: { opacity: 0, y: 10 },
+              visible: { 
+                opacity: 1, 
+                y: 0, 
+                transition: { duration: 0.4, ease: "easeOut" } 
+              },
+            }}
+            className="inline-block"
+            aria-hidden="true"
+          >
+            {word}
+          </motion.span>
+          {i < words.length - 1 && <span className="inline-block">&nbsp;</span>}
+        </span>
+      ))}
+    </motion.span>
+  );
+}
+
 function AnswerPreview() {
   return (
-    <div className="rounded-3xl border border-charcoal/10 bg-white p-5 shadow-sm sm:p-6">
-      <div className="mb-4 flex justify-end">
-        <p className="rounded-2xl rounded-br-md bg-charcoal px-4 py-2 text-sm text-white">
-          Can a corporate guest cancel free the day before?
-        </p>
-      </div>
+    <div className="relative mx-auto w-full max-w-lg">
+      {/* Premium Glassmorphism Background Blobs */}
+      <div className="pointer-events-none absolute -left-12 -top-12 h-64 w-64 rounded-full bg-mint/30 mix-blend-multiply blur-3xl filter" />
+      <div className="pointer-events-none absolute -bottom-12 -right-12 h-64 w-64 rounded-full bg-blue-300/20 mix-blend-multiply blur-3xl filter" />
+      <div className="pointer-events-none absolute right-0 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full bg-indigo-300/20 mix-blend-multiply blur-3xl filter" />
 
-      <p className="mb-3 text-[15px] font-semibold leading-snug text-charcoal">
-        No — inside 48 hours one night is charged to the company account.
-      </p>
+      {/* Glass Card */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 rounded-3xl border border-white/60 bg-white/50 p-5 shadow-[0_16px_40px_-12px_rgba(0,0,0,0.08)] backdrop-blur-xl sm:p-6"
+      >
+        <div className="mb-5 flex justify-end">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, originX: 1, originY: 1 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4, duration: 0.5, type: "spring", bounce: 0.4 }}
+            className="rounded-2xl rounded-br-md bg-charcoal px-4 py-2 text-sm font-medium text-white shadow-md"
+          >
+            Can a corporate guest cancel free the day before?
+          </motion.div>
+        </div>
 
-      <p className="mb-4 text-sm leading-relaxed text-charcoal/75">
-        The window is measured from 14:00 on the arrival date, so a booking withdrawn
-        the previous evening falls inside it.
-      </p>
+        <div className="space-y-3">
+          <p className="text-[15px] font-semibold leading-snug text-charcoal">
+            <AnimatedText 
+              text="No — inside 48 hours one night is charged to the company account." 
+              delay={1.0}
+            />
+          </p>
 
-      <figure className="rounded-2xl border border-charcoal/10 bg-charcoal/[0.03] p-4">
-        <Quote className="mb-2 h-3.5 w-3.5 text-charcoal/40" aria-hidden />
-        <blockquote className="text-[13px] leading-relaxed text-charcoal/75">
-          &ldquo;A room booked under a corporate contracted rate may be withdrawn
-          without charge up to 48 hours before the arrival date.&rdquo;
-        </blockquote>
-        <figcaption className="mt-3 border-t border-charcoal/10 pt-2 text-[11px] text-charcoal/55">
-          Front Office SOP · Cancellation and no-show
-        </figcaption>
-      </figure>
+          <p className="text-sm leading-relaxed text-charcoal/80">
+            <AnimatedText 
+              text="The window is measured from 14:00 on the arrival date, so a booking withdrawn the previous evening falls inside it." 
+              delay={2.0}
+            />
+          </p>
+        </div>
 
-      <div className="mt-4 flex items-center gap-2 border-t border-charcoal/10 pt-3">
-        <span className="inline-flex items-center gap-1.5 rounded-lg border border-charcoal/15 px-2.5 py-1 text-[11px] font-medium text-charcoal/70">
-          <BookOpen className="h-3 w-3" aria-hidden />1 source
-        </span>
-        <span className="text-[11px] text-charcoal/45">
-          Illustration of the interface
-        </span>
-      </div>
+        <motion.figure
+          initial={{ opacity: 0, y: 15, scale: 0.98 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 3.5, duration: 0.6, type: "spring", bounce: 0.3 }}
+          className="mt-5 rounded-2xl border border-charcoal/10 bg-white/70 p-4 shadow-sm backdrop-blur-md"
+        >
+          <Quote className="mb-2 h-3.5 w-3.5 text-charcoal/40" aria-hidden />
+          <blockquote className="text-[13px] leading-relaxed text-charcoal/75">
+            &ldquo;A room booked under a corporate contracted rate may be withdrawn
+            without charge up to 48 hours before the arrival date.&rdquo;
+          </blockquote>
+          <figcaption className="mt-3 border-t border-charcoal/10 pt-2 text-[11px] font-medium text-charcoal/55">
+            Front Office SOP · Cancellation and no-show
+          </figcaption>
+        </motion.figure>
+
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 4.0, duration: 0.6 }}
+          className="mt-4 flex items-center gap-2 border-t border-charcoal/10 pt-3"
+        >
+          <span className="inline-flex items-center gap-1.5 rounded-lg border border-charcoal/10 bg-white/60 px-2.5 py-1 text-[11px] font-medium text-charcoal/70 shadow-sm backdrop-blur-sm">
+            <BookOpen className="h-3 w-3" aria-hidden />1 source
+          </span>
+          <span className="text-[11px] text-charcoal/45">
+            Live generative response
+          </span>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

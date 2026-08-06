@@ -2,164 +2,249 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, ChevronDown, MessageSquare, LayoutDashboard, Utensils, UtensilsCrossed, Sparkles } from "lucide-react";
+import { Menu, X, ChevronDown, MessageSquare, LayoutDashboard, UtensilsCrossed, Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Button } from "./ui/Button";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (
-    <nav className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200 py-3' : 'bg-transparent py-5'}`}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <Image src="/images/logo.png" alt="SOYL AI Logo" width={36} height={36} className="w-9 h-9 object-contain" />
-          <span className="font-bold text-xl tracking-tight text-[var(--color-soyl-charcoal)]">SOYL Cloud</span>
-        </Link>
-        
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-1">
-          {/* Products dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-charcoal)] rounded-lg hover:bg-gray-50 transition-all">
-              Products <ChevronDown size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />
-            </button>
-            <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute top-full left-0 pt-2 w-72">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-3 flex flex-col gap-1">
-                <Link href="/products/butler-ai" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="w-10 h-10 rounded-lg bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)] shrink-0">
-                    <Sparkles className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-sm text-gray-900">Butler AI</div>
-                    <div className="text-xs text-gray-500">AI concierge for guest requests</div>
-                  </div>
-                </Link>
-                <Link href="/products/pms-lite" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-[var(--color-soyl-charcoal)] shrink-0">
-                    <LayoutDashboard className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-sm text-gray-900">PMS Lite</div>
-                    <div className="text-xs text-gray-500">Property management & operations</div>
-                  </div>
-                </Link>
-                <Link href="/products/soyl-dine" className="flex items-start gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
-                    <UtensilsCrossed className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <div className="font-semibold text-sm text-gray-900">SOYL Dine <span className="ml-2 text-[10px] uppercase tracking-wide bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded-sm">Coming Soon</span></div>
-                    <div className="text-xs text-gray-500">Restaurant POS & management</div>
-                  </div>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* Resources dropdown */}
-          <div className="relative group">
-            <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-charcoal)] rounded-lg hover:bg-gray-50 transition-all">
-              Resources <ChevronDown size={14} className="opacity-50 group-hover:opacity-100 transition-opacity" />
-            </button>
-            <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute top-full left-0 pt-2 w-56">
-              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-3 flex flex-col gap-1">
-                <Link href="/blog" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="font-semibold text-sm text-gray-900">Blog</div>
-                </Link>
-                <Link href="/compare" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="font-semibold text-sm text-gray-900">Compare Butler AI</div>
-                </Link>
-                <Link href="/about" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="font-semibold text-sm text-gray-900">About</div>
-                </Link>
-                <Link href="/contact" className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group/item">
-                  <div className="font-semibold text-sm text-gray-900">Contact</div>
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <Link href="/pricing" className="px-4 py-2 text-sm font-medium text-[var(--color-soyl-gray-600)] hover:text-[var(--color-soyl-charcoal)] rounded-lg hover:bg-gray-50 transition-all">Pricing</Link>
-
-        </div>
-
-        {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-3">
-          <Button size="sm" variant="primary" href="/book-demo">
-            Book Demo →
-          </Button>
-        </div>
-
-        {/* Mobile Menu Toggle */}
-        {/* An icon is not a name. Without `aria-label` this button is
-            announced as "button" and a screen reader user has no way to know
-            it opens the menu. `aria-expanded` is what tells them whether it is
-            currently open. */}
-        <button
-          className="md:hidden p-2 text-[var(--color-soyl-gray-600)] hover:text-gray-900 transition-colors"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isOpen}
-          aria-controls="mobile-menu"
-        >
-          {isOpen ? <X size={24} aria-hidden /> : <Menu size={24} aria-hidden />}
-        </button>
-      </div>
-
-      {/* Mobile Nav */}
-      {/* A CSS grid-rows transition rather than framer-motion.
-          The Navbar is on every page, so its import decided whether the whole
-          animation library shipped on the critical path of every marketing
-          route — ~50 KB and the main-thread cost of hydrating it, to slide one
-          panel. `grid-template-rows: 0fr -> 1fr` animates to auto height, which
-          is the thing plain CSS could not do until recently and the reason
-          this needed a library at all.
-
-          Kept mounted and hidden rather than conditionally rendered, so it can
-          animate out as well as in. `inert` keeps its links out of the tab
-          order while closed — without it, a keyboard user tabs into a menu
-          they cannot see. */}
-      <div
-        id="mobile-menu"
-        inert={!isOpen}
-        aria-hidden={!isOpen}
-        className={`md:hidden absolute top-full left-0 w-full grid transition-[grid-template-rows,opacity] duration-300 ease-out ${
-          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+    <header className="fixed top-3 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+      <nav
+        className={`pointer-events-auto w-full max-w-6xl transition-all duration-300 py-2.5 px-5 md:px-6 ${
+          isOpen ? "rounded-3xl" : "rounded-full"
+        } ${
+          scrolled
+            ? "bg-white/95 border border-gray-200/80 backdrop-blur-2xl shadow-xl text-gray-900"
+            : "bg-[#0A0D14]/95 border border-white/15 backdrop-blur-2xl shadow-2xl text-white"
         }`}
       >
-        <div className="overflow-hidden bg-white border-b border-gray-100 shadow-lg">
-            <div className="p-6 flex flex-col gap-2">
-              <div className="flex flex-col gap-1 pl-4 border-l-2 border-gray-100">
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Products</p>
-                <Link href="/products/butler-ai" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Butler AI</Link>
-                <Link href="/products/pms-lite" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>PMS Lite</Link>
-                <Link href="/products/soyl-dine" className="text-lg font-medium text-gray-500 py-2 flex items-center justify-between" onClick={() => setIsOpen(false)}>
-                  SOYL Dine <span className="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded-full font-bold">SOON</span>
-                </Link>
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="relative w-8 h-8 rounded-full bg-gradient-to-tr from-[#6DBAB2] to-[#3D8F87] p-0.5 shadow-sm">
+              <Image src="/images/logo.png" alt="SOYL AI Logo" width={32} height={32} className="w-full h-full object-contain rounded-full bg-[#0A0D14]" />
+            </div>
+            <span className={`font-bold text-lg tracking-tight transition-colors ${scrolled ? "text-gray-900 group-hover:text-[var(--color-soyl-mint-dark)]" : "text-white group-hover:text-soyl-mint"}`}>
+              SOYL Cloud
+            </span>
+          </Link>
+
+          {/* Desktop Nav Links */}
+          <div className="hidden md:flex items-center gap-1.5">
+            {/* Products Dropdown */}
+            <div className="relative group">
+              <button className={`flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium rounded-full transition-all ${
+                scrolled 
+                  ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/80" 
+                  : "text-gray-300 hover:text-white hover:bg-white/10"
+              }`}>
+                Products <ChevronDown size={14} className="opacity-60 group-hover:opacity-100 transition-opacity" />
+              </button>
+              <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute top-full left-1/2 -translate-x-1/2 pt-3 w-80">
+                <div className={`backdrop-blur-2xl rounded-2xl shadow-2xl border p-3 flex flex-col gap-1 transition-all ${
+                  scrolled 
+                    ? "bg-white/95 border-gray-200 text-gray-900" 
+                    : "bg-[#0A0D14]/95 border-white/10 text-white"
+                }`}>
+                  <Link href="/advisor" className={`flex items-start gap-3 p-3 rounded-xl transition-colors group/item border border-transparent ${
+                    scrolled ? "hover:bg-gray-50 hover:border-[#6DBAB2]/30" : "hover:bg-white/5 hover:border-[#6DBAB2]/20"
+                  }`}>
+                    <div className="w-9 h-9 rounded-lg bg-[#6DBAB2]/20 border border-[#6DBAB2]/40 flex items-center justify-center text-[#3D8F87] shrink-0">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className={`font-semibold text-sm flex items-center justify-between ${scrolled ? "text-gray-900" : "text-white"}`}>
+                        Hotel Advisor
+                        <span className="text-[10px] uppercase font-bold tracking-wider bg-[#6DBAB2]/20 text-[#3D8F87] border border-[#6DBAB2]/30 px-1.5 py-0.5 rounded-full">Free Tool</span>
+                      </div>
+                      <div className={`text-xs ${scrolled ? "text-gray-500" : "text-gray-400"}`}>Ask SOPs & policy documents instantly</div>
+                    </div>
+                  </Link>
+
+                  <Link href="/products/butler-ai" className={`flex items-start gap-3 p-3 rounded-xl transition-colors group/item border border-transparent ${
+                    scrolled ? "hover:bg-gray-50 hover:border-emerald-100" : "hover:bg-white/5 hover:border-emerald-500/20"
+                  }`}>
+                    <div className="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 shrink-0">
+                      <MessageSquare className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className={`font-semibold text-sm flex items-center justify-between ${scrolled ? "text-gray-900" : "text-white"}`}>
+                        Butler AI
+                        <span className="text-[10px] uppercase font-bold tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full">Live</span>
+                      </div>
+                      <div className={`text-xs ${scrolled ? "text-gray-500" : "text-gray-400"}`}>AI concierge for guest requests</div>
+                    </div>
+                  </Link>
+
+                  <Link href="/products/arip" className={`flex items-start gap-3 p-3 rounded-xl transition-colors group/item border border-transparent ${
+                    scrolled ? "hover:bg-gray-50 hover:border-blue-100" : "hover:bg-white/5 hover:border-blue-500/20"
+                  }`}>
+                    <div className="w-9 h-9 rounded-lg bg-blue-500/20 border border-blue-400/30 flex items-center justify-center text-blue-400 shrink-0">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className={`font-semibold text-sm flex items-center justify-between ${scrolled ? "text-gray-900" : "text-white"}`}>
+                        ARIP Platform
+                        <span className="text-[10px] uppercase font-bold tracking-wider bg-blue-500/20 text-blue-400 border border-blue-500/30 px-1.5 py-0.5 rounded-full">Soon</span>
+                      </div>
+                      <div className={`text-xs ${scrolled ? "text-gray-500" : "text-gray-400"}`}>Autonomous digital workforce</div>
+                    </div>
+                  </Link>
+
+                  <Link href="/products/pms-lite" className={`flex items-start gap-3 p-3 rounded-xl transition-colors group/item border border-transparent ${
+                    scrolled ? "hover:bg-gray-50" : "hover:bg-white/5"
+                  }`}>
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${scrolled ? "bg-gray-100 text-gray-700" : "bg-white/10 text-gray-300"}`}>
+                      <LayoutDashboard className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className={`font-semibold text-sm ${scrolled ? "text-gray-900" : "text-white"}`}>PMS Lite</div>
+                      <div className={`text-xs ${scrolled ? "text-gray-500" : "text-gray-400"}`}>Property management & operations</div>
+                    </div>
+                  </Link>
+
+                  <Link href="/products/soyl-dine" className={`flex items-start gap-3 p-3 rounded-xl transition-colors group/item border border-transparent ${
+                    scrolled ? "hover:bg-gray-50" : "hover:bg-white/5"
+                  }`}>
+                    <div className="w-9 h-9 rounded-lg bg-orange-500/20 border border-orange-400/30 flex items-center justify-center text-orange-400 shrink-0">
+                      <UtensilsCrossed className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className={`font-semibold text-sm flex items-center justify-between ${scrolled ? "text-gray-900" : "text-white"}`}>
+                        SOYL Dine
+                        <span className={`text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded-full ${scrolled ? "bg-gray-100 text-gray-600" : "bg-white/10 text-gray-400"}`}>Soon</span>
+                      </div>
+                      <div className={`text-xs ${scrolled ? "text-gray-500" : "text-gray-400"}`}>Restaurant POS & management</div>
+                    </div>
+                  </Link>
+                </div>
               </div>
-              <hr className="my-3 border-gray-100" />
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Resources</p>
-              <Link href="/blog" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Blog</Link>
-              <Link href="/compare" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Compare Butler AI</Link>
-              <Link href="/about" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>About</Link>
-              <Link href="/contact" className="text-lg font-medium text-gray-800 py-2" onClick={() => setIsOpen(false)}>Contact</Link>
-              <div className="mt-4">
-                <Button size="lg" className="w-full" href="/book-demo" onClick={() => setIsOpen(false)}>
-                  Book Demo
-                </Button>
+            </div>
+
+            {/* Featured Hotel Advisor Pill */}
+            <Link
+              href="/advisor"
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all flex items-center gap-1.5 ${
+                scrolled
+                  ? "bg-[#E8F5F3] border border-[#6DBAB2]/40 text-[#3D8F87] hover:bg-[#D5EFEA] shadow-sm"
+                  : "bg-[#6DBAB2]/15 border border-[#6DBAB2]/40 text-[#6DBAB2] hover:bg-[#6DBAB2]/25 shadow-[0_0_12px_rgba(109,186,178,0.25)]"
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#3D8F87]" />
+              Hotel Advisor
+            </Link>
+
+            {/* Resources Dropdown */}
+            <div className="relative group">
+              <button className={`flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium rounded-full transition-all ${
+                scrolled 
+                  ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/80" 
+                  : "text-gray-300 hover:text-white hover:bg-white/10"
+              }`}>
+                Resources <ChevronDown size={14} className="opacity-60 group-hover:opacity-100 transition-opacity" />
+              </button>
+              <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200 absolute top-full left-0 pt-3 w-56">
+                <div className={`backdrop-blur-2xl rounded-2xl shadow-2xl border p-2 flex flex-col gap-0.5 transition-all ${
+                  scrolled 
+                    ? "bg-white/95 border-gray-200 text-gray-900" 
+                    : "bg-[#0A0D14]/95 border-white/10 text-white"
+                }`}>
+                  <Link href="/blog" className={`p-2.5 rounded-xl text-sm font-medium transition-colors ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`}>
+                    Blog
+                  </Link>
+                  <Link href="/compare" className={`p-2.5 rounded-xl text-sm font-medium transition-colors ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`}>
+                    Compare Butler AI
+                  </Link>
+                  <Link href="/about" className={`p-2.5 rounded-xl text-sm font-medium transition-colors ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`}>
+                    About SOYL
+                  </Link>
+                  <Link href="/contact" className={`p-2.5 rounded-xl text-sm font-medium transition-colors ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`}>
+                    Contact Team
+                  </Link>
+                </div>
               </div>
+            </div>
+
+            <Link href="/pricing" className={`px-3.5 py-1.5 text-sm font-medium rounded-full transition-all ${
+              scrolled 
+                ? "text-gray-600 hover:text-gray-900 hover:bg-gray-100/80" 
+                : "text-gray-300 hover:text-white hover:bg-white/10"
+            }`}>
+              Pricing
+            </Link>
+          </div>
+
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              href="/contact"
+              className={`font-bold text-xs tracking-wide px-5 py-2.5 rounded-full transition-all hover:scale-105 active:scale-95 ${
+                scrolled
+                  ? "bg-[#0A0D14] text-white hover:bg-black shadow-md"
+                  : "bg-white text-[#0A0D14] hover:bg-gray-100 shadow-[0_0_20px_rgba(255,255,255,0.25)]"
+              }`}
+            >
+              Join Pilot Waitlist →
+            </Link>
+          </div>
+
+          {/* Mobile Menu Toggle */}
+          <button
+            className={`md:hidden p-2 transition-colors ${scrolled ? "text-gray-700 hover:text-gray-900" : "text-gray-300 hover:text-white"}`}
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            aria-controls="mobile-menu"
+          >
+            {isOpen ? <X size={22} aria-hidden /> : <Menu size={22} aria-hidden />}
+          </button>
+        </div>
+
+        {/* Mobile Dropdown Menu */}
+        <div
+          id="mobile-menu"
+          inert={!isOpen}
+          aria-hidden={!isOpen}
+          className={`md:hidden overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
+            isOpen ? `max-h-[500px] opacity-100 mt-4 pt-4 border-t ${scrolled ? "border-gray-200" : "border-white/10"}` : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className={`flex flex-col gap-2 pb-2 ${scrolled ? "text-gray-900" : "text-white"}`}>
+            <p className={`text-[10px] font-bold uppercase tracking-widest px-2 mb-1 ${scrolled ? "text-gray-500" : "text-gray-400"}`}>Products & Tools</p>
+            <Link href="/advisor" className="px-3 py-2 rounded-xl bg-[#6DBAB2]/20 text-[#3D8F87] font-bold text-sm flex items-center justify-between" onClick={() => setIsOpen(false)}>
+              Hotel Advisor <span className="text-[10px] bg-[#6DBAB2]/30 px-2 py-0.5 rounded-full">FREE</span>
+            </Link>
+            <Link href="/products/butler-ai" className={`px-3 py-2 rounded-xl text-sm font-medium flex items-center justify-between ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`} onClick={() => setIsOpen(false)}>
+              Butler AI <span className="text-[10px] bg-emerald-500/20 text-emerald-500 px-2 py-0.5 rounded-full">LIVE</span>
+            </Link>
+            <Link href="/products/arip" className={`px-3 py-2 rounded-xl text-sm font-medium flex items-center justify-between ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`} onClick={() => setIsOpen(false)}>
+              ARIP Platform <span className="text-[10px] bg-blue-500/20 text-blue-500 px-2 py-0.5 rounded-full">SOON</span>
+            </Link>
+            <Link href="/products/pms-lite" className={`px-3 py-2 rounded-xl text-sm font-medium ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`} onClick={() => setIsOpen(false)}>
+              PMS Lite
+            </Link>
+            
+            <p className={`text-[10px] font-bold uppercase tracking-widest px-2 mt-3 mb-1 ${scrolled ? "text-gray-500" : "text-gray-400"}`}>Navigation</p>
+            <Link href="/pricing" className={`px-3 py-2 rounded-xl text-sm font-medium ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`} onClick={() => setIsOpen(false)}>Pricing</Link>
+            <Link href="/blog" className={`px-3 py-2 rounded-xl text-sm font-medium ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`} onClick={() => setIsOpen(false)}>Blog</Link>
+            <Link href="/contact" className={`px-3 py-2 rounded-xl text-sm font-medium ${scrolled ? "hover:bg-gray-100" : "hover:bg-white/10"}`} onClick={() => setIsOpen(false)}>Contact</Link>
+            
+            <div className="mt-3 pt-2">
+              <Link href="/contact" className={`w-full block text-center font-bold text-xs py-3 rounded-full shadow-lg ${scrolled ? "bg-[#0A0D14] text-white" : "bg-white text-[#0A0D14]"}`} onClick={() => setIsOpen(false)}>
+                Join Pilot Waitlist →
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }

@@ -76,12 +76,12 @@ export default function ContactPage() {
       <Container size="lg">
         {/* HERO */}
         <section className="pt-16 pb-12 text-center max-w-3xl mx-auto">
-          <Badge variant="primary" className="mb-6 mx-auto inline-flex">Contact Us</Badge>
+          <Badge variant="primary" className="mb-6 mx-auto inline-flex">Pilot Waitlist</Badge>
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] mb-6">
-            Get in touch
+            Join the ARIP Pilot
           </h1>
           <p className="text-lg text-[var(--color-soyl-gray-600)] leading-relaxed">
-            Have questions about SOYL Cloud? Want to explore an enterprise deployment? Our team is ready to help you transform your property.
+            We are currently onboarding early adopters for the Autonomous Revenue Intelligence Platform. Request access to see the digital workforce in action.
           </p>
         </section>
 
@@ -90,7 +90,7 @@ export default function ContactPage() {
             
             {/* Form Side */}
             <div className="flex-1 p-8 md:p-12">
-              <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mb-8">Send us a message</h2>
+              <h2 className="text-2xl font-bold text-[var(--color-soyl-charcoal)] mb-8">Request Waitlist Access</h2>
               
               {submitted ? (
                 <motion.div 
@@ -190,7 +190,7 @@ export default function ContactPage() {
                       maxLength={5000}
                       rows={5}
                       className="p-4 rounded-xl border border-[var(--color-soyl-gray-200)] bg-[var(--color-soyl-gray-50)] focus:outline-none focus:ring-2 focus:ring-[var(--color-soyl-mint-dark)] focus:border-transparent transition-all resize-none"
-                      placeholder="How can we help you?"
+                      placeholder="Tell us a bit about your property..."
                     />
                   </div>
 
@@ -217,7 +217,7 @@ export default function ContactPage() {
             {/* Sidebar */}
             <div className="md:w-80 bg-[var(--color-soyl-gray-50)] border-l border-[var(--color-soyl-gray-200)] p-8 md:p-12 flex flex-col justify-between">
               <div>
-                <h3 className="text-xl font-bold text-[var(--color-soyl-charcoal)] mb-8">Contact Information</h3>
+                <h3 className="text-xl font-bold text-[var(--color-soyl-charcoal)] mb-8">Pilot Program Details</h3>
                 
                 <div className="flex flex-col gap-8">
                   <div className="flex gap-4">
@@ -257,10 +257,10 @@ export default function ContactPage() {
               
               <div className="mt-12 pt-8 border-t border-[var(--color-soyl-gray-200)]">
                 <p className="text-sm text-[var(--color-soyl-gray-500)] mb-4">
-                  Prefer a live demo instead of a message?
+                  Questions about the ARIP Pilot?
                 </p>
-                <Button variant="outline" size="md" href="/book-demo" className="w-full">
-                  Book a Demo
+                <Button variant="outline" size="md" href="/pricing" className="w-full">
+                  View Pricing Instead
                 </Button>
               </div>
             </div>

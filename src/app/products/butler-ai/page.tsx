@@ -28,7 +28,7 @@ import { Badge } from "@/components/ui/Badge";
 import { StickyCTA } from "@/components/sections/StickyCTA";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { fadeUp, staggerContainer, staggerItem } from "@/lib/animations";
-import { SummaryBlock, DefinitionList, FactTable } from "@/components/seo/AEOBlocks";
+import { SummaryBlock, FactTable } from "@/components/seo/AEOBlocks";
 import { ProductSchema, FAQSchema } from "@/components/seo/SchemaInjector";
 
 /* ─── Bento feature data ──────────────────────────────── */

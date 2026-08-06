@@ -81,14 +81,15 @@ export function AskSurface({ hasDocuments }: { hasDocuments: boolean }) {
       const response = await fetch("/api/conversations");
       if (response.ok) setHistory((await response.json()) as Conversation[]);
     } catch {
-      // The sidebar is incidental to asking a question. Failing to load it
-      // should never surface an error over the thing the user came to do.
+      // The sidebar is incidental to asking a question.
     }
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadHistory();
-  }, [loadHistory]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function resume(id: string) {
     setSourcesFor(null);
