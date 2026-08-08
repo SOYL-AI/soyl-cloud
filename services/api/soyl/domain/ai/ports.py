@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     # Only for the annotation. Importing the envelope at runtime would make
     # every module that touches a port pull in the whole answer schema.
     from soyl.domain.ai.advisor import AdvisorAnswers, AdvisorInsight
+    from soyl.domain.ai.conversational_advisor import ChatResponse, ChatTurn
     from soyl.domain.ai.envelope import DraftAnswer
     from soyl.domain.rag.retrieval import RetrievedChunk
 
@@ -190,6 +191,17 @@ class AdvisorProvider(Protocol):
         ...
 
     async def advise(self, answers: AdvisorAnswers) -> tuple[AdvisorInsight, Usage]:
+        ...
+
+
+class ConversationalAdvisorProvider(Protocol):
+    """The public multi-turn advisor (marketing funnel), which is not RAG."""
+
+    @property
+    def model(self) -> str:
+        ...
+
+    async def chat(self, turn: ChatTurn) -> tuple[ChatResponse, Usage]:
         ...
 
 

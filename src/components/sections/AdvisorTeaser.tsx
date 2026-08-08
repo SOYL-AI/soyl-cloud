@@ -30,10 +30,9 @@ export function AdvisorTeaser() {
               <br className="hidden sm:block" /> Right now they just sit there.
             </h2>
             <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-charcoal/65">
-              Every hotel already has the answers written down — in the SOP, the
-              supplier contract, the safety plan. The cost is not that nobody wrote
-              them. It is that finding them takes a person ten minutes and a phone
-              call.
+              Every hotel already has the answers written down. The cost is not
+              that nobody wrote them — it is that finding them takes ten minutes
+              and a phone call.
             </p>
 
             <ul className="mt-6 space-y-3">
@@ -70,14 +69,14 @@ function PremiumCTA() {
         className="group relative inline-flex items-center gap-2.5 rounded-xl bg-[var(--color-soyl-charcoal)] px-6 py-3.5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:bg-[var(--color-soyl-charcoal)]/90 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
       >
         <MessageSquareText className="h-4 w-4 text-[var(--color-soyl-mint)]" aria-hidden />
-        <span>Try the Hotel Advisor Free</span>
+        <span>Chat with the Hotel Advisor</span>
         <ArrowRight
           className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
           aria-hidden
         />
       </Link>
       <span className="text-sm font-medium text-charcoal/60 bg-white/60 px-3 py-1.5 rounded-lg border border-charcoal/10">
-        ⚡ 5 questions. No signup required.
+        ⚡ Free · No signup required
       </span>
     </div>
   );

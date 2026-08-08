@@ -42,8 +42,8 @@ export type AnalyticsEvent =
   | "Document Uploaded"
   | "Question Asked"
   /** The public advisor, which is the top of the funnel for anyone who tries it. */
-  | "Advisor Started"
-  | "Advisor Completed";
+  | "Advisor Chat Started"
+  | "Advisor Chat Completed";
 
 type PlausibleFunction = (
   event: string,

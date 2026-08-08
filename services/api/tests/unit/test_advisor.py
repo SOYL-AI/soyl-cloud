@@ -17,19 +17,19 @@ from soyl.domain.ai.advisor import (
     AdvisorBlock,
     AdvisorInsight,
     sanitise,
-    strip_invented_figures,
+    strip_visitor_specific_figures,
 )
 
 
 def test_a_percentage_we_were_never_given_is_removed() -> None:
     text = "Hotels your size typically lose 12% of revenue to manual lookups."
 
-    assert "12%" not in strip_invented_figures(text, allowed=set())
+    assert "12%" not in strip_visitor_specific_figures(text, allowed=set())
 
 
 def test_a_currency_amount_is_removed() -> None:
     for text in ["This saves about ₹40,000 a month.", "Roughly $2,000 of staff time."]:
-        cleaned = strip_invented_figures(text, allowed=set())
+        cleaned = strip_visitor_specific_figures(text, allowed=set())
         assert "40,000" not in cleaned
         assert "2,000" not in cleaned
 
@@ -37,13 +37,13 @@ def test_a_currency_amount_is_removed() -> None:
 def test_a_time_saving_claim_is_removed() -> None:
     text = "You would get back 6 hours per week."
 
-    assert "6 hours" not in strip_invented_figures(text, allowed=set())
+    assert "6 hours" not in strip_visitor_specific_figures(text, allowed=set())
 
 
 def test_a_multiplier_claim_is_removed() -> None:
     text = "Staff find answers 3x faster."
 
-    assert "3x faster" not in strip_invented_figures(text, allowed=set())
+    assert "3x faster" not in strip_visitor_specific_figures(text, allowed=set())
 
 
 def test_the_visitor_s_own_numbers_survive() -> None:
@@ -55,13 +55,13 @@ def test_the_visitor_s_own_numbers_survive() -> None:
     text = "A 25-60 room property with 2-5 people asking questions."
     allowed = {"25-60", "2-5"}
 
-    assert strip_invented_figures(text, allowed=allowed) == text
+    assert strip_visitor_specific_figures(text, allowed=allowed) == text
 
 
 def test_prose_without_figures_is_untouched() -> None:
     text = "Finding the right clause means somebody opens a PDF and scrolls."
 
-    assert strip_invented_figures(text, allowed=set()) == text
+    assert strip_visitor_specific_figures(text, allowed=set()) == text
 
 
 def test_sanitise_covers_headline_items_and_markdown() -> None:

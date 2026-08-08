@@ -54,7 +54,7 @@ export default function Home() {
             <p
               className="text-lg md:text-2xl text-gray-200 mb-10 max-w-3xl leading-relaxed font-medium text-balance drop-shadow"
             >
-              Say goodbye to passive dashboards. Deploy a synchronized workforce of AI agents that autonomously execute pricing, marketing, and operations.
+              AI agents that price, market, and operate your hotel — autonomously, around the clock.
             </p>
 
             <div className="flex flex-col sm:flex-row justify-center gap-4 w-full sm:w-auto relative z-20">
@@ -116,15 +116,15 @@ export default function Home() {
                 <div>
                   <h3 className="text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-4">Instant responses, zero front-desk delays.</h3>
                   <p className="text-lg text-[var(--color-soyl-gray-600)] leading-relaxed">
-                    Stop letting front desk queues ruin guest experience scores. Butler AI answers guest inquiries in under 2 seconds and routes requests directly to staff.
+                    Guest inquiries answered in under 2 seconds, routed directly to the right department.
                   </p>
                 </div>
                 
                 <ul className="flex flex-col gap-6">
                   {[
-                    { title: "Multilingual Voice & Text", desc: "Instantly translates and converses naturally in over 50 languages." },
-                    { title: "Smart Department Routing", desc: "Food orders go to F&B, extra towels to Housekeeping. Automatically." },
-                    { title: "Zero-Party Guest Intent Engine", desc: "Extracts guest preferences (anniversaries, high floors, dining tastes) to boost direct upsells." }
+                    { title: "Multilingual Voice & Text", desc: "Natural conversations in 50+ languages." },
+                    { title: "Smart Department Routing", desc: "F&B to F&B, towels to Housekeeping. Automatic." },
+                    { title: "Guest Intent Engine", desc: "Captures preferences for targeted upsells." }
                   ].map((item, i) => (
                     <Reveal key={i} as="li" className="flex gap-4">
                       <div className="w-10 h-10 rounded-full bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)] shrink-0 font-bold">
@@ -168,7 +168,7 @@ export default function Home() {
               Introducing ARIP: Your Hotel&apos;s Autonomous Digital Workforce.
             </h2>
             <p className="text-xl text-slate-600 leading-relaxed text-balance">
-              Not just software. A synchronized team of specialized AI agents that autonomously execute pricing, launch marketing campaigns, and grow RevPAR around the clock.
+              Specialized AI agents that execute pricing, launch campaigns, and grow RevPAR — 24/7.
             </p>
           </div>
 
@@ -218,7 +218,7 @@ export default function Home() {
                 The ROI is immediate.
               </h2>
               <p className="text-xl text-[var(--color-soyl-gray-600)] mb-10 leading-relaxed">
-                By eliminating walkie-talkies, paper logs, and front desk bottlenecks, hotels see returns in their first month.
+                Hotels see returns in their first month.
               </p>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

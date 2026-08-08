@@ -4,11 +4,11 @@ import { SITE_URL } from '@/lib/constants';
 export const metadata: Metadata = {
   title: 'Hotel Advisor',
   description:
-    'Answer five questions about your property and get a read on where your team loses time to documents. No account needed.',
+    'Have a conversation about your property and get a read on where your team loses time to documents. No account needed.',
   openGraph: {
     title: 'Hotel Advisor — SOYL Cloud',
     description:
-      'Answer five questions about your property and get a read on where your team loses time to documents. No account needed.',
+      'Have a conversation about your property and get a read on where your team loses time to documents. No account needed.',
     url: `${SITE_URL}/advisor`,
     siteName: 'SOYL Cloud',
     type: 'website',

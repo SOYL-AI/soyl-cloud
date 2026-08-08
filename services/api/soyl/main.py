@@ -22,6 +22,7 @@ from soyl.infrastructure.providers.factory import (
     build_embedding_provider,
     build_question_provider,
     build_rerank_provider,
+    build_conversational_advisor_provider,
 )
 from soyl.infrastructure.storage.s3 import S3Storage
 from soyl.interface.http.errors import register_exception_handlers
@@ -44,6 +45,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.answers = build_answer_provider(settings)
     app.state.reranker = build_rerank_provider(settings)
     app.state.advisor = build_advisor_provider(settings)
+    app.state.conversational_advisor = build_conversational_advisor_provider(settings)
     app.state.storage = S3Storage(
         endpoint_url=str(settings.storage_endpoint_url) if settings.storage_endpoint_url else None,
         region=settings.storage_region,

@@ -19,8 +19,8 @@ import { Container } from "@/components/ui/Container";
 const STEPS = [
   {
     icon: MessagesSquare,
-    title: "Tell it about your property",
-    body: "Five questions, all multiple choice bar the last. Under a minute.",
+    title: "Have a quick conversation about your property and challenges",
+    body: "Tell us about your property, rooms, and what takes the most time.",
   },
   {
     icon: FileText,
@@ -43,11 +43,10 @@ export default function AdvisorPage() {
             Hotel Advisor
           </p>
           <h1 className="text-3xl font-semibold leading-tight text-charcoal sm:text-4xl">
-            Where does your team lose time to paperwork?
+            Talk to Our AI Hotel Advisor
           </h1>
           <p className="mt-3 text-[15px] leading-relaxed text-charcoal/65">
-            Answer five questions and get a straight read on your operation. No
-            account, no email, no call.
+            Have a conversation about your hotel's operations and get personalized recommendations. No account, no email, no call.
           </p>
         </div>
 

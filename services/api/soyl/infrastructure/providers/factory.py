@@ -19,14 +19,16 @@ from soyl.domain.ai.ports import (
     EmbeddingProvider,
     QuestionProvider,
     RerankProvider,
+    ConversationalAdvisorProvider,
 )
 from soyl.infrastructure.providers.azure_advisor import AzureOpenAIAdvisor
+from soyl.infrastructure.providers.azure_conversational_advisor import AzureOpenAIConversationalAdvisor
 from soyl.infrastructure.providers.azure_answers import AzureOpenAIAnswers
 from soyl.infrastructure.providers.azure_openai import AzureOpenAIEmbeddings
 from soyl.infrastructure.providers.azure_questions import AzureOpenAIQuestions
 from soyl.infrastructure.providers.azure_rerank import AzureOpenAIRerank
 from soyl.infrastructure.providers.fake import FakeEmbeddings
-from soyl.infrastructure.providers.fake_advisor import FakeAdvisor
+from soyl.infrastructure.providers.fake_advisor import FakeAdvisor, FakeConversationalAdvisor
 from soyl.infrastructure.providers.fake_answers import FakeAnswers
 from soyl.infrastructure.providers.fake_questions import FakeQuestions
 from soyl.infrastructure.providers.fake_rerank import FakeRerank
@@ -131,3 +133,18 @@ def build_advisor_provider(settings: Settings) -> AdvisorProvider:
 
     logger.warning("no Azure OpenAI credentials; using the fake advisor.")
     return FakeAdvisor()
+
+
+def build_conversational_advisor_provider(settings: Settings) -> ConversationalAdvisorProvider:
+    """The multi-turn public advisor."""
+    if settings.azure_openai_endpoint and settings.azure_openai_api_key:
+        return AzureOpenAIConversationalAdvisor(
+            endpoint=str(settings.azure_openai_endpoint),
+            api_key=settings.azure_openai_api_key,
+            deployment=settings.azure_openai_chat_deployment,
+            model=settings.azure_openai_chat_model,
+            api_version=settings.azure_openai_api_version,
+        )
+
+    logger.warning("no Azure OpenAI credentials; using the fake conversational advisor.")
+    return FakeConversationalAdvisor()

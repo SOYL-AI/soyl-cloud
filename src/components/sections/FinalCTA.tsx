@@ -21,7 +21,7 @@ export function FinalCTA() {
             The hotels of tomorrow are joining today.
           </h2>
           <p className="text-lg md:text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed">
-            ARIP is accepting a limited number of early properties for the pilot program. Secure your spot and be the first to deploy a real AI digital workforce.
+            Limited pilot spots available. Be the first to deploy a real AI digital workforce.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4 w-full sm:w-auto">
             <Button size="lg" variant="secondary" href="/contact" className="w-full sm:w-auto group">

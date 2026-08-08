@@ -16,6 +16,7 @@ from soyl.domain.ai.ports import (
     AnswerProvider,
     EmbeddingProvider,
     RerankProvider,
+    ConversationalAdvisorProvider,
 )
 from soyl.domain.storage import StoragePort
 from soyl.infrastructure.email import EmailSender
@@ -60,6 +61,10 @@ def get_reranker(request: Request) -> RerankProvider:
 
 def get_advisor(request: Request) -> AdvisorProvider:
     return request.app.state.advisor  # type: ignore[no-any-return]
+
+
+def get_conversational_advisor(request: Request) -> ConversationalAdvisorProvider:
+    return request.app.state.conversational_advisor  # type: ignore[no-any-return]
 
 
 def require_lead_token(

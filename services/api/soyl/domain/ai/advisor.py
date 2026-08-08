@@ -138,13 +138,12 @@ _FIGURE = re.compile(
 )
 
 
-def strip_invented_figures(text: str, *, allowed: set[str]) -> str:
-    """Remove any figure the visitor did not give us.
+def strip_visitor_specific_figures(text: str, *, allowed: set[str]) -> str:
+    """Remove any figure claiming to be specific to the visitor's hotel.
 
-    The prompt already forbids them. This exists because a prompt is a request
-    and this is a rule — and because the failure is silent: a plausible
-    benchmark reads as expertise, and the person best placed to notice it is
-    wrong is the hotelier we are trying to earn.
+    We allow general industry figures and product pricing, but we do not
+    allow fabricating specific metrics about the visitor's property ("you
+    will save 12%").
 
     `allowed` holds the visitor's own answers, so "25-60 rooms" survives being
     quoted back at them.
@@ -154,7 +153,16 @@ def strip_invented_figures(text: str, *, allowed: set[str]) -> str:
         figure = match.group(0)
         if any(figure.strip() in value for value in allowed):
             return figure
-        return "—"
+            
+        # Check context for visitor-specific language (roughly within the same sentence/clause)
+        start = max(0, match.start() - 80)
+        end = min(len(text), match.end() + 80)
+        context = text[start:end].lower()
+        
+        if re.search(r'\b(you|your|you\'ll|you\'d|you\'re)\b', context):
+            return "—"
+            
+        return figure
 
     return _FIGURE.sub(replace, text)
 
@@ -164,18 +172,18 @@ def sanitise(insight: AdvisorInsight, *, answers: AdvisorAnswers) -> AdvisorInsi
     allowed = set(answers.filled().values())
 
     return AdvisorInsight(
-        headline=strip_invented_figures(insight.headline, allowed=allowed),
+        headline=strip_visitor_specific_figures(insight.headline, allowed=allowed),
         blocks=[
             AdvisorBlock(
                 type=block.type,
                 title=block.title,
                 markdown=(
-                    strip_invented_figures(block.markdown, allowed=allowed)
+                    strip_visitor_specific_figures(block.markdown, allowed=allowed)
                     if block.markdown
                     else None
                 ),
                 level=block.level,
-                items=[strip_invented_figures(item, allowed=allowed) for item in block.items],
+                items=[strip_visitor_specific_figures(item, allowed=allowed) for item in block.items],
             )
             for block in insight.blocks
             # A citation type cannot reach here through the schema, but a
