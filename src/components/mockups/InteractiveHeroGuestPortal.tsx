@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Bell,
   Sparkles,
   Mic,
   Shield,
-  MessageSquare,
   X,
   Send,
   CheckCircle2,
@@ -32,6 +31,7 @@ interface ChatMessage {
 }
 
 export function InteractiveHeroGuestPortal() {
+  const messageId = useRef(2);
   const [activeSheet, setActiveSheet] = useState<boolean>(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -51,14 +51,17 @@ export function InteractiveHeroGuestPortal() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [activeAction, setActiveAction] = useState<string | null>(null);
+
+  const nextMessageId = (prefix: "u" | "b") => {
+    messageId.current += 1;
+    return `${prefix}-${messageId.current}`;
+  };
 
   const handleQuickAction = (actionTitle: string, defaultPrompt: string) => {
-    setActiveAction(actionTitle);
     setActiveSheet(true);
 
     const userMsg: ChatMessage = {
-      id: `u-${messages.length}-${Math.random().toString(36).slice(2,6)}`,
+      id: nextMessageId("u"),
       sender: "user",
       text: defaultPrompt,
       timestamp: "Just now",
@@ -82,7 +85,7 @@ export function InteractiveHeroGuestPortal() {
       }
 
       const botMsg: ChatMessage = {
-        id: `b-${messages.length}-${Math.random().toString(36).slice(2,6)}`,
+        id: nextMessageId("b"),
         sender: "bot",
         text: botResponse,
         timestamp: "Just now",
@@ -102,7 +105,7 @@ export function InteractiveHeroGuestPortal() {
     setInputValue("");
 
     const userMsg: ChatMessage = {
-      id: `u-${messages.length}-${Math.random().toString(36).slice(2,6)}`,
+      id: nextMessageId("u"),
       sender: "user",
       text,
       timestamp: "Just now",
@@ -129,7 +132,7 @@ export function InteractiveHeroGuestPortal() {
 
     setTimeout(() => {
       const botMsg: ChatMessage = {
-        id: `b-${messages.length}-${Math.random().toString(36).slice(2,6)}`,
+        id: nextMessageId("b"),
         sender: "bot",
         text: responseText,
         timestamp: "Just now",
@@ -216,7 +219,8 @@ export function InteractiveHeroGuestPortal() {
           {/* Card 1: Room Service */}
           <div
             onClick={() => handleQuickAction("Room Service", "I'd like to order Room Service dinner for Room 104")}
-            className="bg-slate-900 bg-[url('https://images.unsplash.com/photo-1544148103-0773bf10d330?q=80&w=600')] bg-cover bg-center rounded-2xl p-2.5 relative overflow-hidden text-white cursor-pointer group shadow-sm h-24 flex flex-col justify-end"
+            style={{ backgroundImage: "url('/images/restaurant_digital.png')" }}
+            className="h-24 cursor-pointer rounded-2xl bg-slate-900 bg-cover bg-center p-2.5 relative overflow-hidden text-white group shadow-sm flex flex-col justify-end"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-0" />
             <Utensils className="w-4 h-4 text-amber-400 relative z-10 mb-1" />
@@ -227,7 +231,8 @@ export function InteractiveHeroGuestPortal() {
           {/* Card 2: Housekeeping */}
           <div
             onClick={() => handleQuickAction("Housekeeping", "Request extra housekeeping amenities for Room 104")}
-            className="bg-slate-800 bg-[url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=600')] bg-cover bg-center rounded-2xl p-2.5 relative overflow-hidden text-white cursor-pointer group shadow-sm h-24 flex flex-col justify-end"
+            style={{ backgroundImage: "url('/images/industry_hotel.png')" }}
+            className="h-24 cursor-pointer rounded-2xl bg-slate-800 bg-cover bg-center p-2.5 relative overflow-hidden text-white group shadow-sm flex flex-col justify-end"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-0" />
             <BedDouble className="w-4 h-4 text-emerald-400 relative z-10 mb-1" />
@@ -238,7 +243,8 @@ export function InteractiveHeroGuestPortal() {
           {/* Card 3: Front Desk */}
           <div
             onClick={() => handleQuickAction("Front Desk", "I have a question for the Front Desk team")}
-            className="bg-slate-800 bg-[url('https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600')] bg-cover bg-center rounded-2xl p-2.5 relative overflow-hidden text-white cursor-pointer group shadow-sm h-24 flex flex-col justify-end"
+            style={{ backgroundImage: "url('/images/hero_lobby.png')" }}
+            className="h-24 cursor-pointer rounded-2xl bg-slate-800 bg-cover bg-center p-2.5 relative overflow-hidden text-white group shadow-sm flex flex-col justify-end"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-0" />
             <PhoneCall className="w-4 h-4 text-blue-400 relative z-10 mb-1" />
@@ -249,7 +255,8 @@ export function InteractiveHeroGuestPortal() {
           {/* Card 4: Laundry */}
           <div
             onClick={() => handleQuickAction("Laundry", "Schedule laundry pickup for Room 104")}
-            className="bg-slate-900 bg-[url('https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=600')] bg-cover bg-center rounded-2xl p-2.5 relative overflow-hidden text-white cursor-pointer group shadow-sm h-24 flex flex-col justify-end"
+            style={{ backgroundImage: "url('/images/industry_resort.png')" }}
+            className="h-24 cursor-pointer rounded-2xl bg-slate-900 bg-cover bg-center p-2.5 relative overflow-hidden text-white group shadow-sm flex flex-col justify-end"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent z-0" />
             <Shirt className="w-4 h-4 text-purple-400 relative z-10 mb-1" />

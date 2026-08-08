@@ -15,6 +15,7 @@ import {
 
 import { BrowserMockup } from "@/components/mockups/BrowserMockup";
 import { InteractiveConciergeChat } from "@/components/mockups/InteractiveConciergeChat";
+import { InteractiveHeroGuestPortal } from "@/components/mockups/InteractiveHeroGuestPortal";
 import { PhoneMockup } from "@/components/mockups/PhoneMockup";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { ProductSchema } from "@/components/seo/SchemaInjector";
@@ -23,6 +24,7 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Reveal, RevealGroup } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { TypewriterText } from "@/components/ui/TypewriterText";
 
 const CAPABILITIES = [
   { icon: Languages, label: "50+ languages" },
@@ -61,18 +63,42 @@ export default function Home() {
         category="BusinessSoftware"
       />
 
-      <section className="relative overflow-hidden bg-[#09100f] pb-20 pt-32 text-white md:pb-28 md:pt-40">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_26%,rgba(109,186,178,.22),transparent_30%),radial-gradient(circle_at_8%_80%,rgba(59,130,246,.12),transparent_28%)]" />
-        <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,.75)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.75)_1px,transparent_1px)] [background-size:56px_56px]" />
+      <section className="relative min-h-[820px] overflow-hidden bg-[#07110f] pb-16 pt-28 text-white md:pb-20 md:pt-36 lg:min-h-[880px]">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster="/images/hero_lobby.png"
+          aria-hidden="true"
+          tabIndex={-1}
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src="/videos/hero-bg.mp4" type="video/mp4" />
+        </video>
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(4,12,11,.94)_0%,rgba(4,12,11,.82)_43%,rgba(4,12,11,.38)_72%,rgba(4,12,11,.62)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(2,8,7,.45)_0%,transparent_38%,rgba(2,8,7,.88)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_36%,rgba(109,186,178,.25),transparent_30%)]" />
 
         <Container className="relative">
-          <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
-            <div className="max-w-2xl">
+          <div className="grid items-center gap-12 lg:grid-cols-[1.03fr_0.97fr] lg:gap-12">
+            <div className="max-w-3xl py-8 lg:py-16">
               <Badge className="mb-7 border-white/15 bg-white/8 text-soyl-mint shadow-none" dot>
                 AI operations for hotels
               </Badge>
               <h1 className="text-balance text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
-                Every guest request, routed. Every team, in sync.
+                The hotel defines the destination.
+                <span className="mt-3 block min-h-[2.05em] text-soyl-mint sm:min-h-[1.95em]">
+                  Our AI{" "}
+                  <TypewriterText
+                    phrases={[
+                      "answers every guest.",
+                      "routes every request.",
+                      "keeps every team in sync.",
+                    ]}
+                  />
+                </span>
               </h1>
               <p className="mt-7 max-w-xl text-balance text-lg leading-8 text-white/70 md:text-xl">
                 SOYL turns guest conversations into assigned, trackable work — so your hotel responds faster without adding another app for guests.
@@ -101,49 +127,22 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="relative mx-auto w-full max-w-2xl" aria-label="A guest request moving through Butler AI to the hotel team">
-              <div className="absolute -inset-6 rounded-[2.5rem] bg-soyl-mint/10 blur-3xl" />
-              <div className="relative overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.07] p-4 shadow-2xl backdrop-blur-xl sm:p-6">
-                <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
-                  <div>
-                    <p className="text-sm font-semibold text-white">Live request flow</p>
-                    <p className="mt-0.5 text-xs text-white/45">Room 408 · Butler AI</p>
-                  </div>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> In progress
-                  </span>
-                </div>
-
-                <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-stretch">
-                  <div className="rounded-2xl border border-white/10 bg-[#111a18] p-4">
-                    <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">Guest</p>
-                    <div className="rounded-2xl rounded-bl-sm bg-white p-4 text-sm font-medium leading-6 text-slate-800 shadow-lg">
-                      “Could we get two extra towels?”
-                    </div>
-                    <p className="mt-4 text-xs text-white/40">Chat · 8:42 PM</p>
-                  </div>
-                  <div className="hidden items-center text-soyl-mint md:flex"><ArrowRight className="h-5 w-5" aria-hidden /></div>
-                  <div className="rounded-2xl border border-soyl-mint/25 bg-soyl-mint/10 p-4">
-                    <div className="mb-5 flex items-center justify-between">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-soyl-mint">Butler AI</p>
-                      <Sparkles className="h-4 w-4 text-soyl-mint" aria-hidden />
-                    </div>
-                    <p className="text-sm font-semibold text-white">Request understood</p>
-                    <p className="mt-2 text-xs leading-5 text-white/55">Housekeeping · Room amenity · Normal priority</p>
-                  </div>
-                  <div className="hidden items-center text-soyl-mint md:flex"><ArrowRight className="h-5 w-5" aria-hidden /></div>
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.08] p-4">
-                    <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">Staff task</p>
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-lg bg-amber-300/15 text-amber-200"><ListChecks className="h-4 w-4" aria-hidden /></span>
-                      <div>
-                        <p className="text-sm font-semibold text-white">Deliver 2 towels</p>
-                        <p className="mt-1 text-xs text-white/50">Assigned to housekeeping</p>
-                      </div>
-                    </div>
-                    <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-emerald-300"><Check className="h-4 w-4" aria-hidden /> Guest notified</div>
-                  </div>
-                </div>
+            <div className="relative mx-auto flex min-h-[600px] w-full max-w-[560px] items-center justify-center" aria-label="Interactive preview of the Butler AI guest experience">
+              <div className="absolute left-1/2 top-1/2 h-[520px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-soyl-mint/20 blur-[90px]" />
+              <div className="absolute -left-4 top-20 hidden rounded-2xl border border-white/15 bg-black/30 px-4 py-3 shadow-xl backdrop-blur-xl sm:block">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">Guest access</p>
+                <p className="mt-1 text-sm font-semibold text-white">Scan. No app.</p>
+              </div>
+              <div className="absolute bottom-24 right-0 z-20 hidden rounded-2xl border border-emerald-300/20 bg-[#0c1916]/80 px-4 py-3 shadow-xl backdrop-blur-xl sm:block">
+                <p className="flex items-center gap-2 text-sm font-semibold text-emerald-200">
+                  <Check className="h-4 w-4" aria-hidden /> Request routed
+                </p>
+                <p className="mt-1 text-xs text-white/45">Housekeeping · Room 104</p>
+              </div>
+              <div className="relative z-10 w-[248px] sm:w-[276px] lg:w-[292px]">
+                <PhoneMockup className="!w-full !rounded-[38px] !border-[9px]" priority>
+                  <InteractiveHeroGuestPortal />
+                </PhoneMockup>
               </div>
             </div>
           </div>
@@ -189,15 +188,15 @@ export default function Home() {
       <section id="products" className="overflow-hidden bg-white py-20 md:py-28">
         <Container>
           <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-            <div className="relative order-2 min-h-[620px] lg:order-1">
-              <div className="absolute inset-x-0 top-16">
+            <div className="relative isolate order-2 min-h-[620px] lg:order-1">
+              <div className="absolute left-0 right-8 top-12 z-0 sm:right-20 sm:top-16">
                 <BrowserMockup
                   src="/images/products_pics/Butler AI new OPs console .png"
                   alt="Butler AI operations console showing guest requests, tasks, and escalations"
                   glow
                 />
               </div>
-              <div className="absolute bottom-0 right-2 w-[210px] sm:right-8 sm:w-[240px]">
+              <div className="absolute bottom-0 right-0 z-20 w-[210px] drop-shadow-[0_28px_38px_rgba(15,23,42,.2)] sm:w-[240px]">
                 <PhoneMockup className="!w-full !rounded-[32px] !border-[8px]">
                   <InteractiveConciergeChat />
                 </PhoneMockup>

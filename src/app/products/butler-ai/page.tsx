@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { BrowserMockup } from "@/components/mockups/BrowserMockup";
+import { InteractiveHeroGuestPortal } from "@/components/mockups/InteractiveHeroGuestPortal";
 import { PhoneMockup } from "@/components/mockups/PhoneMockup";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { FAQSchema, ProductSchema } from "@/components/seo/SchemaInjector";
@@ -91,46 +92,55 @@ export default function ButlerAIPage() {
       />
       <FAQSchema faqs={FAQS} />
 
-      <section className="relative overflow-hidden bg-[#f5f8f7] pb-20 pt-32 md:pb-28 md:pt-40">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_24%,rgba(109,186,178,.24),transparent_30%)]" />
+      <section className="relative min-h-[800px] overflow-hidden bg-[#07110f] pb-16 pt-28 text-white md:pb-20 md:pt-36 lg:min-h-[860px]">
+        <Image
+          src="/images/hero_lobby.png"
+          alt="A contemporary hotel lobby ready for guest arrivals"
+          fill
+          priority
+          quality={82}
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(3,11,10,.96)_0%,rgba(3,11,10,.84)_45%,rgba(3,11,10,.38)_74%,rgba(3,11,10,.62)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(3,10,9,.2),transparent_44%,rgba(3,10,9,.86))]" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_34%,rgba(109,186,178,.24),transparent_28%)]" />
         <Container className="relative">
-          <div className="grid items-center gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
-            <div className="max-w-2xl">
-              <Badge variant="secondary" className="mb-7">Butler AI · Available now</Badge>
-              <h1 className="text-balance text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-slate-950 sm:text-6xl lg:text-7xl">
-                Guest requests in. Completed tasks out.
+          <div className="grid items-center gap-12 lg:grid-cols-[1fr_0.82fr] lg:gap-16">
+            <div className="max-w-2xl py-8 lg:py-16">
+              <Badge className="mb-7 border-white/15 bg-white/10 text-soyl-mint shadow-none">Butler AI · Available now</Badge>
+              <h1 className="text-balance text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
+                The butler in their pocket. The whole team on the same page.
               </h1>
-              <p className="mt-7 max-w-xl text-balance text-lg leading-8 text-slate-600 md:text-xl">
-                Butler AI gives guests one simple concierge for questions, orders, and requests — then gives staff one clear queue to act on them.
+              <p className="mt-7 max-w-xl text-balance text-lg leading-8 text-white/70 md:text-xl">
+                Guests ask, order, or request from one simple concierge. Butler AI turns each conversation into clear, trackable work for your hotel team.
               </p>
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Button href="/book-demo" size="lg" className="group px-7">
+                <Button href="/book-demo" size="lg" variant="secondary" className="group border border-soyl-mint/60 px-7">
                   Book a walkthrough
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
                 </Button>
-                <Button href="#workflow" size="lg" variant="outline">
+                <Button href="#workflow" size="lg" variant="outline" className="border-white/20 bg-white/10 text-white hover:bg-white/15 hover:text-white">
                   See the workflow
                 </Button>
               </div>
-              <p className="mt-5 text-sm text-slate-500">Works from a QR code or web link. No guest login required.</p>
+              <p className="mt-5 text-sm text-white/50">Works from a QR code or web link. No guest login required.</p>
             </div>
 
-            <div className="relative min-h-[570px] sm:min-h-[650px]">
-              <div className="absolute left-0 right-0 top-4 sm:right-10">
-                <BrowserMockup
-                  src="/images/products_pics/Butler AI new OPs console .png"
-                  alt="Butler AI operations console showing guest requests, tasks, and escalations"
-                  glow
-                  priority
-                />
+            <div className="relative mx-auto flex min-h-[590px] w-full max-w-[480px] items-center justify-center" aria-label="Interactive Butler AI guest concierge preview">
+              <div className="absolute left-1/2 top-1/2 h-[500px] w-[330px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-soyl-mint/20 blur-[90px]" />
+              <div className="absolute -left-4 top-24 z-20 hidden rounded-2xl border border-white/15 bg-black/35 px-4 py-3 shadow-xl backdrop-blur-xl sm:block">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">Guest experience</p>
+                <p className="mt-1 text-sm font-semibold text-white">Scan. Ask. Done.</p>
               </div>
-              <div className="absolute bottom-0 right-0 w-[210px] sm:w-[250px]">
-                <PhoneMockup
-                  src="/images/products_pics/COncierge chat asking something guest mode .png"
-                  alt="A guest using Butler AI from their phone"
-                  className="!w-full !rounded-[34px] !border-[8px]"
-                  priority
-                />
+              <div className="absolute bottom-24 right-0 z-20 hidden rounded-2xl border border-emerald-300/20 bg-[#0c1916]/85 px-4 py-3 shadow-xl backdrop-blur-xl sm:block">
+                <p className="flex items-center gap-2 text-sm font-semibold text-emerald-200"><CircleCheckBig className="h-4 w-4" aria-hidden /> Team notified</p>
+                <p className="mt-1 text-xs text-white/45">One request, fully visible</p>
+              </div>
+              <div className="relative z-10 w-[248px] sm:w-[278px] lg:w-[292px]">
+                <PhoneMockup className="!w-full !rounded-[38px] !border-[9px]" priority>
+                  <InteractiveHeroGuestPortal />
+                </PhoneMockup>
               </div>
             </div>
           </div>
@@ -238,19 +248,14 @@ export default function ButlerAIPage() {
                 ))}
               </ul>
             </Reveal>
-            <Reveal className="relative">
+            <div className="relative">
               <div className="absolute -inset-8 rounded-full bg-soyl-mint/10 blur-3xl" />
-              <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 p-3 shadow-2xl sm:p-5">
-                <Image
-                  src="/images/products_pics/Showing created tasks .png"
-                  alt="Butler AI task list with assigned guest requests"
-                  width={1536}
-                  height={1024}
-                  className="h-auto w-full rounded-2xl border border-slate-200"
-                  sizes="(max-width: 1024px) 100vw, 56vw"
-                />
-              </div>
-            </Reveal>
+              <BrowserMockup
+                src="/images/products_pics/Butler AI new OPs console .png"
+                alt="Butler AI operations console showing guest requests, active tasks, and escalations"
+                glow
+              />
+            </div>
           </div>
         </Container>
       </section>
