@@ -9,6 +9,7 @@ cannot accidentally look like evidence of quality.
 from __future__ import annotations
 
 from soyl.domain.ai.advisor import AdvisorAnswers, AdvisorBlock, AdvisorInsight, sanitise
+from soyl.domain.ai.conversational_advisor import ChatResponse, ChatTurn, ProductSuggestion
 from soyl.domain.ai.ports import Usage
 
 PROVIDER = "fake"
@@ -54,3 +55,38 @@ class FakeAdvisor:
         return sanitise(insight, answers=answers), Usage(
             provider=PROVIDER, model=self._model
         )
+
+
+class FakeConversationalAdvisor:
+    """Implements `ConversationalAdvisorProvider` with no I/O."""
+
+    def __init__(self, *, model: str = "fake-conversational-advisor-v1") -> None:
+        self._model = model
+
+    @property
+    def model(self) -> str:
+        return self._model
+
+    async def chat(self, turn: ChatTurn) -> tuple[ChatResponse, Usage]:
+        if len(turn.messages) < 4:
+            resp = ChatResponse(
+                message="Tell me more about your property.",
+                options=["We are independent", "We are a group"],
+                phase="profiling",
+                insight=None,
+                product_suggestions=[]
+            )
+        else:
+            resp = ChatResponse(
+                message="Here is my recommendation.",
+                options=[],
+                phase="insight",
+                insight=AdvisorInsight(
+                    headline="You run a hotel.",
+                    blocks=[AdvisorBlock(type="text.markdown", markdown="Here is some advice.")]
+                ),
+                product_suggestions=[
+                    ProductSuggestion(product="Butler AI", reason="You mentioned guest requests.", relevance="high")
+                ]
+            )
+        return resp, Usage(provider=PROVIDER, model=self._model)
