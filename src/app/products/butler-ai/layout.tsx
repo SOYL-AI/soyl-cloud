@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { COMPANY } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Butler AI — AI Concierge for Hotels",
-  description: "Resolve guest requests in under 30 seconds. Butler AI handles room service, housekeeping, and guest communication in 50+ languages — no app download needed.",
+  title: "Butler AI — Guest Requests, Routed to Staff",
+  description: "Turn hotel guest conversations into routed, trackable service tasks. Butler AI works by QR code or web link in 50+ languages — no app download required.",
   openGraph: {
-    title: "Butler AI — AI Concierge for Hotels",
-    description: "Resolve guest requests in under 30 seconds with Butler AI. No app download. Works from day one.",
+    title: "Butler AI — Guest Requests, Routed to Staff",
+    description: "One simple concierge for guests and one clear operations queue for hotel staff.",
     url: `https://${COMPANY.domain}/products/butler-ai`,
   },
   alternates: {

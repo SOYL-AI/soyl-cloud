@@ -1,102 +1,84 @@
-"use client";
-
 import Image from "next/image";
-import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Play,
+  BellRing,
+  Check,
+  CircleCheckBig,
+  Globe2,
+  Headphones,
+  ListChecks,
+  MessageSquareText,
   Mic,
-  Route,
-  UtensilsCrossed,
-  Globe,
-  ShieldAlert,
-  Phone,
   QrCode,
-  TrendingUp,
-  MessageSquare,
-  ArrowRightLeft,
-  ScanLine,
-  BotMessageSquare,
-  ClipboardCheck,
+  Route,
+  ShieldAlert,
+  Sparkles,
+  UtensilsCrossed,
 } from "lucide-react";
+
 import { BrowserMockup } from "@/components/mockups/BrowserMockup";
 import { PhoneMockup } from "@/components/mockups/PhoneMockup";
+import { FinalCTA } from "@/components/sections/FinalCTA";
+import { FAQSchema, ProductSchema } from "@/components/seo/SchemaInjector";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { Reveal, RevealGroup } from "@/components/ui/Reveal";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Badge } from "@/components/ui/Badge";
-import { StickyCTA } from "@/components/sections/StickyCTA";
-import { FinalCTA } from "@/components/sections/FinalCTA";
-import { fadeUp, staggerContainer, staggerItem } from "@/lib/animations";
-import { SummaryBlock, FactTable } from "@/components/seo/AEOBlocks";
-import { ProductSchema, FAQSchema } from "@/components/seo/SchemaInjector";
 
-/* ─── Bento feature data ──────────────────────────────── */
-const bentoFeatures = [
+const CAPABILITIES = [
+  { icon: QrCode, label: "No app download" },
+  { icon: Globe2, label: "50+ languages" },
+  { icon: Route, label: "Automatic routing" },
+  { icon: Headphones, label: "Human handoff" },
+];
+
+const FEATURES = [
   {
-    title: "Voice & Chat Requests",
-    desc: "Guests speak or type naturally — Butler AI understands intent and acts instantly, no training needed.",
-    icon: Mic,
-    span: "md:col-span-1 md:row-span-1",
+    icon: MessageSquareText,
+    title: "Voice and chat",
+    text: "Guests ask naturally instead of learning a new interface.",
   },
   {
-    title: "Automated Task Routing",
-    desc: "Every request becomes a trackable task automatically routed to the right department.",
     icon: Route,
-    span: "md:col-span-1 md:row-span-2",
-    image: "/images/products_pics/Showing created tasks .png",
-    imageAlt: "Butler AI Task Routing",
+    title: "Department routing",
+    text: "Each request reaches housekeeping, F&B, or the front desk with context.",
   },
   {
-    title: "Room Service Orders",
-    desc: "Digital menus with one-tap ordering sent directly to the kitchen display.",
     icon: UtensilsCrossed,
-    span: "md:col-span-1 md:row-span-1",
+    title: "Room service",
+    text: "Menus, ordering, and kitchen handoff live in the same guest journey.",
   },
   {
-    title: "Multilingual Support",
-    desc: "Automatically communicates with international guests in 50+ languages — no staff training required.",
-    icon: Globe,
-    span: "md:col-span-1 md:row-span-1",
+    icon: BellRing,
+    title: "Visible task status",
+    text: "Staff can claim work, update it, and see what still needs attention.",
   },
   {
-    title: "SOS & Safety Alerts",
-    desc: "One-tap emergency contacts and instant escalation to property management for guest safety.",
     icon: ShieldAlert,
-    span: "md:col-span-1 md:row-span-2",
-    image: "/images/products_pics/sos_alert_mockup.png",
-    imageAlt: "SOS Emergency Feature",
+    title: "Escalations",
+    text: "Sensitive or unusual requests move to a person instead of being guessed at.",
   },
   {
-    title: "AI Voice Calls",
-    desc: "Schedule automated wake-up calls, pre-arrival confirmations, and stay check-ins with natural AI voices.",
-    icon: Phone,
-    span: "md:col-span-2 md:row-span-1",
-    image: "/images/products_pics/Calls scheduler light mode .png",
-    imageAlt: "AI Voice Calls Scheduler",
-    wide: true,
-  },
-  {
-    title: "QR Code Access",
-    desc: "No app download. Guests scan a code in-room and instantly get a full concierge experience.",
-    icon: QrCode,
-    span: "md:col-span-1 md:row-span-1",
-  },
-  {
-    title: "Smart Upselling",
-    desc: "Contextual offers for late checkout, spa bookings, and room upgrades — boosting RevPAR effortlessly.",
-    icon: TrendingUp,
-    span: "md:col-span-1 md:row-span-1",
+    icon: Mic,
+    title: "Scheduled calls",
+    text: "Support wake-up calls, confirmations, and stay check-ins from one console.",
   },
 ];
 
-/* ─── Timeline steps ──────────────────────────────────── */
-const timelineSteps = [
-  { icon: ScanLine, label: "Guest Scans QR", desc: "No app download — instant access", image: "/images/butler_step1.png" },
-  { icon: BotMessageSquare, label: "Opens Concierge", desc: "Beautiful interface with services" },
-  { icon: MessageSquare, label: "Makes Request", desc: "\"I need extra towels\" via chat", image: "/images/butler_step3.png" },
-  { icon: ArrowRightLeft, label: "AI Routes to Staff", desc: "Automatically assigned to team", image: "/images/butler_step4.png" },
-  { icon: ClipboardCheck, label: "Task Completed", desc: "Staff fulfills & guest is notified" },
+const FAQS = [
+  {
+    question: "Do guests need to download an app?",
+    answer: "No. Guests open Butler AI from a QR code or web link on their own phone.",
+  },
+  {
+    question: "What happens when Butler AI cannot handle a request?",
+    answer: "The conversation can be handed to hotel staff with the request context preserved, so a person can take over without making the guest repeat themselves.",
+  },
+  {
+    question: "Can staff see and manage every request?",
+    answer: "Yes. The operations console brings conversations, assigned tasks, and escalations into one queue for the hotel team.",
+  },
 ];
 
 export default function ButlerAIPage() {
@@ -104,308 +86,198 @@ export default function ButlerAIPage() {
     <div className="flex flex-col">
       <ProductSchema
         name="Butler AI"
-        description="An AI-powered digital concierge that resolves guest requests in under 30 seconds via voice, chat, and QR code in over 50 languages."
+        description="A multilingual hotel concierge that turns guest conversations into routed, trackable service tasks without requiring an app download."
         category="SoftwareApplication"
       />
-      <FAQSchema
-        faqs={[
-          { question: "What is Butler AI?", answer: "Butler AI is a multilingual digital concierge for hotels." },
-          { question: "Does it require an app?", answer: "No, guests access it via QR code without downloading an app." }
-        ]}
-      />
-      <StickyCTA title="Butler AI — Guest Concierge" />
+      <FAQSchema faqs={FAQS} />
 
-      {/* ─── 1 · HERO ─────────────────────────────────── */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-gray-50 to-white">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[600px] bg-[radial-gradient(ellipse,_var(--color-soyl-mint)_0%,_transparent_70%)] opacity-20 -z-10 blur-2xl" />
-
-        <Container size="lg" className="text-center">
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            className="flex flex-col items-center"
-          >
-            <Badge variant="outline" className="mb-8">
-              <span className="w-2 h-2 rounded-full bg-[var(--color-soyl-mint-dark)] animate-pulse mr-2 inline-block" />
-              Butler AI — Guest Concierge
-            </Badge>
-
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] leading-[1.05] mb-6">
-              Meet <span className="text-[var(--color-soyl-mint-dark)]">Butler AI</span>
-            </h1>
-
-            <p className="text-lg md:text-xl lg:text-2xl text-[var(--color-soyl-gray-600)] max-w-2xl mx-auto mb-10 leading-relaxed text-balance">
-              The AI concierge your guests actually love using. Instant service requests, multilingual chat, and seamless staff coordination — all from a single QR scan.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 md:mb-24">
-              <Button size="lg" variant="primary" href="/book-demo" className="group">
-                Book a Demo
-                <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button size="lg" variant="outline" className="group">
-                <Play size={18} className="mr-2 text-[var(--color-soyl-mint-dark)]" />
-                Watch Product Tour
-              </Button>
+      <section className="relative overflow-hidden bg-[#f5f8f7] pb-20 pt-32 md:pb-28 md:pt-40">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_24%,rgba(109,186,178,.24),transparent_30%)]" />
+        <Container className="relative">
+          <div className="grid items-center gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16">
+            <div className="max-w-2xl">
+              <Badge variant="secondary" className="mb-7">Butler AI · Available now</Badge>
+              <h1 className="text-balance text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-slate-950 sm:text-6xl lg:text-7xl">
+                Guest requests in. Completed tasks out.
+              </h1>
+              <p className="mt-7 max-w-xl text-balance text-lg leading-8 text-slate-600 md:text-xl">
+                Butler AI gives guests one simple concierge for questions, orders, and requests — then gives staff one clear queue to act on them.
+              </p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Button href="/book-demo" size="lg" className="group px-7">
+                  Book a walkthrough
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
+                </Button>
+                <Button href="#workflow" size="lg" variant="outline">
+                  See the workflow
+                </Button>
+              </div>
+              <p className="mt-5 text-sm text-slate-500">Works from a QR code or web link. No guest login required.</p>
             </div>
-          </motion.div>
 
-          {/* Dual Mockup Showcase */}
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.9, delay: 0.25, ease: "easeOut" }}
-            className="relative max-w-5xl mx-auto flex justify-center"
-          >
-            <div className="absolute -inset-6 bg-gradient-to-b from-[var(--color-soyl-mint)] via-transparent to-transparent opacity-30 rounded-[3rem] blur-3xl -z-10" />
-            
-            <div className="relative w-full flex justify-center items-end">
-              <div className="w-[85%] md:w-[75%] hidden md:block">
+            <div className="relative min-h-[570px] sm:min-h-[650px]">
+              <div className="absolute left-0 right-0 top-4 sm:right-10">
                 <BrowserMockup
                   src="/images/products_pics/Butler AI new OPs console .png"
-                  alt="The Butler AI operations console, showing incoming guest requests routed by department"
-                  glow={true}
-                  float={true}
+                  alt="Butler AI operations console showing guest requests, tasks, and escalations"
+                  glow
                   priority
                 />
               </div>
-              <div className="md:absolute right-[5%] bottom-[-10%] w-[280px] md:w-[320px] z-20">
+              <div className="absolute bottom-0 right-0 w-[210px] sm:w-[250px]">
                 <PhoneMockup
                   src="/images/products_pics/COncierge chat asking something guest mode .png"
-                  alt="A guest asking Butler AI a question from their phone"
-                  float={true}
+                  alt="A guest using Butler AI from their phone"
+                  className="!w-full !rounded-[34px] !border-[8px]"
                   priority
                 />
               </div>
             </div>
-          </motion.div>
-        </Container>
-      </section>
-
-      {/* ─── Social proof strip ───────────────────────── */}
-      <section className="py-12 border-y border-gray-100 bg-white">
-        <Container>
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
-          >
-            {[
-              { value: "< 30s", label: "Avg. response time" },
-              { value: "92%", label: "Guest satisfaction" },
-              { value: "50+", label: "Languages supported" },
-              { value: "0", label: "App downloads needed" },
-            ].map((stat) => (
-              <motion.div variants={staggerItem} key={stat.label}>
-                <div className="text-3xl md:text-4xl font-bold text-[var(--color-soyl-charcoal)] mb-1">{stat.value}</div>
-                <div className="text-sm text-[var(--color-soyl-gray-600)]">{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </Container>
-      </section>
-
-      {/* ─── 2 · DUAL EXPERIENCE ──────────────────────── */}
-      <section className="py-24 md:py-32 bg-white overflow-hidden">
-        <Container>
-          <SectionHeader
-            title="Two sides. One seamless experience."
-            description="Guests make requests through a beautiful mobile interface. Staff see everything in a powerful dashboard. Butler AI connects both, instantly."
-            align="center"
-          />
-
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-8 lg:gap-4 items-center mt-16">
-            {/* LEFT — Guest */}
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-              <div className="bg-gradient-to-br from-[#f0f9f8] to-[#e8f4f2] rounded-[2rem] p-8 md:p-12">
-                <div className="mb-8">
-                  <span className="inline-block px-3 py-1 rounded-full bg-[var(--color-soyl-mint-dark)]/10 text-[var(--color-soyl-mint-dark)] text-sm font-semibold mb-4">Guest Experience</span>
-                  <h3 className="text-2xl md:text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-3">
-                    Beautiful on every phone
-                  </h3>
-                  <p className="text-[var(--color-soyl-gray-600)] leading-relaxed">
-                    No app to download. Guests scan a QR code and instantly access a full concierge — request towels, order room service, or chat with your team.
-                  </p>
-                </div>
-                <PhoneMockup
-                  src="/images/products_pics/COncierge chat asking something guest mode .png"
-                  alt="Butler AI Guest Chat Interface"
-                  float={true}
-                />
-              </div>
-            </motion.div>
-
-            {/* CENTER — Flow indicator */}
-            <motion.div
-              variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-              className="hidden lg:flex flex-col items-center gap-3 text-center px-4"
-            >
-              <div className="w-12 h-12 rounded-full bg-[var(--color-soyl-charcoal)] flex items-center justify-center text-white">
-                <ArrowRightLeft size={20} />
-              </div>
-              <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest leading-tight">
-                Instant<br />sync
-              </span>
-              <div className="w-px h-16 bg-gradient-to-b from-gray-300 to-transparent" />
-            </motion.div>
-
-            {/* RIGHT — Staff */}
-            <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-              <div className="bg-[var(--color-soyl-gray-50)] rounded-[2rem] p-8 md:p-12">
-                <div className="mb-8">
-                  <span className="inline-block px-3 py-1 rounded-full bg-[var(--color-soyl-charcoal)]/10 text-[var(--color-soyl-charcoal)] text-sm font-semibold mb-4">Staff Dashboard</span>
-                  <h3 className="text-2xl md:text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-3">
-                    Everything in one place
-                  </h3>
-                  <p className="text-[var(--color-soyl-gray-600)] leading-relaxed">
-                    Staff see all guest conversations, active requests, and task statuses in a unified dashboard. No switching between apps.
-                  </p>
-                </div>
-                <BrowserMockup
-                  src="/images/products_pics/Butler AI new OPs console .png"
-                  alt="Butler AI Staff Dashboard"
-                  float={true}
-                />
-              </div>
-            </motion.div>
           </div>
         </Container>
       </section>
 
-      {/* ─── 3 · BENTO GRID FEATURES ─────────────────── */}
-      <section className="py-24 md:py-32 bg-[var(--color-soyl-gray-50)]">
+      <section className="border-y border-slate-200 bg-white py-6">
         <Container>
-          <SectionHeader
-            title="Everything your guests need"
-            description="A comprehensive digital concierge packed with features that delight guests and empower staff."
-            align="center"
-          />
-
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            className="grid grid-cols-1 md:grid-cols-3 auto-rows-[minmax(220px,auto)] gap-5 mt-16"
-          >
-            {bentoFeatures.map((f) => (
-              <motion.div
-                key={f.title}
-                variants={staggerItem}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className={`group bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-2xl hover:shadow-[var(--color-soyl-mint-light)]/40 transition-all duration-300 overflow-hidden flex flex-col ${f.span}`}
-              >
-                <div className={`p-7 flex flex-col flex-1 ${f.image ? "" : "justify-center"}`}>
-                  <div className="w-11 h-11 rounded-2xl bg-[var(--color-soyl-mint-light)] flex items-center justify-center mb-5 text-[var(--color-soyl-mint-dark)] shrink-0">
-                    <f.icon size={22} />
-                  </div>
-                  <h3 className="text-lg font-semibold text-[var(--color-soyl-charcoal)] mb-2">{f.title}</h3>
-                  <p className="text-sm text-[var(--color-soyl-gray-600)] leading-relaxed">{f.desc}</p>
-                </div>
-
-                {f.image && (
-                  <div className={`relative mt-auto overflow-hidden ${f.wide ? "h-[200px] md:h-[240px]" : "h-[180px] md:h-[220px]"}`}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent z-10 pointer-events-none" />
-                    <Image
-                      src={f.image}
-                      alt={f.imageAlt || f.title}
-                      fill
-                      className="object-cover object-top px-4 group-hover:scale-[1.02] transition-transform duration-500"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  </div>
-                )}
-              </motion.div>
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-4" aria-label="Butler AI capabilities">
+            {CAPABILITIES.map((item) => (
+              <li key={item.label} className="flex items-center justify-center gap-2 text-sm font-semibold text-slate-600">
+                <item.icon className="h-4 w-4 text-soyl-mint-dark" strokeWidth={1.8} aria-hidden />
+                {item.label}
+              </li>
             ))}
-          </motion.div>
+          </ul>
         </Container>
       </section>
 
-      {/* ─── 4 · HOW IT WORKS — TIMELINE ─────────────── */}
-      <section className="py-24 md:py-32 bg-white">
+      <section id="workflow" className="scroll-mt-24 bg-white py-20 md:py-28">
         <Container>
           <SectionHeader
-            title="From scan to solved in minutes"
-            description="Five simple steps. Zero friction. Here's how Butler AI turns a guest request into a completed task."
-            align="center"
+            badge="One connected workflow"
+            title="The guest sees service. Your team sees the work."
+            description="Butler AI keeps both sides of every request connected from the first message to completion."
+            className="mb-12"
           />
 
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            className="relative mt-16"
-          >
-            {/* connecting line (desktop) */}
-            <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-transparent via-gray-200 to-transparent z-0" />
+          <div className="grid gap-6 lg:grid-cols-[1fr_auto_1fr] lg:items-stretch">
+            <Reveal className="rounded-[2rem] border border-soyl-mint/20 bg-soyl-mint-light/55 p-7 sm:p-9">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-soyl-mint-dark">Guest side</p>
+                  <h3 className="mt-2 text-2xl font-bold text-slate-950">Ask, order, or request</h3>
+                </div>
+                <QrCode className="h-6 w-6 text-soyl-mint-dark" aria-hidden />
+              </div>
+              <div className="mt-8 rounded-3xl border border-white bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,.08)]">
+                <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-soyl-mint-light text-soyl-mint-dark"><Sparkles className="h-4 w-4" aria-hidden /></span>
+                  <div><p className="text-sm font-bold text-slate-900">Hotel concierge</p><p className="text-xs text-slate-500">Usually replies instantly</p></div>
+                </div>
+                <div className="mt-5 ml-auto max-w-[85%] rounded-2xl rounded-br-sm bg-slate-900 px-4 py-3 text-sm leading-6 text-white">Please send two towels to room 408.</div>
+                <div className="mt-3 max-w-[88%] rounded-2xl rounded-bl-sm bg-slate-100 px-4 py-3 text-sm leading-6 text-slate-700">Done — housekeeping has the request. We’ll update you here.</div>
+              </div>
+            </Reveal>
 
-            <div className="flex flex-col md:flex-row gap-8 md:gap-0 md:justify-between relative z-10">
-              {timelineSteps.map((step, i) => (
-                <motion.div
-                  key={step.label}
-                  variants={staggerItem}
-                  className="flex md:flex-col items-start md:items-center gap-5 md:gap-4 md:flex-1 md:px-3 text-left md:text-center"
-                >
-                  <div className={`w-14 h-14 rounded-full flex items-center justify-center shrink-0 shadow-sm ${
-                    i === timelineSteps.length - 1
-                      ? "bg-[var(--color-soyl-mint-dark)] text-white"
-                      : "bg-white border-2 border-gray-200 text-[var(--color-soyl-charcoal)]"
-                  }`}>
-                    <step.icon size={22} />
-                  </div>
+            <div className="hidden items-center justify-center text-soyl-mint-dark lg:flex"><ArrowRight className="h-7 w-7" aria-hidden /></div>
 
-                  <div>
-                    <span className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-soyl-mint-dark)] mb-1 block">
-                      Step {i + 1}
-                    </span>
-                    <h4 className="text-base font-semibold text-[var(--color-soyl-charcoal)] mb-1">{step.label}</h4>
-                    <p className="text-sm text-[var(--color-soyl-gray-600)] leading-relaxed max-w-[200px] mx-auto mb-4">{step.desc}</p>
-                    {step.image && (
-                      <div className="relative w-[200px] h-[350px] mx-auto mt-4 rounded-xl overflow-hidden shadow-xl border border-gray-100">
-                        <Image src={step.image} alt={step.label} fill className="object-cover" />
-                      </div>
-                    )}
+            <Reveal className="rounded-[2rem] border border-slate-200 bg-slate-50 p-7 sm:p-9">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Staff side</p>
+                  <h3 className="mt-2 text-2xl font-bold text-slate-950">Claim, act, complete</h3>
+                </div>
+                <ListChecks className="h-6 w-6 text-slate-700" aria-hidden />
+              </div>
+              <div className="mt-8 space-y-3 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,.06)]">
+                <div className="flex items-center justify-between text-xs font-bold uppercase tracking-[0.14em] text-slate-400"><span>Housekeeping queue</span><span>Room 408</span></div>
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div><p className="text-sm font-bold text-slate-900">Deliver 2 bath towels</p><p className="mt-1 text-xs text-slate-500">From Butler AI · Normal priority</p></div>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-amber-700 shadow-sm">Claimed</span>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+                </div>
+                <div className="flex items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700"><CircleCheckBig className="h-4 w-4" aria-hidden /> Guest receives the completion update</div>
+              </div>
+            </Reveal>
+          </div>
         </Container>
       </section>
 
-      {/* ─── 5 · AEO TECHNICAL OVERVIEW ──────────────── */}
-      <section className="py-24 bg-[var(--color-soyl-gray-50)] border-t border-gray-100">
+      <section className="bg-[var(--color-soyl-gray-50)] py-20 md:py-28">
         <Container>
           <SectionHeader
-            title="Technical Overview"
-            description="The specifications and capabilities behind Butler AI."
-            align="left"
+            badge="Core capabilities"
+            title="Everything needed to move a request forward."
+            description="A focused toolkit for guest communication and service coordination."
+            className="mb-12"
           />
-          <SummaryBlock
-            entityName="Butler AI"
-            category="AI Hotel Concierge Platform"
-            coreFunction="resolves guest requests instantly through voice and chat without requiring an app download"
-            benefits="hotels reduce front desk workload, eliminate language barriers, and increase guest satisfaction"
-          />
-          <FactTable
-            headers={["Specification", "Detail"]}
-            rows={[
-              ["Supported Languages", "50+ (Real-time translation)"],
-              ["Access Method", "QR Code / Web Link (App-less)"],
-              ["Task Routing", "Automated (Integrates with PMS)"],
-              ["Response Time", "< 30 seconds"],
-            ]}
-          />
+          <RevealGroup className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {FEATURES.map((feature) => (
+              <article key={feature.title} className="group rounded-3xl border border-slate-200 bg-white p-7 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-soyl-mint/50 hover:shadow-[0_18px_50px_rgba(15,23,42,.08)]">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-soyl-mint-light text-soyl-mint-dark">
+                  <feature.icon className="h-5 w-5" aria-hidden />
+                </div>
+                <h3 className="mt-6 text-lg font-bold text-slate-950">{feature.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{feature.text}</p>
+              </article>
+            ))}
+          </RevealGroup>
         </Container>
       </section>
 
-      {/* ─── 6 · CTA ──────────────────────────────────── */}
-      <FinalCTA />
+      <section className="overflow-hidden bg-white py-20 md:py-28">
+        <Container>
+          <div className="grid items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+            <Reveal>
+              <Badge variant="outline" className="mb-6">Operations console</Badge>
+              <h2 className="text-balance text-4xl font-bold tracking-[-0.035em] text-slate-950 md:text-5xl">No request disappears into a chat thread.</h2>
+              <p className="mt-6 text-lg leading-8 text-slate-600">Conversations, active tasks, and escalations stay visible in one operating view — so the next shift knows what the last one promised.</p>
+              <ul className="mt-8 space-y-4">
+                {["Shared queue for hotel teams", "Clear owners and task states", "Guest context kept with the request"].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm font-semibold text-slate-700"><Check className="h-4 w-4 text-soyl-mint-dark" aria-hidden /> {item}</li>
+                ))}
+              </ul>
+            </Reveal>
+            <Reveal className="relative">
+              <div className="absolute -inset-8 rounded-full bg-soyl-mint/10 blur-3xl" />
+              <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-slate-50 p-3 shadow-2xl sm:p-5">
+                <Image
+                  src="/images/products_pics/Showing created tasks .png"
+                  alt="Butler AI task list with assigned guest requests"
+                  width={1536}
+                  height={1024}
+                  className="h-auto w-full rounded-2xl border border-slate-200"
+                  sizes="(max-width: 1024px) 100vw, 56vw"
+                />
+              </div>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      <section className="border-t border-slate-200 bg-slate-50 py-20 md:py-24">
+        <Container size="md">
+          <SectionHeader title="Questions hotel teams ask first" className="mb-10" />
+          <div className="space-y-3">
+            {FAQS.map((faq) => (
+              <details key={faq.question} className="group rounded-2xl border border-slate-200 bg-white p-5 open:shadow-sm">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-slate-900 marker:content-none">
+                  {faq.question}
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-transform group-open:rotate-45" aria-hidden>+</span>
+                </summary>
+                <p className="max-w-2xl pt-4 text-sm leading-7 text-slate-600">{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      <FinalCTA
+        eyebrow="Bring us your busiest request type"
+        title="See Butler AI handle it from first message to finished task."
+        description="We’ll map the guest experience, the staff handoff, and the controls your hotel needs."
+        primaryLabel="Book a Butler AI walkthrough"
+      />
     </div>
   );
 }
-
