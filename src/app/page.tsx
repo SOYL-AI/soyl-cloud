@@ -1,257 +1,284 @@
-import { ArrowRight, Play, Check, ShieldCheck, Hotel, Bed, UtensilsCrossed } from "lucide-react";
-import { Container } from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import { Reveal, RevealGroup, RevealOnLoad } from "@/components/ui/Reveal";
+import {
+  ArrowRight,
+  BellRing,
+  Bot,
+  Check,
+  CircleDollarSign,
+  Languages,
+  ListChecks,
+  MessageSquareText,
+  ShieldCheck,
+  Sparkles,
+  UserRoundCheck,
+  Workflow,
+} from "lucide-react";
+
 import { BrowserMockup } from "@/components/mockups/BrowserMockup";
-import { PhoneMockup } from "@/components/mockups/PhoneMockup";
 import { InteractiveConciergeChat } from "@/components/mockups/InteractiveConciergeChat";
-import { InteractiveHeroGuestPortal } from "@/components/mockups/InteractiveHeroGuestPortal";
-import { MetricsStrip } from "@/components/sections/MetricsStrip";
-import { AdvisorTeaser } from "@/components/sections/AdvisorTeaser";
+import { PhoneMockup } from "@/components/mockups/PhoneMockup";
 import { FinalCTA } from "@/components/sections/FinalCTA";
-import { StickyCTA } from "@/components/sections/StickyCTA";
 import { ProductSchema } from "@/components/seo/SchemaInjector";
-import { TypewriterText } from "@/components/ui/TypewriterText";
-import { AripNodeDiagram } from "@/components/animations/AripNodeDiagram";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Container } from "@/components/ui/Container";
+import { Reveal, RevealGroup } from "@/components/ui/Reveal";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+
+const CAPABILITIES = [
+  { icon: Languages, label: "50+ languages" },
+  { icon: UserRoundCheck, label: "Human handoff" },
+  { icon: ListChecks, label: "Trackable tasks" },
+  { icon: ShieldCheck, label: "Hotel-controlled workflows" },
+];
+
+const REQUEST_FLOW = [
+  {
+    icon: MessageSquareText,
+    step: "01",
+    title: "A guest asks",
+    text: "Chat, voice, or a QR code — without downloading an app.",
+  },
+  {
+    icon: Bot,
+    step: "02",
+    title: "Butler AI routes",
+    text: "Intent becomes a clear task for the right hotel team.",
+  },
+  {
+    icon: BellRing,
+    step: "03",
+    title: "Staff completes",
+    text: "The guest gets an update and managers keep visibility.",
+  },
+];
 
 export default function Home() {
   return (
     <>
       <ProductSchema
         name="SOYL Cloud"
-        description="AI-powered hospitalty platform featuring Butler AI concierge and PMS Lite property management system."
+        description="AI hotel operations software that turns guest requests into coordinated work and helps hotel teams operate with less friction."
         category="BusinessSoftware"
       />
-      <StickyCTA />
-      
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden bg-[#0A0D14]">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline 
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
-        >
-          <source src="/videos/hero-bg.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/50 to-[#0A0D14] pointer-events-none" />
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-soyl-mint/30 via-blue-500/20 to-transparent blur-[120px] rounded-full pointer-events-none mix-blend-screen animate-pulse duration-10000" />
-        <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-tr from-purple-500/20 via-soyl-mint/20 to-transparent blur-[120px] rounded-full pointer-events-none mix-blend-screen animate-pulse duration-7000 delay-1000" />
 
-        <Container>
-          <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
-            <div className="mb-8">
-              <Badge variant="outline" className="bg-black/50 text-white border-white/20 backdrop-blur-md" dot>INTRODUCING: Autonomous Revenue Intelligence</Badge>
+      <section className="relative overflow-hidden bg-[#09100f] pb-20 pt-32 text-white md:pb-28 md:pt-40">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_72%_26%,rgba(109,186,178,.22),transparent_30%),radial-gradient(circle_at_8%_80%,rgba(59,130,246,.12),transparent_28%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:linear-gradient(rgba(255,255,255,.75)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.75)_1px,transparent_1px)] [background-size:56px_56px]" />
+
+        <Container className="relative">
+          <div className="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+            <div className="max-w-2xl">
+              <Badge className="mb-7 border-white/15 bg-white/8 text-soyl-mint shadow-none" dot>
+                AI operations for hotels
+              </Badge>
+              <h1 className="text-balance text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
+                Every guest request, routed. Every team, in sync.
+              </h1>
+              <p className="mt-7 max-w-xl text-balance text-lg leading-8 text-white/70 md:text-xl">
+                SOYL turns guest conversations into assigned, trackable work — so your hotel responds faster without adding another app for guests.
+              </p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Button
+                  href="/book-demo"
+                  size="lg"
+                  variant="secondary"
+                  className="group border border-soyl-mint/60 px-7"
+                >
+                  See it with your hotel
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
+                </Button>
+                <Button
+                  href="/products/butler-ai"
+                  size="lg"
+                  variant="outline"
+                  className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white"
+                >
+                  Explore Butler AI
+                </Button>
+              </div>
+              <p className="mt-5 text-sm text-white/45">
+                Built for independent hotels, resorts, and growing groups.
+              </p>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.08] mb-8 text-balance">
-              <TypewriterText text="The hotel defines the destination. Our AI navigates the journey." wordClassName="text-white" />
-            </h1>
+            <div className="relative mx-auto w-full max-w-2xl" aria-label="A guest request moving through Butler AI to the hotel team">
+              <div className="absolute -inset-6 rounded-[2.5rem] bg-soyl-mint/10 blur-3xl" />
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.07] p-4 shadow-2xl backdrop-blur-xl sm:p-6">
+                <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
+                  <div>
+                    <p className="text-sm font-semibold text-white">Live request flow</p>
+                    <p className="mt-0.5 text-xs text-white/45">Room 408 · Butler AI</p>
+                  </div>
+                  <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-semibold text-emerald-300">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" /> In progress
+                  </span>
+                </div>
 
-            <p
-              className="text-lg md:text-2xl text-gray-200 mb-10 max-w-3xl leading-relaxed font-medium text-balance drop-shadow"
-            >
-              AI agents that price, market, and operate your hotel — autonomously, around the clock.
-            </p>
-
-            <div className="flex flex-col sm:flex-row justify-center gap-4 w-full sm:w-auto relative z-20">
-              <Button size="lg" href="/contact" className="w-full sm:w-auto bg-white text-[#0A0D14] hover:bg-gray-100 font-bold px-8 py-3.5 rounded-full shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all group">
-                Join Pilot Waitlist
-                <ArrowRight size={20} className="ml-2 text-[#0A0D14] transition-transform group-hover:translate-x-1 inline-block" />
-              </Button>
-              <Button size="lg" variant="outline" href="#products" className="w-full sm:w-auto bg-white/10 text-white border-white/30 hover:bg-white/20 backdrop-blur-md font-semibold px-8 py-3.5 rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all">
-                <Play size={18} className="mr-2 text-soyl-mint inline-block fill-soyl-mint/20" />
-                See How It Works
-              </Button>
+                <div className="grid gap-3 md:grid-cols-[1fr_auto_1fr_auto_1fr] md:items-stretch">
+                  <div className="rounded-2xl border border-white/10 bg-[#111a18] p-4">
+                    <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">Guest</p>
+                    <div className="rounded-2xl rounded-bl-sm bg-white p-4 text-sm font-medium leading-6 text-slate-800 shadow-lg">
+                      “Could we get two extra towels?”
+                    </div>
+                    <p className="mt-4 text-xs text-white/40">Chat · 8:42 PM</p>
+                  </div>
+                  <div className="hidden items-center text-soyl-mint md:flex"><ArrowRight className="h-5 w-5" aria-hidden /></div>
+                  <div className="rounded-2xl border border-soyl-mint/25 bg-soyl-mint/10 p-4">
+                    <div className="mb-5 flex items-center justify-between">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-soyl-mint">Butler AI</p>
+                      <Sparkles className="h-4 w-4 text-soyl-mint" aria-hidden />
+                    </div>
+                    <p className="text-sm font-semibold text-white">Request understood</p>
+                    <p className="mt-2 text-xs leading-5 text-white/55">Housekeeping · Room amenity · Normal priority</p>
+                  </div>
+                  <div className="hidden items-center text-soyl-mint md:flex"><ArrowRight className="h-5 w-5" aria-hidden /></div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.08] p-4">
+                    <p className="mb-5 text-[11px] font-bold uppercase tracking-[0.16em] text-white/40">Staff task</p>
+                    <div className="flex items-start gap-3">
+                      <span className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-lg bg-amber-300/15 text-amber-200"><ListChecks className="h-4 w-4" aria-hidden /></span>
+                      <div>
+                        <p className="text-sm font-semibold text-white">Deliver 2 towels</p>
+                        <p className="mt-1 text-xs text-white/50">Assigned to housekeeping</p>
+                      </div>
+                    </div>
+                    <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-emerald-300"><Check className="h-4 w-4" aria-hidden /> Guest notified</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
+        </Container>
+      </section>
 
-          {/* Hero Mockups Showcase */}
-          <RevealOnLoad
-            delay={0.4}
-            className="mt-16 md:mt-24 relative max-w-[1200px] mx-auto"
-          >
-            <div className="flex flex-col lg:flex-row items-center justify-center gap-8 relative">
-              <div className="w-full lg:w-4/5 max-w-4xl relative z-10">
+      <section className="border-b border-slate-200 bg-white py-6">
+        <Container>
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-4" aria-label="Butler AI capabilities">
+            {CAPABILITIES.map((item) => (
+              <li key={item.label} className="flex items-center justify-center gap-2 text-sm font-semibold text-slate-600">
+                <item.icon className="h-4 w-4 text-soyl-mint-dark" strokeWidth={1.8} aria-hidden />
+                {item.label}
+              </li>
+            ))}
+          </ul>
+        </Container>
+      </section>
+
+      <section className="bg-[var(--color-soyl-gray-50)] py-20 md:py-28">
+        <Container>
+          <SectionHeader
+            badge="From request to resolution"
+            title="One simple flow. No lost handoffs."
+            description="Guests get a fast answer. Staff get a clear task. Managers can see what happened."
+            className="mb-12"
+          />
+          <RevealGroup className="grid gap-4 md:grid-cols-3">
+            {REQUEST_FLOW.map((item) => (
+              <article key={item.title} className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_18px_50px_rgba(15,23,42,0.05)]">
+                <span className="absolute right-6 top-5 text-5xl font-bold tracking-tighter text-slate-100">{item.step}</span>
+                <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-soyl-mint-light text-soyl-mint-dark">
+                  <item.icon className="h-5 w-5" aria-hidden />
+                </div>
+                <h3 className="relative mt-7 text-xl font-bold text-slate-900">{item.title}</h3>
+                <p className="relative mt-2 max-w-xs text-sm leading-6 text-slate-600">{item.text}</p>
+              </article>
+            ))}
+          </RevealGroup>
+        </Container>
+      </section>
+
+      <section id="products" className="overflow-hidden bg-white py-20 md:py-28">
+        <Container>
+          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+            <div className="relative order-2 min-h-[620px] lg:order-1">
+              <div className="absolute inset-x-0 top-16">
                 <BrowserMockup
-                  src="/images/soyl_hero_main.png"
-                  alt="The PMS Lite dashboard, showing today's arrivals, room status and open service requests"
+                  src="/images/products_pics/Butler AI new OPs console .png"
+                  alt="Butler AI operations console showing guest requests, tasks, and escalations"
                   glow
-                  priority
                 />
               </div>
-
-              <div className="w-[280px] lg:w-[320px] lg:absolute lg:-right-4 lg:-bottom-8 z-20">
-                <PhoneMockup float priority>
-                  <InteractiveHeroGuestPortal />
+              <div className="absolute bottom-0 right-2 w-[210px] sm:right-8 sm:w-[240px]">
+                <PhoneMockup className="!w-full !rounded-[32px] !border-[8px]">
+                  <InteractiveConciergeChat />
                 </PhoneMockup>
               </div>
-
             </div>
-          </RevealOnLoad>
-        </Container>
-      </section>
 
-      {/* 2. BUTLER AI FLAGSHIP SECTION (LAUNCHED PRODUCT FIRST) */}
-      <section id="products" className="py-24 md:py-32 bg-[var(--color-soyl-gray-50)] border-y border-[var(--color-soyl-gray-200)]">
-        <Container>
-          <SectionHeader
-            badge="Butler AI — Available Now"
-            title="The AI concierge your guests actually use."
-            description="No app download. No training. No friction. Guests scan QR, speak or type, and Butler AI handles concierge, room service, and requests in 50+ languages."
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 lg:gap-24 items-center">
-            <div className="order-2 md:order-1 flex justify-center">
-              <PhoneMockup priority>
-                <InteractiveConciergeChat />
-              </PhoneMockup>
-            </div>
-            
-            <div className="order-1 md:order-2">
-              <RevealGroup className="flex flex-col gap-8">
-                <div>
-                  <h3 className="text-3xl font-bold text-[var(--color-soyl-charcoal)] mb-4">Instant responses, zero front-desk delays.</h3>
-                  <p className="text-lg text-[var(--color-soyl-gray-600)] leading-relaxed">
-                    Guest inquiries answered in under 2 seconds, routed directly to the right department.
-                  </p>
-                </div>
-                
-                <ul className="flex flex-col gap-6">
-                  {[
-                    { title: "Multilingual Voice & Text", desc: "Natural conversations in 50+ languages." },
-                    { title: "Smart Department Routing", desc: "F&B to F&B, towels to Housekeeping. Automatic." },
-                    { title: "Guest Intent Engine", desc: "Captures preferences for targeted upsells." }
-                  ].map((item, i) => (
-                    <Reveal key={i} as="li" className="flex gap-4">
-                      <div className="w-10 h-10 rounded-full bg-[var(--color-soyl-mint-light)] flex items-center justify-center text-[var(--color-soyl-mint-dark)] shrink-0 font-bold">
-                        <Check size={20} />
-                      </div>
-                      <div>
-                        <h4 className="text-lg font-bold text-[var(--color-soyl-charcoal)] mb-1">{item.title}</h4>
-                        <p className="text-[var(--color-soyl-gray-600)]">{item.desc}</p>
-                      </div>
-                    </Reveal>
-                  ))}
-                </ul>
-
-                <Reveal className="pt-2">
-                  <div className="flex flex-wrap items-center gap-4">
-                    <Button variant="primary" size="lg" href="/products/butler-ai" className="group">
-                      Explore Butler AI
-                      <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1" />
-                    </Button>
-                    <Button variant="outline" size="lg" href="/contact">
-                      Start 1-Month Free Trial
-                    </Button>
-                  </div>
-                </Reveal>
-              </RevealGroup>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* 3. METRICS STRIP & HOTEL ADVISOR */}
-      <MetricsStrip />
-      <AdvisorTeaser />
-
-      {/* 4. ARIP FLAGSHIP PRODUCT SECTION (COMING SOON) */}
-      <section id="arip" className="py-24 md:py-32 bg-slate-50 border-t border-slate-200 relative overflow-hidden">
-        <Container className="relative z-10">
-          <div className="max-w-4xl mx-auto text-center mb-16">
-            <Badge variant="outline" className="mb-6 bg-[#E8F5F3] text-[#3D8F87] border-[#6DBAB2]/40">Coming Soon &bull; Join Pilot Waitlist</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-slate-900 mb-6 text-balance">
-              Introducing ARIP: Your Hotel&apos;s Autonomous Digital Workforce.
-            </h2>
-            <p className="text-xl text-slate-600 leading-relaxed text-balance">
-              Specialized AI agents that execute pricing, launch campaigns, and grow RevPAR — 24/7.
-            </p>
-          </div>
-
-          {/* ARIP Make.com / N8N Style Node Pipeline */}
-          <div className="mb-16">
-            <div className="w-full max-w-6xl mx-auto">
-              <AripNodeDiagram />
-            </div>
-          </div>
-
-          <div className="text-center">
-            <Button size="lg" href="/products/arip" className="bg-[#0A0D14] text-white hover:bg-black font-bold px-8 py-3.5 rounded-full shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all group">
-              Explore Technical Architecture & XAI Logs
-              <ArrowRight size={18} className="ml-2 transition-transform group-hover:translate-x-1 inline-block" />
-            </Button>
-          </div>
-        </Container>
-      </section>
-
-      {/* 5. PMS LITE SECTION */}
-      <section className="py-24 md:py-32 bg-[var(--color-soyl-gray-50)] border-t border-[var(--color-soyl-gray-200)]">
-        <Container>
-          <SectionHeader
-            badge="PMS Lite"
-            title="The simplest PMS your staff will love."
-            description="Flat ₹9,999/month. Unlimited rooms. No training required. The affordable alternative to Opera and Cloudbeds."
-          />
-
-          <Reveal className="mb-12">
-            <BrowserMockup src="/images/pms-lite-hero.jpg" alt="PMS Lite Dashboard" glow />
-          </Reveal>
-
-          <div className="text-center">
-            <Button variant="outline" size="lg" href="/products/pms-lite">
-              Explore PMS Lite
-            </Button>
-          </div>
-        </Container>
-      </section>
-
-      {/* 5. ROI / PROOF SECTION */}
-      <section className="py-24 md:py-32 bg-white">
-        <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <Reveal>
-              <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-[var(--color-soyl-charcoal)] mb-6">
-                The ROI is immediate.
+            <Reveal className="order-1 lg:order-2">
+              <Badge variant="secondary" className="mb-6">Butler AI · Available now</Badge>
+              <h2 className="text-balance text-4xl font-bold tracking-[-0.035em] text-slate-950 md:text-5xl">
+                A concierge for guests. An operations queue for staff.
               </h2>
-              <p className="text-xl text-[var(--color-soyl-gray-600)] mb-10 leading-relaxed">
-                Hotels see returns in their first month.
+              <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
+                Butler AI answers routine questions, captures service requests, and routes the work to the right team — while keeping a human close when judgment is needed.
               </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="p-6 bg-[var(--color-soyl-gray-50)] rounded-2xl border border-[var(--color-soyl-gray-200)]">
-                  <div className="text-4xl font-extrabold text-[var(--color-soyl-charcoal)] mb-2">₹2.4L</div>
-                  <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">Saved per month in staff time</p>
-                </div>
-                <div className="p-6 bg-[var(--color-soyl-gray-50)] rounded-2xl border border-[var(--color-soyl-gray-200)]">
-                  <div className="text-4xl font-extrabold text-[var(--color-soyl-charcoal)] mb-2">3×</div>
-                  <p className="text-sm font-medium text-[var(--color-soyl-gray-600)]">More online reviews generated</p>
-                </div>
-              </div>
+              <ul className="mt-8 space-y-4">
+                {[
+                  "No guest app or login",
+                  "Voice and chat in 50+ languages",
+                  "Automatic routing with human escalation",
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm font-semibold text-slate-700">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-soyl-mint-light text-soyl-mint-dark"><Check className="h-3.5 w-3.5" aria-hidden /></span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <Button href="/products/butler-ai" size="lg" className="group mt-9">
+                See Butler AI
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
+              </Button>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      <section className="relative overflow-hidden bg-[#0b121a] py-20 text-white md:py-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_75%_45%,rgba(59,130,246,.16),transparent_35%)]" />
+        <Container className="relative">
+          <div className="grid items-center gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+            <Reveal>
+              <Badge className="mb-6 border-blue-300/20 bg-blue-300/10 text-blue-200 shadow-none">ARIP · Pilot program</Badge>
+              <h2 className="text-balance text-4xl font-bold tracking-[-0.035em] text-white md:text-5xl">
+                Your commercial systems should work as one team.
+              </h2>
+              <p className="mt-6 text-lg leading-8 text-white/60">
+                ARIP is the next SOYL layer: specialized agents coordinating pricing, campaigns, distribution, and guest revenue within rules your team sets.
+              </p>
+              <Button href="/products/arip" size="lg" variant="outline" className="group mt-9 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+                Explore the ARIP vision
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
+              </Button>
             </Reveal>
 
-            <Reveal
-              className="bg-[var(--color-soyl-charcoal)] rounded-[2rem] p-10 md:p-14 text-white shadow-2xl relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-soyl-mint)] rounded-full blur-[80px] opacity-20 translate-x-1/2 -translate-y-1/2" />
-              
-              <div className="relative z-10">
-                <div className="flex gap-1 mb-8">
-                  {[1,2,3,4,5].map(i => (
-                    <svg key={i} className="w-6 h-6 text-[#F59E0B]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-                <blockquote className="text-2xl md:text-3xl font-medium leading-tight mb-8">
-                  &ldquo;Since switching to SOYL Cloud, our guest satisfaction scores jumped from 8.2 to 9.6. The front desk is finally calm.&rdquo;
-                </blockquote>
+            <Reveal className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-2xl backdrop-blur sm:p-7">
+              <div className="mb-6 flex items-center justify-between">
                 <div>
-                  <div className="font-bold text-lg">General Manager</div>
-                  <div className="text-[var(--color-soyl-gray-400)]">Boutique Hotel Trial User</div>
+                  <p className="text-sm font-semibold text-white">Commercial orchestration</p>
+                  <p className="mt-1 text-xs text-white/40">Illustrative workflow</p>
+                </div>
+                <Workflow className="h-5 w-5 text-blue-300" aria-hidden />
+              </div>
+              <div className="grid gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+                <div className="space-y-3">
+                  {[
+                    [CircleDollarSign, "Pricing signals"],
+                    [MessageSquareText, "Guest intent"],
+                    [Sparkles, "Campaign performance"],
+                  ].map(([Icon, label]) => {
+                    const AgentIcon = Icon as typeof CircleDollarSign;
+                    return (
+                      <div key={label as string} className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm font-medium text-white/70">
+                        <AgentIcon className="h-4 w-4 text-blue-300" aria-hidden /> {label as string}
+                      </div>
+                    );
+                  })}
+                </div>
+                <ArrowRight className="mx-auto h-5 w-5 rotate-90 text-blue-300 sm:rotate-0" aria-hidden />
+                <div className="rounded-2xl border border-soyl-mint/25 bg-soyl-mint/10 p-5">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-soyl-mint/15 text-soyl-mint"><Bot className="h-5 w-5" aria-hidden /></div>
+                  <p className="mt-5 font-semibold text-white">ARIP orchestrator</p>
+                  <p className="mt-2 text-sm leading-6 text-white/50">Coordinates specialist agents, checks operating rules, and keeps a reviewable decision record.</p>
                 </div>
               </div>
             </Reveal>
@@ -259,39 +286,13 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 6. TARGET AUDIENCE */}
-      <section className="py-24 bg-[var(--color-soyl-gray-50)] border-t border-[var(--color-soyl-gray-200)]">
-        <Container>
-          <SectionHeader
-            badge="Built For"
-            title="Every kind of hospitality business."
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: Hotel, title: "Boutique Hotels", desc: "Elevate guest experience with AI concierge." },
-              { icon: Bed, title: "Resorts & Villas", desc: "Multi-property management with centralized control." },
-              { icon: ShieldCheck, title: "Hotel Chains", desc: "Enterprise dashboards with cross-property analytics." },
-              { icon: UtensilsCrossed, title: "Restaurants", desc: "QR ordering and kitchen workflows." }
-            ].map((item, i) => (
-              <Reveal
-                key={i}
-                delay={i * 0.1}
-                className="bg-white p-8 rounded-2xl border border-[var(--color-soyl-gray-200)] shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="w-12 h-12 bg-[var(--color-soyl-gray-100)] rounded-xl flex items-center justify-center text-[var(--color-soyl-charcoal)] mb-6">
-                  <item.icon size={24} strokeWidth={1.5} />
-                </div>
-                <h3 className="text-xl font-bold text-[var(--color-soyl-charcoal)] mb-3">{item.title}</h3>
-                <p className="text-[var(--color-soyl-gray-600)]">{item.desc}</p>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* 7. FINAL CTA */}
-      <FinalCTA />
+      <FinalCTA
+        eyebrow="Start with one guest workflow"
+        title="Make service feel instant — without making operations invisible."
+        description="See how Butler AI would handle the requests your front desk receives every day."
+        secondaryLabel="Try the free Hotel Advisor"
+        secondaryHref="/advisor"
+      />
     </>
   );
 }

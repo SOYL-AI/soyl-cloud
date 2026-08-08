@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { COMPANY } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "ARIP Platform — Autonomous Digital Workforce",
-  description: "Synchronized workforce of specialized AI agents that autonomously execute pricing, launch marketing campaigns, and grow RevPAR around the clock.",
+  title: "ARIP — AI Commercial Orchestration for Hotels",
+  description: "Explore ARIP, SOYL's pilot-stage platform for coordinating hotel pricing, marketing, distribution, and guest revenue agents within hotel-defined controls.",
   openGraph: {
-    title: "ARIP Platform — Autonomous Digital Workforce | SOYL Cloud",
-    description: "Synchronized workforce of specialized AI agents that autonomously execute pricing, launch marketing campaigns, and grow RevPAR around the clock.",
+    title: "ARIP — AI Commercial Orchestration for Hotels | SOYL Cloud",
+    description: "Specialist hotel commercial agents, coordinated with shared context, controls, and reviewable decisions.",
     url: `https://${COMPANY.domain}/products/arip`,
   },
   alternates: {

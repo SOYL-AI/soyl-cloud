@@ -1,203 +1,144 @@
-'use client'
+import {
+  ArrowRight,
+  BarChart3,
+  Bot,
+  Check,
+  CircleDollarSign,
+  FileSearch,
+  Gauge,
+  Globe2,
+  Megaphone,
+  MessageSquareText,
+  Network,
+  ScanSearch,
+  ShieldCheck,
+  ShoppingBag,
+  SlidersHorizontal,
+} from "lucide-react";
 
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
-import { TrendingUp, Search, FileText, Globe, MessageSquare, ShoppingCart, ShieldCheck, Terminal, ChevronRight, Activity, Zap } from 'lucide-react'
-import { Container } from '@/components/ui/Container'
-import { Button } from '@/components/ui/Button'
-import { Badge } from '@/components/ui/Badge'
-import { Reveal, RevealGroup } from '@/components/ui/Reveal'
-import { FinalCTA } from '@/components/sections/FinalCTA'
-import { ProductSchema } from '@/components/seo/SchemaInjector'
-import { AripNodeDiagram } from '@/components/animations/AripNodeDiagram'
+import { FinalCTA } from "@/components/sections/FinalCTA";
+import { ProductSchema } from "@/components/seo/SchemaInjector";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Container } from "@/components/ui/Container";
+import { Reveal, RevealGroup } from "@/components/ui/Reveal";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 
 const AGENTS = [
   {
-    id: 'revenue',
-    name: 'Revenue & Pricing Agent',
-    icon: <TrendingUp className="h-5 w-5" />,
-    description: 'Executes continuous micro-optimizations across all channels based on multi-variate demand signals.',
-    stat: '+$14.2K',
-    statLabel: 'RevPAR Lift (30d)',
-    color: 'text-emerald-400',
-    bgColor: 'bg-emerald-400/10',
-    borderColor: 'border-emerald-500/30',
-    glowColor: 'shadow-[0_0_30px_rgba(52,211,153,0.15)]',
-    log: `> [SYSTEM] Initializing Demand Scan
-> Parsing 40+ regional signals...
-> Flight arrivals +22% for next week
-> Competitor A sold out base rooms
-> Action: Adjusting BAR Rate Deluxe King +14% ($210 -> $239)
-> Status: SUCCESS. Synchronizing across channels...`
+    icon: Gauge,
+    title: "Revenue & pricing",
+    text: "Monitors demand signals and proposes rate actions within your rules.",
+    accent: "bg-emerald-400/10 text-emerald-300 border-emerald-300/15",
   },
   {
-    id: 'ads',
-    name: 'Performance Media Agent',
-    icon: <Search className="h-5 w-5" />,
-    description: 'Dynamically shifts ad spend towards highest-converting clusters while pausing inefficient campaigns.',
-    stat: '-28%',
-    statLabel: 'CPA Reduction',
-    color: 'text-blue-400',
-    bgColor: 'bg-blue-400/10',
-    borderColor: 'border-blue-500/30',
-    glowColor: 'shadow-[0_0_30px_rgba(96,165,250,0.15)]',
-    log: `> [ADS_ENGINE] Analyzing keyword performance
-> High intent detected: "luxury suites near downtown"
-> ROAS dropping on generic terms...
-> Action: Reallocating $500/day to high-intent cluster
-> Status: Optimization deployed. ROAS tracking updated.`
+    icon: Megaphone,
+    title: "Performance media",
+    text: "Coordinates campaign budgets, audiences, and creative tests.",
+    accent: "bg-blue-400/10 text-blue-300 border-blue-300/15",
   },
   {
-    id: 'seo',
-    name: 'Organic Growth Agent',
-    icon: <FileText className="h-5 w-5" />,
-    description: 'Parametrically generates localized landing pages and schema markup to capture long-tail search intent.',
-    stat: '+340%',
-    statLabel: 'Organic Traffic Lift',
-    color: 'text-purple-400',
-    bgColor: 'bg-purple-400/10',
-    borderColor: 'border-purple-500/30',
-    glowColor: 'shadow-[0_0_30px_rgba(192,132,252,0.15)]',
-    log: `> [CONTENT_GEN] Identifying search gaps
-> Trend spotted: "Winter retreats with spa"
-> Generating 1200-word semantic cluster...
-> Compiling custom Schema.org structured data...
-> Action: Publishing to /blog/winter-spa-retreat
-> Status: Live and indexed via API.`
+    icon: ScanSearch,
+    title: "Organic growth",
+    text: "Finds high-intent search gaps and turns them into reviewable content briefs.",
+    accent: "bg-violet-400/10 text-violet-300 border-violet-300/15",
   },
   {
-    id: 'ota',
-    name: 'Distribution Agent',
-    icon: <Globe className="h-5 w-5" />,
-    description: 'Polices rate parity autonomously and manages ranking algorithms across major OTAs.',
-    stat: '+18%',
-    statLabel: 'OTA Visibility Score',
-    color: 'text-orange-400',
-    bgColor: 'bg-orange-400/10',
-    borderColor: 'border-orange-500/30',
-    glowColor: 'shadow-[0_0_30px_rgba(251,146,60,0.15)]',
-    log: `> [OTA_SYNC] Global parity check initiated
-> Expedia rate: $239 | Booking.com rate: $245
-> Violation detected: Margin compression risk
-> Action: Harmonizing net rates across distribution matrix
-> Status: Parity restored. Ranking algorithms satisfied.`
+    icon: Globe2,
+    title: "Distribution",
+    text: "Watches channel consistency, availability, and rate parity signals.",
+    accent: "bg-amber-400/10 text-amber-300 border-amber-300/15",
   },
   {
-    id: 'butler',
-    name: 'Intent Extraction Agent',
-    icon: <MessageSquare className="h-5 w-5" />,
-    description: 'Distills unstructured zero-party conversational data into structured operational triggers.',
-    stat: '4.2K',
-    statLabel: 'Context Nodes Mapped',
-    color: 'text-cyan-400',
-    bgColor: 'bg-cyan-400/10',
-    borderColor: 'border-cyan-500/30',
-    glowColor: 'shadow-[0_0_30px_rgba(34,211,238,0.15)]',
-    log: `> [INTENT_EXTRACTOR] Parsing inbound comms
-> Thread: "We are coming for our 10th anniversary."
-> Extracted vectors: [Anniversary, VIP_Potential]
-> Action: Appending to Unified Guest Profile
-> Alerting Master Orchestrator for workflow trigger
-> Status: Processed and queued.`
+    icon: MessageSquareText,
+    title: "Guest intent",
+    text: "Turns guest conversations into useful commercial and service context.",
+    accent: "bg-cyan-400/10 text-cyan-300 border-cyan-300/15",
   },
   {
-    id: 'upsell',
-    name: 'Ancillary Revenue Agent',
-    icon: <ShoppingCart className="h-5 w-5" />,
-    description: 'Determines the optimal commercial offer and timing for each guest across their journey.',
-    stat: '+$8.5K',
-    statLabel: 'Ancillary Rev (30d)',
-    color: 'text-pink-400',
-    bgColor: 'bg-pink-400/10',
-    borderColor: 'border-pink-500/30',
-    glowColor: 'shadow-[0_0_30px_rgba(244,114,182,0.15)]',
-    log: `> [UPSELL_ENGINE] Ingesting orchestrator context
-> Guest Profile ID #8849: Anniversary, high-spend propensity
-> Inventory check: Executive Suite (Available), Spa (2 slots)
-> Action: Dispatching dynamic SMS offer (T-minus 24h)
-> Status: Sent. Conversion webhook listening.`
-  }
-]
+    icon: ShoppingBag,
+    title: "Ancillary revenue",
+    text: "Matches relevant upgrades and hotel services to the right moment.",
+    accent: "bg-pink-400/10 text-pink-300 border-pink-300/15",
+  },
+];
+
+const FLOW = [
+  { number: "01", title: "Observe", text: "Collect approved commercial and guest signals.", icon: BarChart3 },
+  { number: "02", title: "Coordinate", text: "Share context across specialist agents.", icon: Network },
+  { number: "03", title: "Check", text: "Apply hotel rules, limits, and approvals.", icon: ShieldCheck },
+  { number: "04", title: "Act & explain", text: "Execute approved work with a reviewable record.", icon: FileSearch },
+];
 
 export default function AripPage() {
-  const [activeAgent, setActiveAgent] = useState(AGENTS[0])
-  
-  // Terminal typing effect state
-  const [displayedLog, setDisplayedLog] = useState('')
-  
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDisplayedLog('')
-    let i = 0
-    const text = activeAgent.log
-    
-    const typingInterval = setInterval(() => {
-      if (i < text.length) {
-        setDisplayedLog(text.slice(0, i + 1))
-        i++
-      } else {
-        clearInterval(typingInterval)
-      }
-    }, 15) // Speed of typing
-    
-    return () => clearInterval(typingInterval)
-  }, [activeAgent])
-
   return (
     <>
       <ProductSchema
         name="ARIP"
-        description="An autonomous workforce of specialized AI agents engineered to optimize total revenue and fundamentally shift hospitality unit economics."
-        image="/images/arip-orchestrator.jpg"
+        description="A pilot-stage orchestration platform for specialized hotel commercial agents, designed to coordinate pricing, marketing, distribution, and guest revenue within hotel-defined controls."
       />
-      
-      <main className="flex-1 bg-white">
-        {/* HERO */}
-        <section className="bg-[#0A0D14] relative pt-32 pb-24 overflow-hidden border-b border-white/5 text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-soyl-mint/10 via-[#0A0D14] to-[#0A0D14]"></div>
-          <Container className="relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+      <main className="flex-1 bg-[#09100f] text-white">
+        <section className="relative overflow-hidden border-b border-white/10 pb-20 pt-32 md:pb-28 md:pt-40">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(59,130,246,.2),transparent_29%),radial-gradient(circle_at_18%_78%,rgba(109,186,178,.14),transparent_28%)]" />
+          <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,.8)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.8)_1px,transparent_1px)] [background-size:52px_52px]" />
+
+          <Container className="relative">
+            <div className="grid items-center gap-14 lg:grid-cols-[0.86fr_1.14fr] lg:gap-16">
               <div className="max-w-2xl">
-                <Reveal>
-                  <Badge variant="outline" className="mb-6 border-soyl-mint/30 text-soyl-mint bg-soyl-mint/5 backdrop-blur-sm">
-                    <Activity className="w-3 h-3 mr-2 inline-block animate-pulse" />
-                    ARIP Orchestrator is Live
-                  </Badge>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 leading-tight">
-                    Rewire your property&apos;s <span className="text-transparent bg-clip-text bg-gradient-to-r from-soyl-mint to-blue-400">financial engine.</span>
-                  </h1>
-                </Reveal>
-                <Reveal delay={0.2}>
-                  <p className="text-lg md:text-xl text-gray-400 mb-10 leading-relaxed">
-                    ARIP is not just another Revenue Management System. It is an autonomous commercial workforce. Six specialized AI agents functioning cohesively to compress operational overhead and maximize RevPAR around the clock.
-                  </p>
-                </Reveal>
-                <Reveal delay={0.3} className="flex flex-col sm:flex-row gap-4">
-                  <Button href="/contact" size="lg" className="bg-white text-[#0A0D14] hover:bg-gray-100 rounded-full px-8 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                    Schedule Technical Briefing
+                <Badge className="mb-7 border-blue-300/20 bg-blue-300/10 text-blue-200 shadow-none">ARIP · Pilot program</Badge>
+                <h1 className="text-balance text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
+                  Your commercial team, working as one system.
+                </h1>
+                <p className="mt-7 max-w-xl text-balance text-lg leading-8 text-white/65 md:text-xl">
+                  ARIP coordinates specialist AI agents across pricing, marketing, distribution, and guest revenue — with the controls and visibility hotel teams need.
+                </p>
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                  <Button href="/contact" size="lg" variant="secondary" className="group border border-soyl-mint/60 px-7">
+                    Join ARIP pilot
+                    <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
                   </Button>
-                  <Button href="#architecture" variant="outline" size="lg" className="border-white/10 text-white hover:bg-white/5 rounded-full px-8 backdrop-blur-sm">
-                    Explore Architecture
+                  <Button href="#how-it-works" size="lg" variant="outline" className="border-white/20 bg-white/5 text-white hover:bg-white/10 hover:text-white">
+                    View workflow
                   </Button>
-                </Reveal>
+                </div>
+                <p className="mt-5 text-sm text-white/40">ARIP is in development. Pilot workflows are shaped with participating hotels.</p>
               </div>
-              
-              <div className="relative w-full flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-tr from-soyl-mint/10 to-transparent rounded-full blur-3xl opacity-30"></div>
-                <div className="w-full relative z-10">
-                  <div className="relative rounded-2xl overflow-hidden shadow-2xl group border border-white/10 bg-[#0A0D14]/80 backdrop-blur-sm p-1">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-soyl-mint/20 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none rounded-2xl" />
-                    <Image 
-                      src="/images/arip-flow.jpg" 
-                      alt="ARIP Agent Flow" 
-                      width={1200} 
-                      height={800} 
-                      className="w-full h-auto object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 rounded-xl mix-blend-screen"
-                    />
-                    <div className="absolute inset-0 ring-1 ring-inset ring-white/10 rounded-xl pointer-events-none"></div>
+
+              <div className="relative mx-auto w-full max-w-2xl" aria-label="ARIP coordinating hotel data, specialist agents, and governed actions">
+                <div className="absolute -inset-6 rounded-[2.5rem] bg-blue-400/10 blur-3xl" />
+                <div className="relative rounded-[2rem] border border-white/10 bg-white/[0.05] p-5 shadow-2xl backdrop-blur-xl sm:p-7">
+                  <div className="mb-6 flex items-center justify-between border-b border-white/10 pb-5">
+                    <div><p className="text-sm font-semibold text-white">ARIP orchestration map</p><p className="mt-1 text-xs text-white/40">Illustrative pilot workflow</p></div>
+                    <Network className="h-5 w-5 text-blue-300" aria-hidden />
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-[1fr_auto_1.2fr_auto_1fr] sm:items-center">
+                    <div className="space-y-2.5">
+                      {["Demand", "Guest intent", "Performance"].map((item, index) => {
+                        const icons = [BarChart3, MessageSquareText, CircleDollarSign];
+                        const Icon = icons[index];
+                        return (
+                          <div key={item} className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-xs font-semibold text-white/65">
+                            <Icon className="h-4 w-4 text-blue-300" aria-hidden /> {item}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <ArrowRight className="mx-auto h-4 w-4 rotate-90 text-blue-300 sm:rotate-0" aria-hidden />
+                    <div className="rounded-2xl border border-soyl-mint/25 bg-soyl-mint/10 p-5 text-center">
+                      <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-soyl-mint/15 text-soyl-mint"><Bot className="h-6 w-6" aria-hidden /></span>
+                      <p className="mt-4 text-sm font-bold text-white">ARIP orchestrator</p>
+                      <p className="mt-1.5 text-xs leading-5 text-white/45">Shared context · policy checks · decision record</p>
+                    </div>
+                    <ArrowRight className="mx-auto h-4 w-4 rotate-90 text-soyl-mint sm:rotate-0" aria-hidden />
+                    <div className="space-y-2.5">
+                      {["Rate action", "Campaign brief", "Guest offer"].map((item) => (
+                        <div key={item} className="flex items-center gap-2.5 rounded-xl border border-emerald-300/15 bg-emerald-300/[0.06] p-3 text-xs font-semibold text-emerald-100/75">
+                          <Check className="h-4 w-4 text-emerald-300" aria-hidden /> {item}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -205,230 +146,104 @@ export default function AripPage() {
           </Container>
         </section>
 
-        {/* FINANCIAL IMPACT / THE SHIFT */}
-        <section className="py-24 bg-gray-50 border-b border-gray-200">
+        <section className="border-b border-white/10 bg-[#0c1514] py-7">
           <Container>
-            <div className="max-w-4xl mx-auto text-center mb-16">
-              <Reveal>
-                <h2 className="text-3xl md:text-4xl font-bold text-[#1A1F25] mb-6">
-                  A systemic shift in hospitality unit economics.
-                </h2>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <p className="text-xl text-gray-600">
-                  The legacy model relies on siloed tools and human bottlenecks. ARIP unifies demand generation, pricing logic, and digital operations into a single deterministic feedback loop, fundamentally altering the profit margins of your asset.
-                </p>
-              </Reveal>
+            <div className="grid gap-5 text-center sm:grid-cols-3">
+              {[
+                [SlidersHorizontal, "Hotel-defined controls"],
+                [Network, "Shared agent context"],
+                [FileSearch, "Reviewable decisions"],
+              ].map(([Icon, label]) => {
+                const ItemIcon = Icon as typeof SlidersHorizontal;
+                return (
+                  <div key={label as string} className="flex items-center justify-center gap-2 text-sm font-semibold text-white/60">
+                    <ItemIcon className="h-4 w-4 text-soyl-mint" aria-hidden /> {label as string}
+                  </div>
+                );
+              })}
             </div>
-            
-            <RevealGroup className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Reveal delay={0.1}>
-                <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                  <div className="text-4xl font-bold text-[#1A1F25] mb-2">+12-18%</div>
-                  <div className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Gross RevPAR Uplift</div>
-                  <p className="text-gray-500 text-sm">Achieved through continuous micro-adjustments and algorithmic parity management across the distribution matrix.</p>
-                </div>
-              </Reveal>
-              <Reveal delay={0.2}>
-                <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                  <div className="text-4xl font-bold text-[#1A1F25] mb-2">-40%</div>
-                  <div className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">CAC Reduction</div>
-                  <p className="text-gray-500 text-sm">By dynamically shifting media spend and generating hyper-relevant organic entry vectors without agency overhead.</p>
-                </div>
-              </Reveal>
-              <Reveal delay={0.3}>
-                <div className="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm">
-                  <div className="text-4xl font-bold text-[#1A1F25] mb-2">24/7/365</div>
-                  <div className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">Operational Velocity</div>
-                  <p className="text-gray-500 text-sm">Decisions executed instantaneously based on live signals, completely eliminating the latency of human analysis.</p>
-                </div>
-              </Reveal>
+          </Container>
+        </section>
+
+        <section id="how-it-works" className="scroll-mt-24 bg-[#f5f7f7] py-20 text-slate-950 md:py-28">
+          <Container>
+            <SectionHeader
+              badge="The operating loop"
+              title="From signal to governed action."
+              description="ARIP is designed to coordinate work without hiding how a decision was reached."
+              className="mb-12"
+            />
+            <RevealGroup className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {FLOW.map((item) => (
+                <article key={item.title} className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-[0_18px_50px_rgba(15,23,42,.05)]">
+                  <span className="absolute right-6 top-5 text-5xl font-bold tracking-tighter text-slate-100">{item.number}</span>
+                  <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-700"><item.icon className="h-5 w-5" aria-hidden /></div>
+                  <h3 className="relative mt-7 text-lg font-bold text-slate-950">{item.title}</h3>
+                  <p className="relative mt-2 text-sm leading-6 text-slate-600">{item.text}</p>
+                </article>
+              ))}
             </RevealGroup>
           </Container>
         </section>
 
-        {/* INTERACTIVE AGENT ARCHITECTURE */}
-        <section id="architecture" className="py-24 bg-white overflow-hidden">
+        <section className="border-y border-white/10 bg-[#09100f] py-20 md:py-28">
           <Container>
-            <div className="mb-16">
+            <div className="mb-12 max-w-3xl">
               <Reveal>
-                <Badge variant="secondary" className="mb-4 bg-gray-100 text-[#1A1F25] border-none">The Orchestrator Matrix</Badge>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <h2 className="text-3xl md:text-5xl font-bold text-[#1A1F25] mb-4">
-                  Six specialists. One unified brain.
-                </h2>
-              </Reveal>
-              <Reveal delay={0.2}>
-                <p className="text-gray-600 text-lg max-w-2xl">
-                  Explore how each specialized autonomous agent executes its domain logic while sharing contextual state through the central ARIP Orchestrator.
-                </p>
+                <Badge className="mb-6 border-white/15 bg-white/5 text-white/70 shadow-none">Specialist agents</Badge>
+                <h2 className="text-balance text-4xl font-bold tracking-[-0.035em] text-white md:text-5xl">Six roles. One shared operating context.</h2>
+                <p className="mt-5 max-w-2xl text-lg leading-8 text-white/55">Each agent has a focused job. The orchestrator connects their work so one decision does not undermine another.</p>
               </Reveal>
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-              {/* Left Column: Agent Selector */}
-              <div className="lg:col-span-5 space-y-3">
-                {AGENTS.map((agent) => (
-                  <button
-                    key={agent.id}
-                    onClick={() => setActiveAgent(agent)}
-                    className={`w-full text-left p-4 rounded-xl transition-all duration-200 border flex items-center justify-between group ${
-                      activeAgent.id === agent.id
-                        ? 'bg-[#0A0D14] border-[#0A0D14] shadow-lg text-white'
-                        : 'bg-white border-gray-200 hover:border-gray-300 text-[#1A1F25]'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className={`p-2 rounded-lg ${
-                        activeAgent.id === agent.id ? agent.bgColor : 'bg-gray-100 text-gray-500 group-hover:text-gray-900'
-                      } ${activeAgent.id === agent.id ? agent.color : ''}`}>
-                        {agent.icon}
-                      </div>
-                      <span className="font-semibold">{agent.name}</span>
-                    </div>
-                    <ChevronRight className={`w-5 h-5 ${activeAgent.id === agent.id ? 'text-white/50' : 'text-gray-400'}`} />
-                  </button>
-                ))}
-              </div>
-
-              {/* Right Column: Active Terminal View */}
-              <div className="lg:col-span-7">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeAgent.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="h-full flex flex-col"
-                  >
-                    {/* Stat Card */}
-                    <div className={`p-6 rounded-t-2xl border-x border-t bg-[#0A0D14] ${activeAgent.borderColor} ${activeAgent.glowColor} relative overflow-hidden`}>
-                      <div className="absolute top-0 right-0 p-8 opacity-10">
-                        {activeAgent.icon}
-                      </div>
-                      <div className="relative z-10 flex justify-between items-end">
-                        <div>
-                          <div className={`text-sm font-mono mb-1 ${activeAgent.color}`}>{"//"} {activeAgent.id}_module.sys</div>
-                          <h3 className="text-2xl font-bold text-white mb-2">{activeAgent.name}</h3>
-                          <p className="text-gray-400 text-sm max-w-md">{activeAgent.description}</p>
-                        </div>
-                        <div className="text-right">
-                          <div className={`text-3xl font-bold ${activeAgent.color}`}>{activeAgent.stat}</div>
-                          <div className="text-xs text-gray-500 uppercase tracking-wider">{activeAgent.statLabel}</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Terminal View */}
-                    <div className={`flex-1 p-6 rounded-b-2xl bg-[#05070A] border-x border-b ${activeAgent.borderColor} font-mono text-sm relative`}>
-                      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                      <pre className={`whitespace-pre-wrap leading-relaxed ${activeAgent.color} opacity-90 drop-shadow-md`}>
-                        {displayedLog}
-                        <span className="animate-pulse inline-block w-2 h-4 bg-current ml-1 align-middle"></span>
-                      </pre>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
+            <RevealGroup className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {AGENTS.map((agent) => (
+                <article key={agent.title} className="rounded-3xl border border-white/10 bg-white/[0.045] p-7 transition-[background-color,border-color,transform] duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.07]">
+                  <div className={`flex h-11 w-11 items-center justify-center rounded-2xl border ${agent.accent}`}><agent.icon className="h-5 w-5" aria-hidden /></div>
+                  <h3 className="mt-6 text-lg font-bold text-white">{agent.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/50">{agent.text}</p>
+                </article>
+              ))}
+            </RevealGroup>
           </Container>
         </section>
 
-        {/* XAI DECISION LOG SECTION */}
-        <section className="py-32 bg-[#0A0D14] text-white relative overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none"></div>
-          <Container className="relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div>
-                <Reveal>
-                  <Badge variant="outline" className="mb-6 border-emerald-500/30 text-emerald-400 bg-emerald-500/10 backdrop-blur-md">
-                    <ShieldCheck className="w-3 h-3 mr-2 inline" />
-                    Explainable AI (XAI)
-                  </Badge>
-                </Reveal>
-                <Reveal delay={0.1}>
-                  <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                    Total autonomy. Zero black boxes.
-                  </h2>
-                </Reveal>
-                <Reveal delay={0.2}>
-                  <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-                    Enterprise governance requires absolute transparency. Unlike legacy machine learning models, ARIP utilizes deterministic constraint solvers and human-readable Chain-of-Thought logs. Every action is cryptographically recorded, mathematically justified, and strictly bounded by your GM&apos;s predefined parameters.
-                  </p>
-                </Reveal>
-                
-                <RevealGroup className="space-y-6">
-                  <Reveal delay={0.3}>
-                    <div className="flex items-start">
-                      <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mr-4 flex-shrink-0">
-                        <Zap className="h-5 w-5 text-emerald-400" />
+        <section className="bg-white py-20 text-slate-950 md:py-28">
+          <Container>
+            <div className="grid items-center gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
+              <Reveal>
+                <Badge variant="secondary" className="mb-6">Control layer</Badge>
+                <h2 className="text-balance text-4xl font-bold tracking-[-0.035em] text-slate-950 md:text-5xl">Automation should be inspectable.</h2>
+                <p className="mt-6 text-lg leading-8 text-slate-600">ARIP is being designed around bounded actions: the hotel defines limits, teams choose approval levels, and every material action leaves a readable record.</p>
+                <ul className="mt-8 space-y-4">
+                  {["Policy checks before action", "Approval gates for sensitive changes", "Evidence and outcome recorded together"].map((item) => (
+                    <li key={item} className="flex items-center gap-3 text-sm font-semibold text-slate-700"><Check className="h-4 w-4 text-soyl-mint-dark" aria-hidden /> {item}</li>
+                  ))}
+                </ul>
+              </Reveal>
+
+              <Reveal className="overflow-hidden rounded-[2rem] border border-slate-200 bg-[#0a1110] shadow-2xl">
+                <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+                  <div className="flex gap-2" aria-hidden><span className="h-2.5 w-2.5 rounded-full bg-red-400/70" /><span className="h-2.5 w-2.5 rounded-full bg-amber-300/70" /><span className="h-2.5 w-2.5 rounded-full bg-emerald-400/70" /></div>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-white/35">Illustrative decision record</p>
+                  <ShieldCheck className="h-4 w-4 text-soyl-mint" aria-hidden />
+                </div>
+                <div className="grid gap-5 p-5 sm:p-7 md:grid-cols-[0.85fr_1.15fr]">
+                  <div className="space-y-3">
+                    {["Demand signal detected", "Pricing agent proposes change", "Hotel policy is checked", "Approval required"].map((item, index) => (
+                      <div key={item} className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/[0.035] p-3">
+                        <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${index < 3 ? "bg-emerald-300/10 text-emerald-300" : "bg-amber-300/10 text-amber-200"}`}>{index < 3 ? "✓" : "!"}</span>
+                        <span className="text-xs font-medium text-white/60">{item}</span>
                       </div>
-                      <div>
-                        <h4 className="font-semibold text-white">Deterministic Execution</h4>
-                        <p className="text-gray-400 text-sm mt-1">Pricing vectors never hallucinate. Actions are bound by rigid mathematical constraints.</p>
-                      </div>
-                    </div>
-                  </Reveal>
-                  <Reveal delay={0.4}>
-                    <div className="flex items-start">
-                      <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mr-4 flex-shrink-0">
-                        <Terminal className="h-5 w-5 text-emerald-400" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-white">Chain-of-Thought Audits</h4>
-                        <p className="text-gray-400 text-sm mt-1">Instantly review the exact evidence and logic pathway that led to any commercial decision.</p>
-                      </div>
-                    </div>
-                  </Reveal>
-                </RevealGroup>
-              </div>
-              
-              <Reveal delay={0.2}>
-                {/* Premium Terminal UI */}
-                <div className="relative rounded-2xl overflow-hidden bg-[#0A0D14] border border-emerald-500/30 shadow-[0_0_80px_rgba(16,185,129,0.15)] backdrop-blur-xl">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50"></div>
-                  
-                  {/* Terminal Header */}
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-emerald-500/20 bg-white/[0.02]">
-                    <div className="flex space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-red-500/80"></div>
-                      <div className="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-                      <div className="w-3 h-3 rounded-full bg-emerald-500/80"></div>
-                    </div>
-                    <div className="text-xs font-mono text-emerald-500/70 tracking-widest uppercase">
-                      Audit_Log.exe
-                    </div>
-                    <div className="w-14"></div> {/* Spacer for centering */}
+                    ))}
                   </div>
-                  
-                  {/* Terminal Body */}
-                  <div className="p-6 font-mono text-sm leading-relaxed text-emerald-400/90">
-                    <pre className="whitespace-pre-wrap">
-{`[ EXECUTING DECISION #ARIP-8841 ]
-Timestamp: 2026-08-04 14:22:10 UTC
-Target: Core Pricing Matrix
-
-> Fetching constraint parameters... [OK]
-> Analyzing multi-variate vectors:
-  ├─ API_Flight: Regional arrivals +22% (T+1)
-  ├─ API_CompSet: Competitor A base sold out
-  └─ API_Weather: Forecast update (Rain → Sunny)
-
-> Calculating probabilistic outcome...
-  Expected RevPAR Delta: +$2,800
-  Confidence Score: 94.2%
-
-> Evaluating GM Policy Bounds:
-  Max Rate Cap: $350 (PASS)
-  Min Stay Req: None (PASS)
-
-> ACTION COMMITTED:
-  Update BAR Rate Deluxe King +14% ($210 → $239)
-  
-> Syncing via SiteMinder API... [200 OK]`}
-                    </pre>
+                  <div className="rounded-2xl border border-soyl-mint/20 bg-soyl-mint/[0.07] p-5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.17em] text-soyl-mint">Proposed action</p>
+                    <p className="mt-4 text-lg font-bold text-white">Review a rate adjustment for high-demand dates</p>
+                    <div className="mt-5 space-y-2 border-t border-white/10 pt-4 text-xs text-white/45">
+                      <div className="flex justify-between gap-4"><span>Evidence</span><span className="text-right text-white/70">Demand + availability signals</span></div>
+                      <div className="flex justify-between gap-4"><span>Policy</span><span className="text-right text-white/70">Within configured rate band</span></div>
+                      <div className="flex justify-between gap-4"><span>Next step</span><span className="text-right font-semibold text-amber-200">Manager approval</span></div>
+                    </div>
                   </div>
                 </div>
               </Reveal>
@@ -436,34 +251,16 @@ Target: Core Pricing Matrix
           </Container>
         </section>
 
-        {/* N8N BASED VISUAL BUILDER SECTION */}
-        <section className="py-24 bg-[#0A0D14] border-t border-white/5 relative overflow-hidden">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-soyl-mint opacity-5 blur-[120px] rounded-full pointer-events-none" />
-          <Container className="relative z-10">
-            <div className="max-w-3xl mx-auto text-center mb-16">
-              <Reveal>
-                <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">
-                  Visual Logic Builder
-                </h2>
-              </Reveal>
-              <Reveal delay={0.1}>
-                <p className="text-lg text-gray-400">
-                  Configure custom workflows and orchestrate agents with our powerful node-based editor. 
-                  Connect your PMS, OTAs, and third-party tools seamlessly.
-                </p>
-              </Reveal>
-            </div>
-            
-            <Reveal delay={0.2}>
-              <div className="w-full max-w-5xl mx-auto">
-                <AripNodeDiagram />
-              </div>
-            </Reveal>
-          </Container>
-        </section>
-
-        <FinalCTA />
+        <FinalCTA
+          eyebrow="Help shape the pilot"
+          title="Build an AI commercial workflow around your hotel’s real constraints."
+          description="We’re speaking with hotel operators about the decisions they would automate, review, or keep fully human."
+          primaryLabel="Talk to the ARIP team"
+          primaryHref="/contact"
+          secondaryLabel="See Butler AI today"
+          secondaryHref="/products/butler-ai"
+        />
       </main>
     </>
-  )
+  );
 }

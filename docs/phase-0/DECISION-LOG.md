@@ -94,6 +94,8 @@ Format: `date · milestone · decision — reason`
 
 ## Post-M6 · Marketing Advisor Redesign
 
+- 2026-08-08 · Post-M6 · **Marketing claims now distinguish shipped capability from product vision** — Butler AI is presented as available, while ARIP is explicitly a pilot-stage product with illustrative workflows; simulated outcome figures and “live” execution language were removed because polished UI must not imply customer evidence or production readiness that the product has not established.
+
 - 2026-08-08 · Post-M6 · **Public advisor redesigned from 5-question wizard to multi-turn agentic conversation** — founder directed a shift from fixed questions to adaptive AI profiling. The old endpoint (`POST /v1/advisor`) is preserved for backward compatibility; the new one (`POST /v1/advisor/chat`) accepts full conversation history per turn so conversation state lives on the client, not in Redis.
 - 2026-08-08 · Post-M6 · **Product knowledge delivered via static prompt context, not RAG** — 5 products x ~200 words fits trivially in a prompt window. Embedding it would add chunking, vector search and a marketing tenant for zero retrieval benefit, and would blur the provenance boundary the product depends on.
 - 2026-08-08 · Post-M6 · **Figure stripping relaxed for the conversational advisor** — the original `strip_invented_figures` is preserved for the one-shot advisor. The new `strip_visitor_specific_figures` only targets claims about the visitor's specific property, allowing general industry references and product feature claims.
