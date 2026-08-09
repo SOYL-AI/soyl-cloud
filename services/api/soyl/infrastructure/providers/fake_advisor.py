@@ -86,7 +86,7 @@ class FakeConversationalAdvisor:
                     blocks=[AdvisorBlock(type="text.markdown", markdown="Here is some advice.")]
                 ),
                 product_suggestions=[
-                    ProductSuggestion(product="Butler AI", reason="You mentioned guest requests.", relevance="high")
+                    ProductSuggestion(product="Butler AI", reason="You mentioned guest requests.", relevance="high")  # noqa: E501
                 ]
             )
         return resp, Usage(provider=PROVIDER, model=self._model)

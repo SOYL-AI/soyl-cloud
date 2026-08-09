@@ -19,10 +19,10 @@ from soyl.infrastructure.email import EmailSender
 from soyl.infrastructure.providers.factory import (
     build_advisor_provider,
     build_answer_provider,
+    build_conversational_advisor_provider,
     build_embedding_provider,
     build_question_provider,
     build_rerank_provider,
-    build_conversational_advisor_provider,
 )
 from soyl.infrastructure.storage.s3 import S3Storage
 from soyl.interface.http.errors import register_exception_handlers
