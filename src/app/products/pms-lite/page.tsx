@@ -55,8 +55,6 @@ export default function PmsLitePage() {
                   size="lg" 
                   variant="primary" 
                   href="https://soyl-web.gentlemushroom-c01a434f.centralindia.azurecontainerapps.io/en" 
-                  target="_blank"
-                  rel="noopener noreferrer"
                   className="group"
                 >
                   Start Free PMS Trial
