@@ -18,14 +18,14 @@ from openai import (
     RateLimitError,
 )
 from openai.types.chat import (
+    ChatCompletionAssistantMessageParam,
     ChatCompletionMessageParam,
     ChatCompletionSystemMessageParam,
     ChatCompletionUserMessageParam,
-    ChatCompletionAssistantMessageParam,
 )
 from openai.types.shared_params import ResponseFormatJSONSchema
 
-from soyl.domain.ai.advisor import strip_visitor_specific_figures, AdvisorInsight
+from soyl.domain.ai.advisor import strip_visitor_specific_figures
 from soyl.domain.ai.conversational_advisor import ChatResponse, ChatTurn
 from soyl.domain.ai.ports import ProviderError, Usage
 from soyl.domain.ai.soyl_knowledge import format_product_knowledge
@@ -53,7 +53,7 @@ Never invent a specific figure about their property (e.g. "you will save 12%"). 
 You may use general industry benchmarks ("hotels typically see...") and you may cite the actual pricing and features of SOYL products.
 
 {product_knowledge}
-"""
+"""  # noqa: E501
 
 RESPONSE_FORMAT: ResponseFormatJSONSchema = {
     "type": "json_schema",
@@ -144,7 +144,7 @@ def _sanitise_response(response: ChatResponse, turn: ChatTurn) -> ChatResponse:
     response.message = safe_strip(response.message) or response.message
     
     if response.insight:
-        response.insight.headline = safe_strip(response.insight.headline) or response.insight.headline
+        response.insight.headline = safe_strip(response.insight.headline) or response.insight.headline  # noqa: E501
         for block in response.insight.blocks:
             block.markdown = safe_strip(block.markdown)
             block.items = [safe_strip(item) or item for item in block.items]
@@ -204,10 +204,10 @@ class AzureOpenAIConversationalAdvisor:
             if msg.role == "user":
                 messages.append(ChatCompletionUserMessageParam(role="user", content=msg.content))
             else:
-                messages.append(ChatCompletionAssistantMessageParam(role="assistant", content=msg.content))
+                messages.append(ChatCompletionAssistantMessageParam(role="assistant", content=msg.content))  # noqa: E501
                 
         if turn.selected_option:
-            messages.append(ChatCompletionUserMessageParam(role="user", content=f"(Selected option: {turn.selected_option})"))
+            messages.append(ChatCompletionUserMessageParam(role="user", content=f"(Selected option: {turn.selected_option})"))  # noqa: E501
 
         try:
             response = await self._client.chat.completions.create(
@@ -222,7 +222,7 @@ class AzureOpenAIConversationalAdvisor:
             ) from exc
         except APIStatusError as exc:
             raise ProviderError(
-                f"conversational advisor returned {exc.status_code}", retryable=exc.status_code >= 500
+                f"conversational advisor returned {exc.status_code}", retryable=exc.status_code >= 500  # noqa: E501
             ) from exc
 
         body = response.choices[0].message.content or "{}"

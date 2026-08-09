@@ -183,7 +183,7 @@ def sanitise(insight: AdvisorInsight, *, answers: AdvisorAnswers) -> AdvisorInsi
                     else None
                 ),
                 level=block.level,
-                items=[strip_visitor_specific_figures(item, allowed=allowed) for item in block.items],
+                items=[strip_visitor_specific_figures(item, allowed=allowed) for item in block.items],  # noqa: E501
             )
             for block in insight.blocks
             # A citation type cannot reach here through the schema, but a

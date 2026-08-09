@@ -16,14 +16,16 @@ import logging
 from soyl.domain.ai.ports import (
     AdvisorProvider,
     AnswerProvider,
+    ConversationalAdvisorProvider,
     EmbeddingProvider,
     QuestionProvider,
     RerankProvider,
-    ConversationalAdvisorProvider,
 )
 from soyl.infrastructure.providers.azure_advisor import AzureOpenAIAdvisor
-from soyl.infrastructure.providers.azure_conversational_advisor import AzureOpenAIConversationalAdvisor
 from soyl.infrastructure.providers.azure_answers import AzureOpenAIAnswers
+from soyl.infrastructure.providers.azure_conversational_advisor import (
+    AzureOpenAIConversationalAdvisor,
+)
 from soyl.infrastructure.providers.azure_openai import AzureOpenAIEmbeddings
 from soyl.infrastructure.providers.azure_questions import AzureOpenAIQuestions
 from soyl.infrastructure.providers.azure_rerank import AzureOpenAIRerank

@@ -14,9 +14,9 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from soyl.domain.ai.ports import (
     AdvisorProvider,
     AnswerProvider,
+    ConversationalAdvisorProvider,
     EmbeddingProvider,
     RerankProvider,
-    ConversationalAdvisorProvider,
 )
 from soyl.domain.storage import StoragePort
 from soyl.infrastructure.email import EmailSender

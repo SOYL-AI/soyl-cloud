@@ -7,13 +7,12 @@ as it does not need a tenant or a database.
 
 from __future__ import annotations
 
-
 PRODUCTS = [
     {
         "name": "Butler AI",
         "status": "live",
         "tagline": "The AI concierge your guests actually use.",
-        "what_it_does": "Guests scan a QR code, speak or type in any language, and Butler AI handles concierge requests, room service orders, and service tickets — routed directly to the right department. No app download, no staff training.",
+        "what_it_does": "Guests scan a QR code, speak or type in any language, and Butler AI handles concierge requests, room service orders, and service tickets — routed directly to the right department. No app download, no staff training.",  # noqa: E501
         "best_for": [
             "Hotels wanting to reduce front desk call volume",
             "Properties serving international guests",
@@ -31,7 +30,7 @@ PRODUCTS = [
         "name": "Hotel Advisor (Document AI)",
         "status": "live",
         "tagline": "Your SOPs can answer questions. Right now they just sit there.",
-        "what_it_does": "Upload your SOPs, contracts, brand standards, and policies. Staff ask questions in plain language. Every answer cites the exact passage it came from — and when nothing covers a question, it says so instead of guessing.",
+        "what_it_does": "Upload your SOPs, contracts, brand standards, and policies. Staff ask questions in plain language. Every answer cites the exact passage it came from — and when nothing covers a question, it says so instead of guessing.",  # noqa: E501
         "best_for": [
             "Hotels with extensive SOPs that staff struggle to search",
             "Multi-property groups needing consistent policy answers",
@@ -49,7 +48,7 @@ PRODUCTS = [
         "name": "PMS Lite",
         "status": "live",
         "tagline": "The simplest PMS your staff will love.",
-        "what_it_does": "A clean, modern property management system that handles reservations, check-in/out, room status, and housekeeping coordination. Designed to be learned in minutes, not weeks.",
+        "what_it_does": "A clean, modern property management system that handles reservations, check-in/out, room status, and housekeeping coordination. Designed to be learned in minutes, not weeks.",  # noqa: E501
         "best_for": [
             "Independent hotels tired of complex/expensive PMS",
             "Properties currently using spreadsheets or paper",
@@ -67,7 +66,7 @@ PRODUCTS = [
         "name": "ARIP",
         "status": "coming_soon",
         "tagline": "Your hotel's autonomous digital workforce.",
-        "what_it_does": "A team of specialized AI agents that autonomously execute dynamic pricing, launch targeted marketing campaigns, optimize distribution across OTAs, and grow RevPAR — running 24/7 without manual intervention.",
+        "what_it_does": "A team of specialized AI agents that autonomously execute dynamic pricing, launch targeted marketing campaigns, optimize distribution across OTAs, and grow RevPAR — running 24/7 without manual intervention.",  # noqa: E501
         "best_for": [
             "Hotels wanting automated dynamic pricing",
             "Properties struggling with OTA commission optimization",
@@ -85,7 +84,7 @@ PRODUCTS = [
         "name": "SOYL Dine",
         "status": "coming_soon",
         "tagline": "QR ordering and kitchen workflows for hotel restaurants.",
-        "what_it_does": "Guests scan a QR code at the table to browse the menu, order, and pay — while kitchen staff see orders in real-time with preparation tracking.",
+        "what_it_does": "Guests scan a QR code at the table to browse the menu, order, and pay — while kitchen staff see orders in real-time with preparation tracking.",  # noqa: E501
         "best_for": [
             "Hotels with in-house restaurants",
             "Properties wanting to reduce F&B service friction",
