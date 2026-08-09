@@ -51,8 +51,15 @@ export default function PmsLitePage() {
 
             <Reveal delay={0.3}>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 md:mb-24">
-                <Button size="lg" variant="primary" href="/contact" className="group">
-                  Join Pilot Waitlist
+                <Button 
+                  size="lg" 
+                  variant="primary" 
+                  href="https://soyl-web.gentlemushroom-c01a434f.centralindia.azurecontainerapps.io/en" 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group"
+                >
+                  Start Free PMS Trial
                   <ArrowRight size={20} className="ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <Button size="lg" variant="outline" href="/pricing">
