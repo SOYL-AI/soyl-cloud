@@ -142,30 +142,27 @@ export function InteractiveHeroGuestPortal() {
 
       setMessages((prev) => [...prev, botMsg]);
       setIsTyping(false);
-    }, 600);
-  };
-
   return (
     <div className="w-full h-full bg-[#FAFAFA] flex flex-col justify-between pt-7 pb-3 px-3.5 relative font-sans text-slate-800 select-none overflow-hidden">
       {/* 1. TOP HEADER BAR */}
-      <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5 z-10">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <span className="text-[9px] uppercase tracking-widest font-extrabold text-slate-400 block">
+          <span className="text-[9px] uppercase tracking-widest font-extrabold text-slate-500 block">
             GRANDPLAZA
           </span>
-          <span className="font-serif text-sm font-bold text-slate-900 tracking-tight">
+          <span className="text-[17px] font-black tracking-tight text-slate-900 leading-none">
             SOYL Concierge
           </span>
         </div>
 
         <div className="flex items-center gap-1">
-          <button className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 text-[10px] font-bold">
+          <button aria-label="Change language" className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 text-[10px] font-bold">
             <Globe className="w-3 h-3" />
           </button>
           <button className="px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-bold">
-            हिंदी
+            中国の
           </button>
-          <button className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
+          <button aria-label="Toggle dark mode" className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
             <Moon className="w-3 h-3" />
           </button>
         </div>
@@ -182,9 +179,9 @@ export function InteractiveHeroGuestPortal() {
         <span className="text-xs font-medium text-slate-500">Room 104</span>
       </div>
 
-      {/* 3. QUICK ACTIONS ROW (INTERACTIVE 1-CLICK PILLS) */}
-      <div className="z-10 mb-3">
-        <span className="text-[9px] uppercase tracking-widest font-extrabold text-slate-400 mb-2 block">
+      {/* 3. QUICK ACTIONS GRID */}
+      <div className="z-10 mt-3">
+        <span className="text-[9px] uppercase tracking-widest font-extrabold text-slate-500 mb-2 block">
           QUICK ACTIONS
         </span>
         <div className="grid grid-cols-4 gap-1.5">
@@ -210,13 +207,12 @@ export function InteractiveHeroGuestPortal() {
         </div>
       </div>
 
-      {/* 4. "HOW CAN WE HELP?" SERVICE CARDS */}
-      <div className="z-10 flex-1 flex flex-col justify-center">
-        <span className="text-[9px] uppercase tracking-widest font-extrabold text-slate-400 mb-1.5 block">
+      {/* 4. HORIZONTAL SCROLL HELP */}
+      <div className="z-10 mt-4 overflow-hidden -mx-4 px-4 pb-2">
+        <span className="text-[9px] uppercase tracking-widest font-extrabold text-slate-500 mb-1.5 block">
           HOW CAN WE HELP?
         </span>
         <div className="grid grid-cols-2 gap-2">
-          {/* Card 1: Room Service */}
           <div
             onClick={() => handleQuickAction("Room Service", "I'd like to order Room Service dinner for Room 104")}
             style={{ backgroundImage: "url('/images/restaurant_digital.png')" }}
@@ -227,8 +223,6 @@ export function InteractiveHeroGuestPortal() {
             <h4 className="font-serif font-bold text-sm relative z-10 leading-none shadow-black/50 drop-shadow-md">Room Service</h4>
             <p className="text-[10px] text-slate-200 relative z-10 leading-tight mt-0.5">Order food & drinks</p>
           </div>
-
-          {/* Card 2: Housekeeping */}
           <div
             onClick={() => handleQuickAction("Housekeeping", "Request extra housekeeping amenities for Room 104")}
             style={{ backgroundImage: "url('/images/industry_hotel.png')" }}
@@ -239,8 +233,6 @@ export function InteractiveHeroGuestPortal() {
             <h4 className="font-serif font-bold text-sm relative z-10 leading-none shadow-black/50 drop-shadow-md">Housekeeping</h4>
             <p className="text-[10px] text-slate-200 relative z-10 leading-tight mt-0.5">Towels & cleaning</p>
           </div>
-
-          {/* Card 3: Front Desk */}
           <div
             onClick={() => handleQuickAction("Front Desk", "I have a question for the Front Desk team")}
             style={{ backgroundImage: "url('/images/hero_lobby.png')" }}
@@ -251,8 +243,6 @@ export function InteractiveHeroGuestPortal() {
             <h4 className="font-serif font-bold text-sm relative z-10 leading-none shadow-black/50 drop-shadow-md">Front Desk</h4>
             <p className="text-[10px] text-slate-200 relative z-10 leading-tight mt-0.5">Questions & FAQs</p>
           </div>
-
-          {/* Card 4: Laundry */}
           <div
             onClick={() => handleQuickAction("Laundry", "Schedule laundry pickup for Room 104")}
             style={{ backgroundImage: "url('/images/industry_resort.png')" }}
@@ -272,10 +262,10 @@ export function InteractiveHeroGuestPortal() {
           onClick={() => {
             setActiveSheet(true);
           }}
-          className="w-full bg-white border border-slate-200/90 shadow-sm rounded-full py-2 px-4 flex items-center justify-center gap-2 hover:border-[#6DBAB2] transition-all"
+          className="w-full bg-white rounded-full py-2.5 px-4 flex items-center justify-center gap-2 shadow-sm border border-[#3D8F87]/20 hover:bg-slate-50 transition-colors"
         >
-          <Mic className="w-3.5 h-3.5 text-[#3D8F87]" />
-          <span className="text-xs font-semibold text-[#3D8F87]">Talk to the concierge</span>
+          <Mic className="w-3.5 h-3.5 text-teal-700" />
+          <span className="text-xs font-semibold text-teal-700">Talk to the concierge</span>
         </button>
 
         <div className="flex items-center justify-between gap-2">
@@ -295,20 +285,19 @@ export function InteractiveHeroGuestPortal() {
         <div className="absolute inset-0 bg-[#0A0D14]/60 backdrop-blur-xs z-30 flex flex-col justify-end animate-in fade-in duration-200">
           <div className="bg-[#F4F5F7] rounded-t-3xl p-3 border-t border-slate-200 shadow-2xl h-[92%] flex flex-col justify-between relative">
             {/* SHEET HEADER */}
-            <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-lg bg-[#E8F5F3] border border-[#6DBAB2]/40 flex items-center justify-center text-[#3D8F87]">
-                  <Sparkles className="w-3.5 h-3.5" />
+                <div className="w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center shadow-sm">
+                  <Sparkles className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-xs text-slate-900 leading-none">Butler AI Concierge</h4>
-                  <span className="text-[9px] text-[#3D8F87] font-semibold flex items-center gap-1 mt-0.5">
-                    <Cpu className="w-2.5 h-2.5" /> SOYL Proprietary LLM
-                  </span>
+                  <h3 className="font-bold text-slate-900 text-sm leading-tight">Butler AI</h3>
+                  <p className="text-[10px] font-medium text-slate-500">Concierge</p>
                 </div>
               </div>
 
               <button
+                aria-label="Close"
                 onClick={() => setActiveSheet(false)}
                 className="w-6 h-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center hover:bg-slate-300"
               >
@@ -362,10 +351,16 @@ export function InteractiveHeroGuestPortal() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                handleSendCustom();
+                if (inputValue.trim()) {
+                  handleQuickAction("CUSTOM", inputValue);
+                  setInputValue("");
+                }
               }}
-              className="bg-white rounded-full p-1.5 border border-slate-200 shadow-md flex items-center gap-2"
+              className="bg-white rounded-full border border-slate-200 p-1 flex items-center shadow-sm focus-within:border-slate-300 focus-within:shadow transition-all"
             >
+              <div className="pl-2.5 pr-2">
+                <Sparkles className="w-3.5 h-3.5 text-slate-400" />
+              </div>
               <input
                 type="text"
                 value={inputValue}
@@ -374,6 +369,7 @@ export function InteractiveHeroGuestPortal() {
                 className="flex-1 bg-transparent px-3 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none"
               />
               <button
+                aria-label="Send message"
                 type="submit"
                 disabled={!inputValue.trim()}
                 className="w-7 h-7 rounded-full bg-[#3D8F87] text-white flex items-center justify-center disabled:opacity-40 transition-opacity"
