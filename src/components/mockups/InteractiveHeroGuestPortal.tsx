@@ -153,7 +153,7 @@ export function InteractiveHeroGuestPortal() {
           <span className="text-[9px] uppercase tracking-widest font-extrabold text-slate-500 block">
             GRANDPLAZA
           </span>
-          <span className="text-[17px] font-black tracking-tight text-slate-900 leading-none">
+          <span className="font-serif text-sm font-bold text-slate-900 tracking-tight">
             SOYL Concierge
           </span>
         </div>
