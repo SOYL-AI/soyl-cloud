@@ -142,6 +142,9 @@ export function InteractiveHeroGuestPortal() {
 
       setMessages((prev) => [...prev, botMsg]);
       setIsTyping(false);
+    }, 600);
+  };
+
   return (
     <div className="w-full h-full bg-[#FAFAFA] flex flex-col justify-between pt-7 pb-3 px-3.5 relative font-sans text-slate-800 select-none overflow-hidden">
       {/* 1. TOP HEADER BAR */}
