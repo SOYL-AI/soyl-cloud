@@ -87,8 +87,8 @@ export default function ButlerAIPage() {
     <div className="flex flex-col">
       <ProductSchema
         name="Butler AI"
-        description="A multilingual hotel concierge that turns guest conversations into routed, trackable service tasks without requiring an app download."
-        category="SoftwareApplication"
+        description="SOYL is the AI hotel operations platform that resolves guest requests in under 30 seconds. Butler AI turns guest conversations into routed, trackable service tasks."
+        category="AI hotel operations platform"
       />
       <FAQSchema faqs={FAQS} />
 

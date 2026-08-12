@@ -53,19 +53,18 @@ const inter = Inter({
   // view. `adjustFontFallback` (on by default) matches its metrics to Inter's,
   // so it is close in colour and identical in layout — CLS stays 0.
   display: "optional",
-  preload: false,
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     template: "%s | SOYL AI",
-    default: "SOYL AI | AI Concierge for Modern Hotels",
+    default: "SOYL AI | AI Hotel Operations Platform",
   },
-  description: "Resolve guest requests in under 30 seconds. AI-powered concierge, property management, and operations — unified on one platform.",
+  description: "SOYL is the AI hotel operations platform that resolves guest requests in under 30 seconds. AI concierge, property management, and operations unified.",
   openGraph: {
-    title: "SOYL Cloud | AI Concierge for Modern Hotels",
-    description: "Resolve guest requests in under 30 seconds. AI-powered concierge, property management, and operations — unified on one platform.",
+    title: "SOYL Cloud | AI Hotel Operations Platform",
+    description: "SOYL is the AI hotel operations platform that resolves guest requests in under 30 seconds. AI concierge, property management, and operations unified.",
     url: SITE_URL,
     siteName: "SOYL Cloud",
     locale: "en_US",
