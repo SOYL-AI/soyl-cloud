@@ -159,7 +159,7 @@ def strip_visitor_specific_figures(text: str, *, allowed: set[str]) -> str:
         end = min(len(text), match.end() + 80)
         context = text[start:end].lower()
         
-        if re.search(r'\b(you|your|you\'ll|you\'d|you\'re)\b', context):
+        if re.search(r'\b(you|your|yours|you\'ll|you\'d|you\'re)\b', context):
             return "—"
             
         return figure

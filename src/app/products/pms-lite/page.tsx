@@ -54,7 +54,7 @@ export default function PmsLitePage() {
                 <Button 
                   size="lg" 
                   variant="primary" 
-                  href="https://soyl-web.gentlemushroom-c01a434f.centralindia.azurecontainerapps.io/en" 
+                  href="/book-demo" 
                   className="group"
                 >
                   Start Free PMS Trial

@@ -46,7 +46,7 @@ export default function AdvisorPage() {
             Talk to Our AI Hotel Advisor
           </h1>
           <p className="mt-3 text-[15px] leading-relaxed text-charcoal/65">
-            Have a conversation about your hotel's operations and get personalized recommendations. No account, no email, no call.
+            Have a conversation about your hotel&apos;s operations and get personalized recommendations. No account, no email, no call.
           </p>
         </div>
 

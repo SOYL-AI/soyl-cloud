@@ -35,7 +35,7 @@ export function AdvisorTeaser() {
               <Sparkles className="h-3.5 w-3.5" /> Free Operational Audit
             </p>
             <h2 className="text-3xl font-bold leading-tight text-charcoal sm:text-4xl text-balance">
-              Stop guessing where you're losing money. Ask the AI.
+              Stop guessing where you&apos;re losing money. Ask the AI.
             </h2>
             <p className="mt-4 max-w-lg text-[16px] leading-relaxed text-charcoal/70">
               Skip the sales calls. Have a 3-turn conversation with our AI Hotel Advisor and get an immediate, personalized read on your operations and what you can automate today.

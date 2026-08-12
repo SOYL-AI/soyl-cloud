@@ -28,7 +28,7 @@ def test_a_percentage_we_were_never_given_is_removed() -> None:
 
 
 def test_a_currency_amount_is_removed() -> None:
-    for text in ["This saves about ₹40,000 a month.", "Roughly $2,000 of staff time."]:
+    for text in ["This saves you about ₹40,000 a month.", "Roughly $2,000 of your staff time."]:
         cleaned = strip_visitor_specific_figures(text, allowed=set())
         assert "40,000" not in cleaned
         assert "2,000" not in cleaned
@@ -41,7 +41,7 @@ def test_a_time_saving_claim_is_removed() -> None:
 
 
 def test_a_multiplier_claim_is_removed() -> None:
-    text = "Staff find answers 3x faster."
+    text = "Your staff find answers 3x faster."
 
     assert "3x faster" not in strip_visitor_specific_figures(text, allowed=set())
 
@@ -72,10 +72,10 @@ def test_sanitise_covers_headline_items_and_markdown() -> None:
     insight = AdvisorInsight(
         headline="Properties like yours waste 30% of a shift.",
         blocks=[
-            AdvisorBlock(type="text.markdown", markdown="Saves ₹50,000 a month."),
+            AdvisorBlock(type="text.markdown", markdown="Saves you ₹50,000 a month."),
             AdvisorBlock(
                 type="list.checklist",
-                items=["Cut onboarding by 40%", "What is our cancellation policy?"],
+                items=["Cut your onboarding by 40%", "What is our cancellation policy?"],
             ),
         ],
     )
