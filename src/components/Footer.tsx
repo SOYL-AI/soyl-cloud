@@ -17,7 +17,7 @@ export default function Footer() {
             <p className="text-sm leading-relaxed mb-6 max-w-sm">
               The all-in-one hospitality platform. Automate operations, delight guests, and grow revenue with AI-powered concierges and management tools.
             </p>
-            <p className="text-xs text-[var(--color-soyl-gray-600)]">
+            <p className="text-xs text-[var(--color-soyl-gray-500)]">
               Built in {COMPANY.address}
             </p>
           </div>
@@ -82,7 +82,7 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="border-t border-[var(--color-soyl-gray-900)] pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-[var(--color-soyl-gray-600)]">
+          <p className="text-xs text-[var(--color-soyl-gray-500)]">
             © {new Date().getFullYear()} SOYL AI Private Limited. All rights reserved.
           </p>
           <div className="flex gap-6">

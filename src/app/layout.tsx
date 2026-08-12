@@ -53,6 +53,7 @@ const inter = Inter({
   // view. `adjustFontFallback` (on by default) matches its metrics to Inter's,
   // so it is close in colour and identical in layout — CLS stays 0.
   display: "optional",
+  preload: false,
 });
 
 export const metadata: Metadata = {

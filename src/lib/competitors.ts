@@ -667,6 +667,403 @@ export const competitors: Competitor[] = [
     ],
     faqs: [
       { question: "Why doesn't Butler AI use a native app?", answer: "Industry data shows less than 10% of guests download hotel apps. Butler AI uses progressive web apps (PWA) via QR code to ensure nearly 100% accessibility." }
+    ]  },
+  {
+    slug: "superbutler",
+    name: "Superbutler.ai",
+    shortDescription: "An AI digital concierge focusing on automating the guest journey and on-property requests.",
+    website: "https://www.superbutler.ai",
+    focusAreas: ["Digital Concierge", "Guest Journey", "AI Concierge"],
+    verdict: {
+      competitorStrength: "If you want a straightforward digital concierge designed primarily for quick setups, Superbutler is an option.",
+      butlerStrength: "If you prioritize deep voice AI integration, a highly polished premium UI, and robust operational routing, Butler AI delivers a more comprehensive enterprise-grade platform."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: true },
+          { name: "Voice AI", butler: true, competitor: "partial" },
+          { name: "QR Code Concierge", butler: true, competitor: true },
+          { name: "Premium UI", butler: true, competitor: "partial" }
+        ]
+      },
+      {
+        category: "Operations",
+        features: [
+          { name: "Housekeeping Routing", butler: true, competitor: true },
+          { name: "PMS Integrations", butler: true, competitor: true }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Butler AI scales more effectively with advanced voice features and multi-department routing." },
+      { type: "Boutique Hotels", recommendation: "Butler AI's aesthetics are purpose-built for luxury and boutique brands." },
+      { type: "Independent Hotels", recommendation: "Both provide good independent solutions, but Butler AI brings voice technology to smaller properties effortlessly." }
+    ],
+    faqs: [
+      { question: "How does Superbutler compare to Butler AI?", answer: "While both offer digital concierge services, Butler AI distinguishes itself with superior Voice AI capabilities and a focus on a highly premium guest interface." }
+    ]
+  },
+  {
+    slug: "helloshift",
+    name: "HelloShift",
+    shortDescription: "A hotel operations and messaging software designed to connect staff and guests.",
+    website: "https://helloshift.com",
+    focusAreas: ["Staff Collaboration", "Guest Messaging", "Operations"],
+    verdict: {
+      competitorStrength: "If you need a digital logbook and internal staff collaboration tool that feels like a traditional social feed, HelloShift is widely used.",
+      butlerStrength: "If you want an AI-first approach where a digital assistant intercepts, understands, and automatically routes guest requests without human intervention, Butler AI is vastly superior."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: true },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "AI Request Routing", butler: true, competitor: "partial" },
+          { name: "Staff Collaboration", butler: true, competitor: true }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Butler AI's automated routing reduces the need for manual dispatchers in large hotels." },
+      { type: "Boutique Hotels", recommendation: "HelloShift functions well as an internal logbook, but Butler AI provides the actual guest-facing AI." },
+      { type: "Independent Hotels", recommendation: "Butler AI saves independent teams hours daily by automatically answering common guest questions." }
+    ],
+    faqs: [
+      { question: "Is HelloShift an AI concierge?", answer: "HelloShift is primarily a staff collaboration and messaging tool. Butler AI is a true AI concierge that can converse with guests in multiple languages via voice and text." }
+    ]
+  },
+  {
+    slug: "polyai",
+    name: "PolyAI",
+    shortDescription: "A customer-led voice assistant for enterprise call centers, including hospitality.",
+    website: "https://www.poly.ai",
+    focusAreas: ["Voice AI", "Call Center Automation", "Enterprise"],
+    verdict: {
+      competitorStrength: "If you are a massive global enterprise looking to completely automate a centralized inbound call center across thousands of locations, PolyAI is an industry titan.",
+      butlerStrength: "If you want a hospitality-specific, easily deployable in-stay voice and text concierge that doesn't require a 6-month enterprise implementation cycle, Butler AI is tailored perfectly for hotels."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: "partial" },
+          { name: "Voice AI", butler: true, competitor: true },
+          { name: "QR Code Concierge", butler: true, competitor: false },
+          { name: "Hospitality Focus", butler: "100%", competitor: "partial" }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "PolyAI is excellent for global call centers; Butler AI is excellent for on-property in-stay requests." },
+      { type: "Boutique Hotels", recommendation: "PolyAI is typically too complex and expensive for boutique setups, making Butler AI the ideal fit." },
+      { type: "Independent Hotels", recommendation: "Butler AI's plug-and-play nature is perfect for independents." }
+    ],
+    faqs: [
+      { question: "How does PolyAI compare to Butler AI?", answer: "PolyAI focuses on large-scale telephony and call center automation across many industries. Butler AI focuses specifically on hospitality in-stay experiences, blending voice, text, and QR." }
+    ]
+  },
+  {
+    slug: "mara-solutions",
+    name: "MARA Solutions",
+    shortDescription: "An AI tool designed specifically to generate responses to hotel reviews.",
+    website: "https://www.mara-solutions.com",
+    focusAreas: ["Review Responses", "Reputation Management", "Generative AI"],
+    verdict: {
+      competitorStrength: "If you specifically need a standalone tool to rapidly draft responses to TripAdvisor and Google reviews, MARA is highly specialized for that single task.",
+      butlerStrength: "If you are looking for an overarching operational AI that handles live guest requests, voice interactions, and actual property workflows, Butler AI is a complete platform."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: false },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Review Management", butler: "partial", competitor: true },
+          { name: "In-stay Operations", butler: true, competitor: false }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Many hotels use MARA purely for reputation management while using Butler AI for operations." },
+      { type: "Boutique Hotels", recommendation: "Butler AI impacts the guest experience directly, while MARA operates post-stay." },
+      { type: "Independent Hotels", recommendation: "Both serve different needs: MARA for reviews, Butler AI for live service." }
+    ],
+    faqs: [
+      { question: "Are MARA and Butler AI competitors?", answer: "Not directly. MARA is a reputation management tool for answering reviews. Butler AI is a live digital concierge and operations platform." }
+    ]
+  },
+  {
+    slug: "actabl",
+    name: "Actabl",
+    shortDescription: "A comprehensive hotel operations, analytics, and labor management platform.",
+    website: "https://www.actabl.com",
+    focusAreas: ["Labor Management", "Operations Analytics", "Housekeeping"],
+    verdict: {
+      competitorStrength: "If you need deep business intelligence, labor modeling, and heavy enterprise back-office management, Actabl (which merged with ALICE and ProfitSword) is a powerhouse.",
+      butlerStrength: "If you need a modern, AI-first guest-facing interface that handles requests intelligently and requires virtually zero training, Butler AI is more agile and guest-centric."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: true },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Labor Analytics", butler: "partial", competitor: true },
+          { name: "AI Concierge", butler: true, competitor: false }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Actabl is a staple in large enterprise back-offices." },
+      { type: "Boutique Hotels", recommendation: "Butler AI provides the modern, sleek guest interface boutique hotels crave." },
+      { type: "Independent Hotels", recommendation: "Butler AI is much faster to deploy and less expensive for independents not needing complex labor forecasting." }
+    ],
+    faqs: [
+      { question: "Does Actabl have Voice AI?", answer: "No, Actabl focuses heavily on back-office operations, labor intelligence, and task management." }
+    ]
+  },
+  {
+    slug: "optii",
+    name: "Optii",
+    shortDescription: "A hotel operations platform specializing in predictive housekeeping and maintenance.",
+    website: "https://optii.com",
+    focusAreas: ["Housekeeping", "Maintenance", "Predictive Operations"],
+    verdict: {
+      competitorStrength: "If your absolute biggest pain point is optimizing housekeeping routes using predictive algorithms, Optii is arguably the best in class.",
+      butlerStrength: "If you want a platform that engages the guest directly via Voice and AI chat, and routes those requests to staff, Butler AI focuses heavily on the guest interaction layer."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: false },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Predictive Housekeeping", butler: "partial", competitor: true },
+          { name: "AI Request Routing", butler: true, competitor: true }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Large hotels often use Optii purely for housekeeping optimization." },
+      { type: "Boutique Hotels", recommendation: "Butler AI provides the guest-facing touchpoints that boutiques need." },
+      { type: "Independent Hotels", recommendation: "Butler AI is an all-in-one suite that handles both the guest request and the operational routing." }
+    ],
+    faqs: [
+      { question: "Does Optii handle guest messaging?", answer: "Optii is primarily a back-of-house operations platform, whereas Butler AI bridges the guest and the staff through AI." }
+    ]
+  },
+  {
+    slug: "opsanalitica",
+    name: "OpsAnalitica",
+    shortDescription: "A platform for hotel inspections, checklists, and operational compliance.",
+    website: "https://www.opsanalitica.com",
+    focusAreas: ["Inspections", "Checklists", "Compliance"],
+    verdict: {
+      competitorStrength: "If you need a rigid checklist system to ensure brand standards and safety compliance are met daily, OpsAnalitica is a solid compliance tool.",
+      butlerStrength: "If you are looking to revolutionize how guests interact with your property and automate service requests using Generative AI, Butler AI is the solution."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: false },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Inspections", butler: "partial", competitor: true },
+          { name: "Checklists", butler: "partial", competitor: true }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "OpsAnalitica ensures multi-property brand compliance." },
+      { type: "Boutique Hotels", recommendation: "Butler AI focuses on elevating the guest experience." },
+      { type: "Independent Hotels", recommendation: "Butler AI handles live operations and guest communications." }
+    ],
+    faqs: [
+      { question: "Is OpsAnalitica an AI concierge?", answer: "No, it is an operational checklist and inspection platform." }
+    ]
+  },
+  {
+    slug: "flexkeeping",
+    name: "Flexkeeping",
+    shortDescription: "A hotel operations software designed to eliminate miscommunication between departments.",
+    website: "https://flexkeeping.com",
+    focusAreas: ["Housekeeping", "Maintenance", "Staff Communication"],
+    verdict: {
+      competitorStrength: "If you need a robust, traditional hotel operations app to replace walkie-talkies and paper checklists, Flexkeeping is very reliable.",
+      butlerStrength: "If you want the guest to directly trigger these workflows using conversational AI in any language without staff intervention, Butler AI bridges that gap."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: "partial" },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Staff Operations", butler: true, competitor: true },
+          { name: "AI Automation", butler: true, competitor: false }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Flexkeeping is a strong operational backbone for large teams." },
+      { type: "Boutique Hotels", recommendation: "Butler AI provides the sleek guest-facing technology." },
+      { type: "Independent Hotels", recommendation: "Butler AI's all-in-one approach gives independents both guest messaging and staff routing." }
+    ],
+    faqs: [
+      { question: "Does Flexkeeping have Voice AI?", answer: "No, Flexkeeping relies on standard app interfaces for staff task management." }
+    ]
+  },
+  {
+    slug: "hotelkit",
+    name: "Hotelkit",
+    shortDescription: "A comprehensive hotel operations and communication platform.",
+    website: "https://hotelkit.net",
+    focusAreas: ["Operations", "Task Management", "Staff Intranet"],
+    verdict: {
+      competitorStrength: "If you want a highly structured digital workspace for your staff—complete with handovers, ideas, and repairs—Hotelkit is a market leader.",
+      butlerStrength: "If you are looking for an AI-powered system that handles the guest side of the equation natively—especially via Voice—Butler AI is superior."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: "partial" },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Staff Intranet", butler: false, competitor: true },
+          { name: "AI Automation", butler: true, competitor: false }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Hotelkit is excellent for internal staff communication across large resorts." },
+      { type: "Boutique Hotels", recommendation: "Butler AI offers the cutting-edge guest tech that impresses luxury travelers." },
+      { type: "Independent Hotels", recommendation: "Both are great; Hotelkit for staff intranets, Butler AI for guest AI." }
+    ],
+    faqs: [
+      { question: "How is Butler AI different from Hotelkit?", answer: "Hotelkit focuses on internal staff collaboration and task management. Butler AI focuses on AI-driven guest requests and automating the triage of those requests." }
+    ]
+  },
+  {
+    slug: "guesttouch",
+    name: "GuestTouch",
+    shortDescription: "A guest messaging and reputation management platform.",
+    website: "https://www.guesttouch.com",
+    focusAreas: ["Guest Messaging", "Reputation", "Upselling"],
+    verdict: {
+      competitorStrength: "If you want a straightforward text messaging platform combined with review collection, GuestTouch is very user-friendly.",
+      butlerStrength: "If you want true GenAI capabilities, Voice AI, and deep automated operational routing rather than just an SMS inbox, Butler AI is much more advanced."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Guest Messaging", butler: true, competitor: true },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Reputation Management", butler: "partial", competitor: true },
+          { name: "AI Routing", butler: true, competitor: false }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Butler AI scales better for complex operational routing." },
+      { type: "Boutique Hotels", recommendation: "Butler AI provides a more premium in-stay concierge interface." },
+      { type: "Independent Hotels", recommendation: "GuestTouch is a solid simple messaging app, while Butler AI is a complete AI automation suite." }
+    ],
+    faqs: [
+      { question: "Does GuestTouch use generative AI?", answer: "GuestTouch is primarily a standard guest messaging and review solicitation platform, whereas Butler AI is built entirely on generative AI." }
+    ]
+  },
+  {
+    slug: "mews",
+    name: "Mews",
+    shortDescription: "An innovative, cloud-native Property Management System (PMS).",
+    website: "https://www.mews.com",
+    focusAreas: ["PMS", "Payments", "Guest Journey"],
+    verdict: {
+      competitorStrength: "If you need a complete overhaul of your core property management system and payment gateway, Mews is an industry-leading PMS.",
+      butlerStrength: "Butler AI is not a PMS. Instead, Butler AI integrates with PMS platforms like Mews to provide the AI conversational layer, Voice AI, and guest request routing that a PMS doesn't handle natively."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Core PMS", butler: false, competitor: true },
+          { name: "Payments", butler: "partial", competitor: true },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Conversational AI", butler: true, competitor: false }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Mews is an excellent PMS choice. Butler AI layers on top of it perfectly." },
+      { type: "Boutique Hotels", recommendation: "Mews and Butler AI combined provide a best-in-class modern tech stack." },
+      { type: "Independent Hotels", recommendation: "Mews handles the booking and billing; Butler AI handles the guest service." }
+    ],
+    faqs: [
+      { question: "Are Mews and Butler AI competitors?", answer: "No, they are highly complementary. Mews is your core PMS database, and Butler AI is your AI-powered guest service layer that integrates with it." }
+    ]
+  },
+  {
+    slug: "cloudbeds",
+    name: "Cloudbeds",
+    shortDescription: "A unified hospitality management suite encompassing PMS, channel manager, and booking engine.",
+    website: "https://www.cloudbeds.com",
+    focusAreas: ["PMS", "Channel Manager", "Booking Engine"],
+    verdict: {
+      competitorStrength: "If you need an all-in-one system for managing inventory, distribution, and basic front desk tasks, Cloudbeds is perfect for independent properties.",
+      butlerStrength: "Butler AI is the perfect add-on to Cloudbeds, providing the advanced Voice AI and generative text concierge that Cloudbeds lacks natively."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Core PMS", butler: false, competitor: true },
+          { name: "Channel Manager", butler: false, competitor: true },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "AI Request Routing", butler: true, competitor: false }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Cloudbeds is geared towards independent properties, where Butler AI also excels." },
+      { type: "Boutique Hotels", recommendation: "Cloudbeds + Butler AI is a powerful combination for boutiques." },
+      { type: "Independent Hotels", recommendation: "Cloudbeds handles the bookings; Butler AI handles the guest's in-stay experience." }
+    ],
+    faqs: [
+      { question: "Does Butler AI integrate with Cloudbeds?", answer: "Yes, Butler AI integrates with major PMS platforms to sync guest data and automate request resolution." }
+    ]
+  },
+  {
+    slug: "stayntouch",
+    name: "Stayntouch",
+    shortDescription: "A flexible, cloud-based PMS known for its mobile check-in capabilities.",
+    website: "https://www.stayntouch.com",
+    focusAreas: ["PMS", "Mobile Check-in", "Kiosks"],
+    verdict: {
+      competitorStrength: "If you want a mobile-first PMS with strong kiosk and self-service check-in flows, Stayntouch is an excellent core system.",
+      butlerStrength: "While Stayntouch handles the check-in, Butler AI handles everything the guest needs during their stay via advanced Voice and Text AI."
+    },
+    features: [
+      {
+        category: "Features",
+        features: [
+          { name: "Core PMS", butler: false, competitor: true },
+          { name: "Mobile Check-in", butler: "partial", competitor: true },
+          { name: "Voice AI", butler: true, competitor: false },
+          { name: "Conversational Concierge", butler: true, competitor: false }
+        ]
+      }
+    ],
+    bestFor: [
+      { type: "Enterprise Hotels", recommendation: "Stayntouch provides the PMS backbone; Butler AI provides the conversational AI." },
+      { type: "Boutique Hotels", recommendation: "A joint deployment of Stayntouch and Butler AI creates a fully digitized, modern hotel." },
+      { type: "Independent Hotels", recommendation: "Both platforms emphasize mobile-first, app-less experiences." }
+    ],
+    faqs: [
+      { question: "Are Stayntouch and Butler AI the same thing?", answer: "No. Stayntouch is a Property Management System (PMS). Butler AI is an AI Concierge that sits on top of your PMS." }
     ]
   }
+
 ];
