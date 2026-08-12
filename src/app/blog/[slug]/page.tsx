@@ -8,7 +8,7 @@ import { Breadcrumb } from "@/components/compare/Breadcrumb";
 import { blogPosts } from "@/lib/blog-data";
 import { competitors } from "@/lib/competitors";
 import { COMPANY } from "@/lib/constants";
-import { Clock, CalendarDays, ChevronRight } from "lucide-react";
+import { Clock, CalendarDays, ChevronRight, Sparkles } from "lucide-react";
 
 export async function generateStaticParams() {
   return blogPosts.map((p) => ({
@@ -115,6 +115,26 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                   {post.description}
                 </p>
               </header>
+
+              {/* AEO Direct Answer Block */}
+              {post.aeoAnswer && (
+                <div className="mb-10 bg-[var(--color-soyl-mint-light)] rounded-2xl p-6 border border-[var(--color-soyl-mint)]/30 relative overflow-hidden">
+                  <div className="absolute -top-6 -right-6 p-4 opacity-10 pointer-events-none">
+                    <Sparkles className="w-32 h-32 text-[var(--color-soyl-mint-dark)]" />
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4 relative z-10">
+                    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm text-[var(--color-soyl-mint-dark)]">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-[11px] font-extrabold uppercase tracking-widest text-[var(--color-soyl-mint-dark)] mb-2">Quick Answer</h3>
+                      <p className="text-[17px] font-medium text-slate-800 leading-relaxed text-balance">
+                        {post.aeoAnswer}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {post.heroImage && (
                 <div className="relative w-full h-[300px] md:h-[500px] rounded-3xl overflow-hidden mb-12 shadow-xl border border-[var(--color-soyl-gray-200)]">

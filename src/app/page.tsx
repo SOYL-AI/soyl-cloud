@@ -59,8 +59,8 @@ export default function Home() {
     <>
       <ProductSchema
         name="SOYL Cloud"
-        description="AI hotel operations software that turns guest requests into coordinated work and helps hotel teams operate with less friction."
-        category="BusinessSoftware"
+        description="SOYL is the AI hotel operations platform that resolves guest requests in under 30 seconds. AI concierge, property management, and operations unified."
+        category="AI hotel operations platform"
       />
 
       <section className="relative min-h-[820px] overflow-hidden bg-[#07110f] pb-16 pt-28 text-white md:pb-20 md:pt-36 lg:min-h-[880px]">
@@ -90,7 +90,7 @@ export default function Home() {
               <h1 className="text-balance text-5xl font-bold leading-[0.98] tracking-[-0.045em] text-white sm:text-6xl lg:text-7xl">
                 The hotel defines the destination.
                 <span className="mt-3 block min-h-[2.05em] text-soyl-mint sm:min-h-[1.95em]">
-                  Our AI{" "}
+                  SOYL is the AI hotel operations platform that{" "}
                   <TypewriterText
                     phrases={[
                       "answers every guest.",
