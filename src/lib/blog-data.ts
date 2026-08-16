@@ -18,6 +18,56 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "what-is-an-ai-concierge",
+    title: "What is an AI concierge",
+    description: "An AI Concierge is a digital assistant that guests can interact with during their stay. Learn how it makes every stay a little easier and gives hospitality more room to be human.",
+    aeoAnswer: "An AI Concierge is a digital assistant that allows guests to easily request hotel services, ask questions, and get 24/7 support through text or voice. It handles routine tasks so hotel staff have more time to focus on delivering a personalized, human touch.",
+    heroImage: "/images/blog/what_is_an_ai_concierge.jpg",
+    publishedDate: "2026-08-16",
+    readTime: "4 min read",
+    sections: [
+      {
+        heading: "Hospitality with AI",
+        paragraphs: [
+          "At its core, hospitality has always been about making travellers feel comfortable and welcomed. It is in the small details , being able to get help when you need it, having your questions answered, and knowing that someone is there to make your stay a little more convenient.",
+          "What if that assistance could be offered 24/7?",
+          "Not just during the busiest hours at the front desk, and not only when someone from the hotel team is free, but at any time of the day or night. This is how AI is making its way into the hospitality industry but not only assisting in simple matters but ensuring help extends throught the entire stay, anytime of the day."
+        ]
+      },
+      {
+        heading: "AI Concierge",
+        paragraphs: [
+          "An AI Concierge is a digital assistant that guests can interact with during their stay. Think of it as another way for guests to communicate with the hotel, ask questions, and make everyday requests without always needing wait for staff to manually address their requests. And most of the times the questions are really simple. A few questions can include:\n“What time does breakfast start?”\n“Can I get extra towels?”\n“Can I get a wake-up call at 6:00 AM?”",
+          "These might seem like small interactions, but they are part of almost every hotel stay. An AI Concierge can handle these routine questions instantly, giving guests the information they need without making the experience feel like another task they have to deal with.",
+          "It can also go beyond answering questions. Guests can use it to request hotel services, ask for assistance, or find information about what the hotel has to offer. Instead of having to figure out who to contact for every request, they have one platform for all requirement .",
+          "And that interaction doesn't have to be limited to text based.",
+          "Guests can speak to the AI Concierge through voice or send a message through chat, making the experience feel more like a natural conversation. For travellers who are more comfortable communicating in another language, multilingual support can make the experience even easier.",
+          "Supporting multiple languages also allows guests from different parts of the world to communicate comfortably and get assistance in a language they are familiar with. It is a small touch, but being understood can go a long way in making a hotel stay feel more personal, welcoming, and like a home away from home."
+        ]
+      },
+      {
+        heading: "Making every stay a little eaiser",
+        paragraphs: [
+          "An AI Concierge's real value isn't speed, it's how much easier it makes the whole interaction feel.",
+          "Imagine arriving at a hotel late at night after a long journey. You want to know whether room service is available, but you don't want to wait on a phone call just to find out. Or perhaps you have an early flight the next morning and need to arrange a wake-up call before going to sleep.",
+          "These are small moments, but they are exactly where convenience matters.",
+          "With an AI Concierge, a guest can simply ask. And when the request requires action,  the request can be directed to the team responsible for handling it — whether that is housekeeping, the kitchen, or another department. That means the guest doesn't have to worry about who should receive the request or whether it has reached the right person.",
+          "When an AI Concierge handles the simpler requests, staff can step in when their attention is actually needed, whether that means helping with a more complex request, dealing with an unexpected situation, or simply spending more time with a guest face to face."
+        ]
+      },
+      {
+        heading: "Giving hospitality more room to be human",
+        paragraphs: [
+          "Technology in a hotel can sometimes sound like it is all about automation. But the real value of an AI Concierge isn't about replacing conversations between guests and staff.It is about making the everyday parts of a stay easier.",
+          "Guests get quicker answers and a convenient way to ask for help. Hotel teams get fewer routine interactions competing for their attention. So that when a guest does need a person, there is more time for a conversation, a thoughtful gesture, or simply the feeling of being genuinely looked after.",
+          "An AI Concierge simply helps make sure that when a guest needs that human touch, hotel staff have more time and attention to give it. Because sometimes, making a stay feel special isn't about doing something extraordinary. It's about making the little things feel effortless."
+        ]
+      }
+    ],
+    relatedComparisons: [],
+    relatedProducts: [{ name: "Butler AI", href: "/products/butler-ai" }]
+  },
+  {
     slug: "guest-experience-new-competitive-advantage",
     title: "Why Guest Experience Is the New Competitive Advantage",
     description: "In hospitality, every interaction shapes a guest's perception. Learn why guest experience is no longer just a measure of good service, but the defining factor for hotel success.",
